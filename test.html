@@ -10,7 +10,7 @@
       padding: 0;
       height: 100vh;
       overflow: hidden;
-      background: #444;
+      background: #111;
       font-family: 'Segoe UI', sans-serif;
       color: white;
       touch-action: manipulation;
@@ -70,6 +70,27 @@
       font-size: 0.9em;
       margin: 3px 0;
     }
+
+    .countdown-box {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #00ffcc;
+      padding: 8px 14px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 0.75em;
+      margin: 6px auto;
+      width: fit-content;
+      max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+    }
+
     .menu-grid {
       flex: 1;
       display: grid;
@@ -154,6 +175,8 @@
       <h2>HONOR TV MENU</h2>
     </div>
 
+    <div id="countdown-display" class="countdown-box"></div>
+
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
 
     <div class="menu-grid">
@@ -162,7 +185,7 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium channels -->
+      <!-- Add your premium channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels"><span>PH Channels Premium</span>
       </div>
@@ -232,6 +255,37 @@
     const channels = Array.from(document.querySelectorAll('.channel'));
     let wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
 
+    function updateCountdown() {
+      const countdownEl = document.getElementById("countdown-display");
+      const expiry = localStorage.getItem("premiumExpiry");
+
+      if (!expiry) {
+        countdownEl.textContent = "";
+        return;
+      }
+
+      const expiryDate = new Date(parseInt(expiry));
+      const now = new Date();
+      const diff = expiryDate - now;
+
+      if (diff <= 0) {
+        countdownEl.textContent = "⛔ Premium expired.";
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+        location.reload();
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s
+(on ${expiryDate.toLocaleString()})`;
+    }
+
     window.onload = () => {
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
@@ -243,6 +297,7 @@
 
       setInterval(() => {
         const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+
         document.querySelectorAll('.premium-only').forEach(el => {
           if (isPremium) {
             el.classList.remove('locked');
@@ -255,6 +310,7 @@
           location.reload();
         }
 
+        updateCountdown();
         wasPremium = isPremium;
       }, 1000);
     };
@@ -280,7 +336,6 @@
     window.addEventListener('click', lockAutoLandscape, { once: true });
   </script>
 
-  <!-- Firebase Auth Session Monitor -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
