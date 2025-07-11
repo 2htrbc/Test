@@ -44,6 +44,25 @@
       background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
 
+    .movies-btn {
+      display: inline-block;
+      margin: 6px auto;
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75em;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s;
+      width: fit-content;
+    }
+
+    .movies-btn:hover {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+    }
+
     .logo {
       text-align: center;
       margin-bottom: 4px;
@@ -167,14 +186,14 @@
       <h2>HONOR TV MENU</h2>
     </div>
 
+    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
+
     <div class="menu-grid">
-      <!-- FREE CHANNEL -->
       <div class="channel" tabindex="0" onclick="openChannel('livetv')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10" alt="Live TV">
         <span>Live TV</span>
       </div>
 
-      <!-- PREMIUM CHANNELS -->
       <div class="channel premium-only" onclick="tryOpenChannel('phchannel')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels">
         <span>PH Channels</span>
@@ -259,7 +278,6 @@
       lockAutoLandscape();
       handleOrientationWarning();
 
-      // Lock premium-only channels if not logged in
       const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
       document.querySelectorAll('.premium-only').forEach(el => {
         if (!isLoggedIn) el.classList.add('locked');
