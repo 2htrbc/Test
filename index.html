@@ -258,7 +258,8 @@
     function logout() {
       localStorage.setItem("isPremiumLoggedIn", "false");
       localStorage.removeItem("premiumLoginTime");
-      location.reload(); // No alert shown
+      alert("Logged out. Premium channels are now locked.");
+      location.reload();
     }
 
     function lockAutoLandscape() {
@@ -308,7 +309,8 @@
       if (isLoggedIn && now - loginTime > THIRTY_DAYS) {
         localStorage.setItem("isPremiumLoggedIn", "false");
         localStorage.removeItem("premiumLoginTime");
-        location.reload(); // No alert
+        alert("Your Premium access has expired. Please login again.");
+        location.reload();
       }
 
       const stillLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
@@ -328,7 +330,9 @@
       checkPremiumStatus();
     };
 
-    setInterval(checkPremiumStatus, 1000);
+    setInterval(() => {
+      checkPremiumStatus();
+    }, 1000);
 
     document.addEventListener('keydown', (e) => {
       const focused = document.activeElement;
