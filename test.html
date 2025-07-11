@@ -15,7 +15,6 @@
       color: white;
       touch-action: manipulation;
     }
-
     .overlay {
       display: flex;
       flex-direction: column;
@@ -37,20 +36,11 @@
       text-decoration: none;
       z-index: 1000;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s;
     }
 
-    .logout-btn {
-      position: absolute;
-      top: 6px;
-      left: 10px;
-      background: linear-gradient(to right, #666, #aaa);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.7em;
-      text-decoration: none;
-      z-index: 1000;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    .premium-btn:hover {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
 
     .movies-btn {
@@ -64,7 +54,12 @@
       text-align: center;
       text-decoration: none;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s;
       width: fit-content;
+    }
+
+    .movies-btn:hover {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
     }
 
     .logo {
@@ -81,12 +76,6 @@
     h2 {
       font-size: 0.9em;
       margin: 3px 0;
-    }
-
-    #expire-date {
-      font-size: 0.65em;
-      color: gold;
-      margin-top: 2px;
     }
 
     .menu-grid {
@@ -176,16 +165,23 @@
   </style>
 </head>
 <body>
+  <script>
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const lastVisit = localStorage.getItem('lastVisit');
+    const now = Date.now();
+    if (!lastVisit || now - parseInt(lastVisit) > ONE_DAY) {
+      localStorage.setItem('lastVisit', now.toString());
+      location.reload(true);
+    }
+  </script>
+
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
   <div class="overlay">
     <a href="premium-login.html" class="premium-btn">PREMIUM LOGIN</a>
-    <a href="#" class="logout-btn" onclick="logout()">LOGOUT</a>
-
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
       <h2>HONOR TV MENU</h2>
-      <div id="expire-date"></div>
     </div>
 
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
@@ -196,7 +192,6 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels">
         <span>PH Channels Premium</span>
@@ -255,17 +250,12 @@
       }
     }
 
-    function logout() {
-      localStorage.setItem("isPremiumLoggedIn", "false");
-      localStorage.removeItem("premiumLoginTime");
-      alert("Logged out. Premium channels are now locked.");
-      location.reload();
-    }
-
     function lockAutoLandscape() {
       const tryLock = () => {
         if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
+          screen.orientation.lock('landscape').catch(err => {
+            console.warn("Orientation lock not supported:", err);
+          });
         }
       };
       if (document.documentElement.requestFullscreen) {
@@ -280,59 +270,17 @@
       warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     }
 
-    function showPremiumExpiration() {
-      const expireBox = document.getElementById("expire-date");
-      const loginTime = parseInt(localStorage.getItem("premiumLoginTime") || "0");
-      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-
-      if (isLoggedIn && loginTime > 0) {
-        const now = Date.now();
-        const expireTime = loginTime + 30 * 24 * 60 * 60 * 1000;
-        const msLeft = expireTime - now;
-        const daysLeft = Math.floor(msLeft / (24 * 60 * 60 * 1000));
-
-        if (daysLeft >= 0) {
-          expireBox.innerText = `💎 ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
-        } else {
-          expireBox.innerText = '';
-        }
-      } else {
-        expireBox.innerText = '';
-      }
-    }
-
-    function checkPremiumStatus() {
-      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-      const loginTime = parseInt(localStorage.getItem("premiumLoginTime") || "0");
-      const now = Date.now();
-      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-
-      if (isLoggedIn && now - loginTime > THIRTY_DAYS) {
-        localStorage.setItem("isPremiumLoggedIn", "false");
-        localStorage.removeItem("premiumLoginTime");
-        alert("Your Premium access has expired. Please login again.");
-      }
-
-      const stillLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-      document.querySelectorAll('.premium-only').forEach(el => {
-        el.classList.toggle('locked', !stillLoggedIn);
-      });
-
-      showPremiumExpiration();
-    }
-
     const channels = Array.from(document.querySelectorAll('.channel'));
-
     window.onload = () => {
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
       handleOrientationWarning();
-      checkPremiumStatus();
-    };
 
-    setInterval(() => {
-      checkPremiumStatus();
-    }, 1000);
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll('.premium-only').forEach(el => {
+        if (!isLoggedIn) el.classList.add('locked');
+      });
+    };
 
     document.addEventListener('keydown', (e) => {
       const focused = document.activeElement;
@@ -366,6 +314,19 @@
     window.addEventListener('resize', handleOrientationWarning);
     window.addEventListener('orientationchange', handleOrientationWarning);
     window.addEventListener('click', lockAutoLandscape, { once: true });
+
+    // Watch for logout and auto lock premium channels again
+    let wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+    setInterval(() => {
+      const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll('.premium-only').forEach(el => {
+        el.classList.toggle('locked', !isPremium);
+      });
+      if (!isPremium && wasPremium) {
+        location.reload(); // auto-refresh when logged out
+      }
+      wasPremium = isPremium;
+    }, 1000);
   </script>
 </body>
 </html>
