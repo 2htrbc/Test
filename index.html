@@ -37,6 +37,11 @@
       text-decoration: none;
       z-index: 1000;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s;
+    }
+
+    .premium-btn:hover {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
 
     .logout-btn {
@@ -67,6 +72,10 @@
       width: fit-content;
     }
 
+    .movies-btn:hover {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+    }
+
     .logo {
       text-align: center;
       margin-bottom: 4px;
@@ -81,12 +90,6 @@
     h2 {
       font-size: 0.9em;
       margin: 3px 0;
-    }
-
-    #expire-date {
-      font-size: 0.65em;
-      color: gold;
-      margin-top: 2px;
     }
 
     .menu-grid {
@@ -176,6 +179,16 @@
   </style>
 </head>
 <body>
+  <script>
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const lastVisit = localStorage.getItem('lastVisit');
+    const now = Date.now();
+    if (!lastVisit || now - parseInt(lastVisit) > ONE_DAY) {
+      localStorage.setItem('lastVisit', now.toString());
+      location.reload(true);
+    }
+  </script>
+
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
   <div class="overlay">
@@ -185,7 +198,6 @@
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
       <h2>HONOR TV MENU</h2>
-      <div id="expire-date"></div>
     </div>
 
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
@@ -196,7 +208,6 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium Channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels">
         <span>PH Channels Premium</span>
@@ -257,7 +268,6 @@
 
     function logout() {
       localStorage.setItem("isPremiumLoggedIn", "false");
-      localStorage.removeItem("premiumLoginTime");
       alert("Logged out. Premium channels are now locked.");
       location.reload();
     }
@@ -280,51 +290,25 @@
       warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     }
 
-    function showPremiumExpiration() {
-      const expireBox = document.getElementById("expire-date");
-      const loginTime = parseInt(localStorage.getItem("premiumLoginTime") || "0");
-      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-
-      if (isLoggedIn && loginTime > 0) {
-        const expireTime = new Date(loginTime + 30 * 24 * 60 * 60 * 1000);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        expireBox.innerText = "Premium Expires: " + expireTime.toLocaleDateString(undefined, options);
-      } else {
-        expireBox.innerText = "";
-      }
-    }
-
-    function checkPremiumStatus() {
-      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-      const loginTime = parseInt(localStorage.getItem("premiumLoginTime") || "0");
-      const now = Date.now();
-      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-
-      if (isLoggedIn && now - loginTime > THIRTY_DAYS) {
-        localStorage.setItem("isPremiumLoggedIn", "false");
-        localStorage.removeItem("premiumLoginTime");
-        alert("Your Premium access has expired. Please login again.");
-      }
-
-      const stillLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
-      document.querySelectorAll('.premium-only').forEach(el => {
-        el.classList.toggle('locked', !stillLoggedIn);
-      });
-
-      showPremiumExpiration();
-    }
-
     const channels = Array.from(document.querySelectorAll('.channel'));
 
     window.onload = () => {
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
       handleOrientationWarning();
-      checkPremiumStatus();
+
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll('.premium-only').forEach(el => {
+        if (!isLoggedIn) el.classList.add('locked');
+      });
     };
 
+    // Recheck login status every second
     setInterval(() => {
-      checkPremiumStatus();
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll('.premium-only').forEach(el => {
+        el.classList.toggle('locked', !isLoggedIn);
+      });
     }, 1000);
 
     document.addEventListener('keydown', (e) => {
