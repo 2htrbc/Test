@@ -67,12 +67,7 @@
     .channel:hover,
     .channel:focus {
       transform: scale(1.06);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-    }
-
-    .channel.selected-channel {
-      border: 2px solid #ff4b2b;
-      box-shadow: 0 0 14px rgba(255, 75, 43, 0.6);
+      box-shadow: 0 0 18px gold; /* Gold glow */
     }
 
     .channel img {
@@ -186,18 +181,10 @@
     function tryOpenChannel(id, el) {
       const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
       if (isLoggedIn) {
-        selectChannel(el);
         openChannel(id);
       } else {
         alert("🔒 This is a PREMIUM feature. Please log in first.");
       }
-    }
-
-    function selectChannel(el) {
-      document.querySelectorAll('.channel').forEach(item =>
-        item.classList.remove('selected-channel')
-      );
-      el.classList.add('selected-channel');
     }
 
     function lockPremiumContent() {
@@ -233,7 +220,6 @@
         }
 
         if (e.key === "Enter") {
-          // Only highlight on Enter
           if (!active.classList.contains("locked")) {
             const channelId = active.getAttribute("onclick").match(/'([^']+)'/)[1];
             tryOpenChannel(channelId, active);
