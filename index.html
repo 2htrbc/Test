@@ -196,7 +196,7 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium channels -->
+      <!-- Premium Channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels">
         <span>PH Channels Premium</span>
@@ -286,17 +286,11 @@
       const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
 
       if (isLoggedIn && loginTime > 0) {
-        const now = Date.now();
-        const expireTime = loginTime + 30 * 24 * 60 * 60 * 1000;
-        const msLeft = expireTime - now;
-        const daysLeft = Math.floor(msLeft / (24 * 60 * 60 * 1000));
-        if (daysLeft >= 0) {
-          expireBox.innerText = `💎 ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
-        } else {
-          expireBox.innerText = '';
-        }
+        const expireTime = new Date(loginTime + 30 * 24 * 60 * 60 * 1000);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        expireBox.innerText = "Premium Expires: " + expireTime.toLocaleDateString(undefined, options);
       } else {
-        expireBox.innerText = '';
+        expireBox.innerText = "";
       }
     }
 
@@ -310,7 +304,6 @@
         localStorage.setItem("isPremiumLoggedIn", "false");
         localStorage.removeItem("premiumLoginTime");
         alert("Your Premium access has expired. Please login again.");
-        location.reload();
       }
 
       const stillLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
