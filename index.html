@@ -143,6 +143,21 @@
     @media screen and (orientation: portrait) {
       #rotate-warning { display: flex; }
     }
+    #premium-expiry-info {
+      position: fixed;
+      bottom: 5px;
+      right: 5px;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 0.65em;
+      color: #fff;
+      display: none;
+      z-index: 1001;
+      line-height: 1.2;
+      text-align: right;
+      font-family: 'Segoe UI', sans-serif;
+    }
   </style>
 </head>
 <body>
@@ -198,6 +213,8 @@
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
+  <div id="premium-expiry-info"></div>
+
   <script>
     function openChannel(channelId) {
       window.location.href = "go:" + channelId;
@@ -230,39 +247,55 @@
     }
 
     const channels = Array.from(document.querySelectorAll('.channel'));
-    let wasPremium = false;
+    let wasPremium = null;
 
     function checkPremiumStatus() {
       const expiry = localStorage.getItem("premiumExpiry");
       const now = Date.now();
 
+      // Auto logout if expired
       if (expiry && now > parseInt(expiry)) {
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
       }
 
       const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+      const expiryBox = document.getElementById("premium-expiry-info");
 
-      document.querySelectorAll('.premium-only').forEach(el => {
-        if (isPremium) {
-          el.classList.remove('locked');
-        } else {
-          el.classList.add('locked');
-        }
-      });
+      if (isPremium) {
+        const expiresAt = new Date(parseInt(expiry));
+        const remainingMs = parseInt(expiry) - now;
+        const days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((remainingMs / (1000 * 60)) % 60);
 
-      if (!isPremium && wasPremium) {
-        location.reload();
+        expiryBox.style.display = "block";
+        expiryBox.innerHTML = `
+          <b>PREMIUM ACTIVE</b><br>
+          Expires: ${expiresAt.toLocaleString()}<br>
+          Time left: ${days}d ${hours}h ${minutes}m
+        `;
+      } else {
+        expiryBox.style.display = "none";
       }
 
-      wasPremium = isPremium;
+      if (isPremium !== wasPremium) {
+        document.querySelectorAll('.premium-only').forEach(el => {
+          el.classList.toggle('locked', !isPremium);
+        });
+
+        if (!isPremium && wasPremium) {
+          alert("Your PREMIUM session has expired.");
+        }
+
+        wasPremium = isPremium;
+      }
     }
 
     window.onload = () => {
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
       handleOrientationWarning();
-
       checkPremiumStatus();
       setInterval(checkPremiumStatus, 1000);
     };
