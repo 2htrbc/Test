@@ -15,6 +15,7 @@
       color: white;
       touch-action: manipulation;
     }
+
     .overlay {
       display: flex;
       flex-direction: column;
@@ -23,6 +24,7 @@
       position: relative;
       box-sizing: border-box;
     }
+
     .premium-btn {
       position: absolute;
       top: 6px;
@@ -35,11 +37,13 @@
       text-decoration: none;
       z-index: 1000;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s;
+      transition: background 0.3s, box-shadow 0.3s;
     }
+
     .premium-btn:hover {
       background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
+
     .movies-btn {
       display: inline-block;
       margin: 6px auto;
@@ -51,21 +55,25 @@
       text-align: center;
       text-decoration: none;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s;
+      transition: background 0.3s, box-shadow 0.3s;
       width: fit-content;
     }
+
     .movies-btn:hover {
       background: linear-gradient(to right, #6dd5ed, #2193b0);
     }
+
     .logo {
       text-align: center;
       margin-bottom: 4px;
     }
+
     .logo img {
       width: 50px;
       border-radius: 50%;
       box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
     }
+
     h2 {
       font-size: 0.9em;
       margin: 3px 0;
@@ -101,6 +109,7 @@
       overflow-y: auto;
       padding: 4px;
     }
+
     .channel {
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
       border-radius: 50%;
@@ -112,19 +121,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
       outline: none;
     }
-    .channel:focus, .channel:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 6px rgba(255,255,255,0.4);
-    }
+
     .channel img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
     }
+
     .channel span {
       display: block;
       font-size: 0.6em;
@@ -135,16 +142,31 @@
       max-width: 60px;
       word-wrap: break-word;
     }
+
+    .channel:focus, .channel:hover,
+    .movies-btn:focus, .premium-btn:focus {
+      transform: scale(1.1);
+      box-shadow:
+        0 0 8px #00f,
+        0 0 12px #0ff,
+        0 0 16px #0f0,
+        0 0 20px #ff0,
+        0 0 24px #f00;
+      outline: none;
+    }
+
     .footer {
       text-align: center;
       font-size: 0.6em;
       color: #ccc;
       margin-top: 3px;
     }
+
     .premium-only.locked {
       opacity: 0.4;
       pointer-events: none;
     }
+
     #rotate-warning {
       position: fixed;
       top: 0;
@@ -161,6 +183,7 @@
       padding: 20px;
       font-size: 1.2em;
     }
+
     @media screen and (orientation: portrait) {
       #rotate-warning { display: flex; }
     }
@@ -169,7 +192,7 @@
 <body>
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
   <div class="overlay">
-    <a href="premium-login.html" class="premium-btn">PREMIUM LOGIN</a>
+    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
       <h2>HONOR TV MENU</h2>
@@ -177,45 +200,23 @@
 
     <div id="countdown-display" class="countdown-box"></div>
 
-    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid">
       <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10" alt="Live TV">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Free Live TV</span>
       </div>
-
-      <!-- Add your premium channels -->
-      <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
-        <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels"><span>PH Channels Premium</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('astro')">
-        <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png" alt="ASTRO"><span>Astro</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('phlive')">
-        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png" alt="PILIPINAS LIVE"><span>Pilipinas Live</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('uschannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10" alt="US CHANNEL"><span>US CHANNEL</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('premsports')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10" alt="PREMIUM SPORTS"><span>Premium Sports</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('skychannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s" alt="SKY CHANNEL"><span>Sky Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('sportevent')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10" alt="SPORTS EVENT"><span>Sports Event</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('netflixch')">
-        <img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg" alt="Netflix"><span>Netflix Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('plextv')">
-        <img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp" alt="PLEX TV"><span>PLEX TV</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('distrotv')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10" alt="DISTRO TV"><span>DISTRO TV</span>
-      </div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('livetv')"><img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('astro')"><img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>Astro</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('phlive')"><img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('uschannel')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10"><span>US CHANNEL</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('premsports')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10"><span>Premium Sports</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('skychannel')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s"><span>Sky Channel</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('sportevent')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10"><span>Sports Event</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('netflixch')"><img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg"><span>Netflix Channel</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('plextv')"><img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>PLEX TV</span></div>
+      <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('distrotv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>DISTRO TV</span></div>
     </div>
 
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
@@ -252,7 +253,7 @@
       warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     }
 
-    const channels = Array.from(document.querySelectorAll('.channel'));
+    const channels = Array.from(document.querySelectorAll('.channel, .movies-btn, .premium-btn'));
     let wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
 
     function updateCountdown() {
@@ -299,16 +300,11 @@
         const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
 
         document.querySelectorAll('.premium-only').forEach(el => {
-          if (isPremium) {
-            el.classList.remove('locked');
-          } else {
-            el.classList.add('locked');
-          }
+          if (isPremium) el.classList.remove('locked');
+          else el.classList.add('locked');
         });
 
-        if (!isPremium && wasPremium) {
-          location.reload();
-        }
+        if (!isPremium && wasPremium) location.reload();
 
         updateCountdown();
         wasPremium = isPremium;
@@ -338,10 +334,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
@@ -357,7 +350,6 @@
 
     onAuthStateChanged(auth, (user) => {
       const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-
       if (!user && isPremium) {
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
