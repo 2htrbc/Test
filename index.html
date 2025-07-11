@@ -70,7 +70,6 @@
       font-size: 0.9em;
       margin: 3px 0;
     }
-
     .countdown-box {
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: #00ffcc;
@@ -84,13 +83,11 @@
       box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
       animation: pulseGlow 2s infinite;
     }
-
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
       50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
       100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
     }
-
     .menu-grid {
       flex: 1;
       display: grid;
@@ -112,12 +109,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
       outline: none;
     }
     .channel:focus, .channel:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 6px rgba(255,255,255,0.4);
+      box-shadow: 0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.4);
     }
     .channel img {
       width: 100%;
@@ -174,18 +171,14 @@
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
       <h2>HONOR TV MENU</h2>
     </div>
-
     <div id="countdown-display" class="countdown-box"></div>
-
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
-
     <div class="menu-grid">
       <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10" alt="Live TV">
         <span>Free Live TV</span>
       </div>
-
-      <!-- Add your premium channels -->
+      <!-- Premium Channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels"><span>PH Channels Premium</span>
       </div>
@@ -217,7 +210,6 @@
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10" alt="DISTRO TV"><span>DISTRO TV</span>
       </div>
     </div>
-
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
@@ -282,8 +274,7 @@
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s
-(on ${expiryDate.toLocaleString()})`;
+      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s (on ${expiryDate.toLocaleString()})`;
     }
 
     window.onload = () => {
@@ -297,7 +288,6 @@
 
       setInterval(() => {
         const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-
         document.querySelectorAll('.premium-only').forEach(el => {
           if (isPremium) {
             el.classList.remove('locked');
