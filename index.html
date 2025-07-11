@@ -173,7 +173,7 @@
 
     <div class="menu-grid">
       <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10" alt="Live TV">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Free Live TV</span>
       </div>
 
@@ -213,6 +213,7 @@
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
+  <!-- Premium Expiry Info -->
   <div id="premium-expiry-info"></div>
 
   <script>
@@ -253,7 +254,6 @@
       const expiry = localStorage.getItem("premiumExpiry");
       const now = Date.now();
 
-      // Auto logout if expired
       if (expiry && now > parseInt(expiry)) {
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
@@ -296,6 +296,7 @@
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
       handleOrientationWarning();
+
       checkPremiumStatus();
       setInterval(checkPremiumStatus, 1000);
     };
