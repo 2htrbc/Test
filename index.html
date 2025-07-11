@@ -1,44 +1,3 @@
-<script>
-  // Run on every load of the index.html main menu
-  document.addEventListener("DOMContentLoaded", () => {
-    const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-    const expiry = localStorage.getItem("premiumExpiry");
-
-    if (isPremium && expiry) {
-      const now = Date.now();
-      const expiryTime = parseInt(expiry);
-
-      if (now > expiryTime) {
-        // Session expired
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
-
-        // Optional: redirect to login page or just reload
-        window.location.reload(); // Reload to reflect premium lock
-        return;
-      }
-    }
-
-    // Lock premium content if not logged in
-    if (!isPremium) {
-      lockPremiumCategories();
-    }
-  });
-
-  function lockPremiumCategories() {
-    // Example: disable/hide premium category buttons
-    const premiumButtons = document.querySelectorAll(".premium-category");
-
-    premiumButtons.forEach(btn => {
-      btn.classList.add("locked");
-      btn.onclick = () => {
-        alert("🔒 This content is for Premium users only.");
-      };
-    });
-  }
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,10 +35,6 @@
       text-decoration: none;
       z-index: 1000;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s;
-    }
-    .premium-btn:hover {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
     .movies-btn {
       display: inline-block;
@@ -92,11 +47,7 @@
       text-align: center;
       text-decoration: none;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s;
       width: fit-content;
-    }
-    .movies-btn:hover {
-      background: linear-gradient(to right, #6dd5ed, #2193b0);
     }
     .logo {
       text-align: center;
@@ -197,7 +148,6 @@
       z-index: 1001;
       line-height: 1.2;
       text-align: right;
-      font-family: 'Segoe UI', sans-serif;
     }
   </style>
 </head>
@@ -218,7 +168,7 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium channels -->
+      <!-- Premium Channels -->
       <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span>
       </div>
@@ -254,57 +204,52 @@
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
-  <!-- Premium Expiry Info -->
   <div id="premium-expiry-info"></div>
 
   <script>
-    function openChannel(channelId) {
-      window.location.href = "go:" + channelId;
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const channels = Array.from(document.querySelectorAll('.channel'));
+      let wasPremium = null;
 
-    function tryOpenChannel(channelId) {
-      if (localStorage.getItem("isPremiumLoggedIn") === "true") {
-        openChannel(channelId);
-      } else {
-        alert("This is a PREMIUM channel. Please login first.");
+      function openChannel(id) {
+        window.location.href = "go:" + id;
       }
-    }
 
-    function lockAutoLandscape() {
-      const tryLock = () => {
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
+      function tryOpenChannel(id) {
+        if (localStorage.getItem("isPremiumLoggedIn") === "true") {
+          openChannel(id);
+        } else {
+          alert("🔒 This is a PREMIUM channel. Please login first.");
         }
-      };
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().then(tryLock).catch(tryLock);
-      } else {
-        tryLock();
-      }
-    }
-
-    function handleOrientationWarning() {
-      const warning = document.getElementById('rotate-warning');
-      warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
-    }
-
-    const channels = Array.from(document.querySelectorAll('.channel'));
-    let wasPremium = null;
-
-    function checkPremiumStatus() {
-      const expiry = localStorage.getItem("premiumExpiry");
-      const now = Date.now();
-
-      if (expiry && now > parseInt(expiry)) {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
       }
 
-      const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-      const expiryBox = document.getElementById("premium-expiry-info");
+      function checkPremiumStatus() {
+        const expiry = localStorage.getItem("premiumExpiry");
+        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+        const now = Date.now();
+        const expiryBox = document.getElementById("premium-expiry-info");
 
-      if (isPremium) {
-        const expiresAt = new Date(parseInt(expiry));
+        if (!isPremium || !expiry || now > parseInt(expiry)) {
+          localStorage.removeItem("isPremiumLoggedIn");
+          localStorage.removeItem("premiumExpiry");
+          localStorage.removeItem("loggedInUserId");
+
+          document.querySelectorAll('.premium-only').forEach(el => {
+            el.classList.add('locked');
+            el.onclick = () => alert("🔒 This content is for Premium users only.");
+          });
+
+          expiryBox.style.display = "none";
+
+          if (wasPremium === true) {
+            alert("🔒 You have logged out or your session expired.");
+            window.location.reload(); // Or redirect to login
+          }
+
+          wasPremium = false;
+          return;
+        }
+
         const remainingMs = parseInt(expiry) - now;
         const days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
         const hours = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
@@ -313,54 +258,61 @@
         expiryBox.style.display = "block";
         expiryBox.innerHTML = `
           <b>PREMIUM ACTIVE</b><br>
-          Expires: ${expiresAt.toLocaleString()}<br>
+          Expires: ${new Date(parseInt(expiry)).toLocaleString()}<br>
           Time left: ${days}d ${hours}h ${minutes}m
         `;
-      } else {
-        expiryBox.style.display = "none";
-      }
 
-      if (isPremium !== wasPremium) {
         document.querySelectorAll('.premium-only').forEach(el => {
-          el.classList.toggle('locked', !isPremium);
+          el.classList.remove('locked');
+          el.onclick = () => tryOpenChannel(el.getAttribute("onclick").match(/'(.+?)'/)[1]);
         });
 
-        if (!isPremium && wasPremium) {
-          alert("Your PREMIUM session has expired.");
-        }
-
-        wasPremium = isPremium;
+        wasPremium = true;
       }
-    }
 
-    window.onload = () => {
+      function lockAutoLandscape() {
+        const tryLock = () => {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+          }
+        };
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().then(tryLock).catch(tryLock);
+        } else {
+          tryLock();
+        }
+      }
+
+      function handleOrientationWarning() {
+        document.getElementById('rotate-warning').style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
+      }
+
       if (channels.length > 0) channels[0].focus();
       lockAutoLandscape();
       handleOrientationWarning();
-
       checkPremiumStatus();
       setInterval(checkPremiumStatus, 1000);
-    };
 
-    document.addEventListener('keydown', (e) => {
-      const focused = document.activeElement;
-      const index = channels.indexOf(focused);
-      const columns = 6;
-      switch (e.key) {
-        case "ArrowRight": if (index < channels.length - 1) channels[index + 1].focus(); break;
-        case "ArrowLeft": if (index > 0) channels[index - 1].focus(); break;
-        case "ArrowDown": if (index + columns < channels.length) channels[index + columns].focus(); break;
-        case "ArrowUp": if (index - columns >= 0) channels[index - columns].focus(); break;
-        case "Enter":
-        case "OK": if (focused) focused.click(); break;
-        case "Backspace":
-        case "Escape": history.back(); break;
-      }
+      document.addEventListener('keydown', e => {
+        const focused = document.activeElement;
+        const index = channels.indexOf(focused);
+        const columns = 6;
+        switch (e.key) {
+          case "ArrowRight": if (index < channels.length - 1) channels[index + 1].focus(); break;
+          case "ArrowLeft": if (index > 0) channels[index - 1].focus(); break;
+          case "ArrowDown": if (index + columns < channels.length) channels[index + columns].focus(); break;
+          case "ArrowUp": if (index - columns >= 0) channels[index - columns].focus(); break;
+          case "Enter":
+          case "OK": if (focused) focused.click(); break;
+          case "Backspace":
+          case "Escape": history.back(); break;
+        }
+      });
+
+      window.addEventListener('resize', handleOrientationWarning);
+      window.addEventListener('orientationchange', handleOrientationWarning);
+      window.addEventListener('click', lockAutoLandscape, { once: true });
     });
-
-    window.addEventListener('resize', handleOrientationWarning);
-    window.addEventListener('orientationchange', handleOrientationWarning);
-    window.addEventListener('click', lockAutoLandscape, { once: true });
   </script>
 </body>
 </html>
