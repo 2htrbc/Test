@@ -167,7 +167,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth();
-    setPersistence(auth, browserLocalPersistence);
+    await setPersistence(auth, browserLocalPersistence);
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -183,15 +183,17 @@
             signOut(auth);
             localStorage.clear();
           } else {
+            localStorage.setItem("isPremiumLoggedIn", "true");
             document.getElementById("daysLeftInfo").innerText =
-              `✅ Your session will expire in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`;
+              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`;
             document.getElementById("loginContainer").style.display = "none";
-            window.location.href = "go:premium";
+            window.location.href = "index.html"; // Change if needed
           }
         } else {
-          document.getElementById("daysLeftInfo").innerText = "✅ Your session is active.";
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          document.getElementById("daysLeftInfo").innerText = "✅ Session active.";
           document.getElementById("loginContainer").style.display = "none";
-          window.location.href = "go:premium";
+          window.location.href = "index.html"; // Change if needed
         }
       }
     });
@@ -206,8 +208,8 @@
 
     document.getElementById("submitSignIn").addEventListener("click", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
       const expireChecked = document.getElementById("expire30").checked;
 
       try {
@@ -215,6 +217,7 @@
         const user = userCredential.user;
 
         localStorage.setItem("loggedInUserId", user.uid);
+        localStorage.setItem("isPremiumLoggedIn", "true");
 
         if (expireChecked) {
           const now = new Date().getTime();
@@ -223,16 +226,18 @@
           localStorage.removeItem("loginTimestamp");
         }
 
-        showMessage("Login successful!", "signInMessage");
-        window.location.href = "go:premium";
+        showMessage("Login successful! Redirecting...", "signInMessage");
+        setTimeout(() => {
+          window.location.href = "index.html"; // change this to your menu.html or go:premium
+        }, 1500);
       } catch (error) {
         if (error.code === "auth/invalid-credential") {
-          showMessage("Incorrect Email or Password", "signInMessage");
+          showMessage("❌ Incorrect Email or Password", "signInMessage");
         } else {
-          showMessage("Login failed: " + error.message, "signInMessage");
+          showMessage("❌ Login failed: " + error.message, "signInMessage");
         }
       }
     });
   </script>
 </body>
-  </html>
+</html>
