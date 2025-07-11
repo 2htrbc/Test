@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>HONOR TV - Movies</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #222;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 10px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #fff;
+    }
+
+    .menu-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      overflow-y: auto;
+      padding-bottom: 10px;
+    }
+
+    .channel {
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 10px;
+      padding: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+
+    .channel:focus,
+    .channel:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    }
+
+    .channel img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .channel span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8em;
+      color: #fff;
+    }
+
+    .locked {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ff4b2b;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7em;
+      color: white;
+      text-decoration: none;
+      box-shadow: 0 0 5px rgba(255,255,255,0.3);
+    }
+
+    #rotate-warning {
+      display: none;
+    }
+
+    @media screen and (orientation: portrait) {
+      #rotate-warning {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        color: white;
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="rotate-warning">Please rotate your device to landscape mode.</div>
+
+  <div class="overlay">
+    <a href="index.html" class="back-btn">← BACK</a>
+
+    <div class="header">
+      <h2>🎬 HONOR TV - Premium Movies</h2>
+    </div>
+
+    <div class="menu-grid">
+      <div class="channel premium-only" onclick="tryOpenChannel('freemovies')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoW5andsUfhsNRoe9EikZzNiQU-bjIV__dPkd-INyvtJLnKy4Anjd9xGk&s=10" alt="Movies">
+        <span>Movies</span>
+      </div>
+      <div class="channel premium-only" onclick="tryOpenChannel('hmtdflix')">
+        <img src="https://i.imgur.com/Q5mztTr.jpeg" alt="HMTDFLIX">
+        <span>Tagalog Dubbed</span>
+      </div>
+      <div class="channel premium-only" onclick="tryOpenChannel('phmovies')">
+        <img src="https://i.imgur.com/8mcTlbL.png" alt="PH Movies">
+        <span>PH Movies</span>
+      </div>
+      <div class="channel premium-only" onclick="tryOpenChannel('mmk')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvG44tA6CRZYloIVJkWSuGW8aLs6iTrdb1a7ynQ3GI3amg3QCP1_OwXcr3&s=10" alt="MMK">
+        <span>MMK</span>
+      </div>
+      <div class="channel premium-only" onclick="tryOpenChannel('anime')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRl-hI0ht2gB_pMQzkqdD6O1QZMdB6FDgwqt2dDhuOmU1Hrn43ZaHM6-fs&s=10" alt="Anime">
+        <span>Anime</span>
+      </div>
+      <div class="channel premium-only" onclick="tryOpenChannel('dkt')">
+        <img src="https://i.imgur.com/daxi6sF.jpeg" alt="dkt">
+        <span>Drama Kwento Tagalog</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openChannel(id) {
+      window.location.href = "go:" + id;
+    }
+
+    function tryOpenChannel(id) {
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
+      if (isLoggedIn) {
+        openChannel(id);
+      } else {
+        alert("This is a PREMIUM feature. Please log in first.");
+      }
+    }
+
+    function lockPremiumContent() {
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll(".premium-only").forEach(el => {
+        if (!isLoggedIn) el.classList.add("locked");
+      });
+    }
+
+    function handleOrientationWarning() {
+      const warning = document.getElementById('rotate-warning');
+      warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
+    }
+
+    window.onload = () => {
+      lockPremiumContent();
+      handleOrientationWarning();
+    };
+
+    window.addEventListener('resize', handleOrientationWarning);
+    window.addEventListener('orientationchange', handleOrientationWarning);
+  </script>
+</body>
+</html>
