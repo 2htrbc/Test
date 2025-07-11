@@ -22,6 +22,26 @@
       height: 100vh;
       box-sizing: border-box;
       padding: 4px 6px;
+      position: relative;
+    }
+
+    .premium-btn {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7em;
+      text-decoration: none;
+      z-index: 1000;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s;
+    }
+
+    .premium-btn:hover {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
 
     .logo {
@@ -38,32 +58,6 @@
     h2 {
       font-size: 0.9em;
       margin: 3px 0;
-    }
-
-    .top-menu {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .top-menu button {
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.75em;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .top-menu button:hover,
-    .top-menu button:focus {
-      background-color: #555;
-      transform: scale(1.05);
-      outline: none;
     }
 
     .menu-grid {
@@ -161,22 +155,15 @@
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
   <div class="overlay">
+    <a href="premium-login.html" class="premium-btn">PREMIUM LOGIN</a>
+
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
       <h2>HONOR TV MENU</h2>
     </div>
 
-    <div class="top-menu">
-      <button onclick="openChannel('premium')">Premium</button>
-      <button onclick="openChannel('movies')">Movies</button>
-      <button onclick="openChannel('pinoymovies')">Pinoy Movies</button>
-      <button onclick="openChannel('anime')">Anime</button>
-      <button onclick="openChannel('tagalogdub')">Tagalog Dubbed Movies</button>
-      <button onclick="openChannel('dramatagalog')">Drama Kwento Tagalog</button>
-    </div>
-
     <div class="menu-grid">
-      <!-- Channel tiles -->
+      <!-- All channels -->
       <div class="channel" tabindex="0" onclick="openChannel('livetv')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10" alt="Live TV">
         <span>Live TV</span>
