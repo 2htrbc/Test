@@ -194,7 +194,9 @@
     }
 
     function selectChannel(el) {
-      document.querySelectorAll('.channel').forEach(item => item.classList.remove('selected-channel'));
+      document.querySelectorAll('.channel').forEach(item =>
+        item.classList.remove('selected-channel')
+      );
       el.classList.add('selected-channel');
     }
 
@@ -210,7 +212,6 @@
       warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     }
 
-    // TV Remote support (arrow keys)
     function setupArrowNavigation() {
       const items = Array.from(document.querySelectorAll(".channel"));
       const columns = 3;
@@ -218,7 +219,6 @@
       document.addEventListener("keydown", (e) => {
         const active = document.activeElement;
         const currentIndex = items.indexOf(active);
-
         if (currentIndex === -1) return;
 
         let nextIndex = currentIndex;
@@ -233,7 +233,11 @@
         }
 
         if (e.key === "Enter") {
-          active.click();
+          // Only highlight on Enter
+          if (!active.classList.contains("locked")) {
+            const channelId = active.getAttribute("onclick").match(/'([^']+)'/)[1];
+            tryOpenChannel(channelId, active);
+          }
         }
       });
     }
@@ -242,7 +246,7 @@
       lockPremiumContent();
       handleOrientationWarning();
       setupArrowNavigation();
-      // Auto focus first item
+
       const first = document.querySelector(".channel:not(.locked)");
       if (first) first.focus();
     };
