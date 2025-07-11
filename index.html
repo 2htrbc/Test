@@ -1,3 +1,44 @@
+<script>
+  // Run on every load of the index.html main menu
+  document.addEventListener("DOMContentLoaded", () => {
+    const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+    const expiry = localStorage.getItem("premiumExpiry");
+
+    if (isPremium && expiry) {
+      const now = Date.now();
+      const expiryTime = parseInt(expiry);
+
+      if (now > expiryTime) {
+        // Session expired
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+
+        // Optional: redirect to login page or just reload
+        window.location.reload(); // Reload to reflect premium lock
+        return;
+      }
+    }
+
+    // Lock premium content if not logged in
+    if (!isPremium) {
+      lockPremiumCategories();
+    }
+  });
+
+  function lockPremiumCategories() {
+    // Example: disable/hide premium category buttons
+    const premiumButtons = document.querySelectorAll(".premium-category");
+
+    premiumButtons.forEach(btn => {
+      btn.classList.add("locked");
+      btn.onclick = () => {
+        alert("🔒 This content is for Premium users only.");
+      };
+    });
+  }
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
