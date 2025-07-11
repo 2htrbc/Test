@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>Premium Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
@@ -10,7 +10,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Segoe UI', sans-serif;
     }
     body {
       background: #0e101c;
@@ -34,7 +34,6 @@
       display: block;
       margin: 0 auto 20px;
       max-width: 120px;
-      height: auto;
     }
     .form-title {
       margin-bottom: 20px;
@@ -62,7 +61,6 @@
       color: #fff;
       font-size: 14px;
       outline: none;
-      transition: border 0.3s;
     }
     .input-group input:focus {
       border-color: #00d4ff;
@@ -86,7 +84,6 @@
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s;
     }
     .btn:hover {
       background: #00b8e6;
@@ -96,7 +93,6 @@
       padding: 10px;
       border-radius: 6px;
       background-color: #222;
-      color: #fff;
       font-size: 14px;
       display: none;
     }
@@ -132,6 +128,7 @@
     <button class="btn" id="submitSignIn">Sign In</button>
   </div>
 
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -153,24 +150,22 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
+    const auth = getAuth(app);
     await setPersistence(auth, browserLocalPersistence);
 
-    // Function to show message
-    function showMessage(message, divId) {
-      const messageDiv = document.getElementById(divId);
-      messageDiv.innerHTML = message;
-      messageDiv.style.display = "block";
-      messageDiv.style.opacity = 1;
-      setTimeout(() => { messageDiv.style.opacity = 0; }, 5000);
-    }
+    const showMessage = (text, id = "signInMessage", timeout = 4000) => {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.style.display = "block";
+      el.style.opacity = 1;
+      setTimeout(() => { el.style.opacity = 0; }, timeout);
+    };
 
-    // On Auth State Change
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const now = Date.now();
-        const expiry = localStorage.getItem("premiumExpiry");
+      const now = Date.now();
+      const expiry = localStorage.getItem("premiumExpiry");
 
+      if (user) {
         if (expiry && now > parseInt(expiry)) {
           signOut(auth);
           localStorage.clear();
@@ -179,44 +174,45 @@
 
           if (expiry) {
             const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
-            document.getElementById("daysLeftInfo").innerText =
+            document.getElementById("daysLeftInfo").textContent =
               `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
           }
 
-          document.getElementById("loginContainer").style.display = "none";
-          window.location.href = "index.html";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         }
       }
     });
 
-    // On login submit
     document.getElementById("submitSignIn").addEventListener("click", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       const expireChecked = document.getElementById("expire30").checked;
 
+      if (!email || !password) {
+        showMessage("❗ Please enter both email and password.");
+        return;
+      }
+
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        const { user } = await signInWithEmailAndPassword(auth, email, password);
+        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
 
         localStorage.setItem("loggedInUserId", user.uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
+        if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
 
-        if (expireChecked) {
-          const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
-          localStorage.setItem("premiumExpiry", expiryTime.toString());
-        }
-
-        showMessage("Login successful! Redirecting...", "signInMessage");
+        showMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
           window.location.href = "index.html";
-        }, 1500);
+        }, 1200);
       } catch (error) {
-        if (error.code === "auth/invalid-credential") {
-          showMessage("❌ Incorrect Email or Password", "signInMessage");
+        if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+          showMessage("❌ Incorrect Email or Password.");
         } else {
-          showMessage("❌ Login failed: " + error.message, "signInMessage");
+          showMessage("❌ " + error.message);
         }
       }
     });
