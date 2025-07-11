@@ -12,7 +12,6 @@
       padding: 0;
       font-family: 'Arial', sans-serif;
     }
-
     body {
       background: #0e101c;
       color: #fff;
@@ -22,7 +21,6 @@
       min-height: 100vh;
       padding: 20px;
     }
-
     .container {
       background: #1a1d2b;
       padding: 30px 25px;
@@ -32,26 +30,22 @@
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
       text-align: center;
     }
-
     .logo {
       display: block;
       margin: 0 auto 20px;
       max-width: 120px;
       height: auto;
     }
-
     .form-title {
       margin-bottom: 20px;
       font-size: 26px;
       color: #00d4ff;
     }
-
     .input-group {
       position: relative;
       margin-bottom: 20px;
       text-align: left;
     }
-
     .input-group i {
       position: absolute;
       top: 50%;
@@ -59,7 +53,6 @@
       transform: translateY(-50%);
       color: #aaa;
     }
-
     .input-group input {
       width: 100%;
       padding: 12px 12px 12px 36px;
@@ -71,11 +64,9 @@
       outline: none;
       transition: border 0.3s;
     }
-
     .input-group input:focus {
       border-color: #00d4ff;
     }
-
     .input-group label {
       position: absolute;
       top: -10px;
@@ -85,7 +76,6 @@
       font-size: 12px;
       color: #00d4ff;
     }
-
     .btn {
       width: 100%;
       padding: 12px;
@@ -98,11 +88,9 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-
     .btn:hover {
       background: #00b8e6;
     }
-
     .messageDiv {
       margin-bottom: 10px;
       padding: 10px;
@@ -112,7 +100,6 @@
       font-size: 14px;
       display: none;
     }
-
     #daysLeftInfo {
       text-align: center;
       color: #00ff8c;
@@ -169,35 +156,7 @@
     const auth = getAuth();
     await setPersistence(auth, browserLocalPersistence);
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const savedTime = localStorage.getItem("loginTimestamp");
-        const now = new Date().getTime();
-        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-
-        if (savedTime) {
-          const elapsed = now - parseInt(savedTime, 10);
-          const daysLeft = Math.floor((thirtyDays - elapsed) / (1000 * 60 * 60 * 24));
-
-          if (elapsed > thirtyDays) {
-            signOut(auth);
-            localStorage.clear();
-          } else {
-            localStorage.setItem("isPremiumLoggedIn", "true");
-            document.getElementById("daysLeftInfo").innerText =
-              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`;
-            document.getElementById("loginContainer").style.display = "none";
-            window.location.href = "index.html"; // Change if needed
-          }
-        } else {
-          localStorage.setItem("isPremiumLoggedIn", "true");
-          document.getElementById("daysLeftInfo").innerText = "✅ Session active.";
-          document.getElementById("loginContainer").style.display = "none";
-          window.location.href = "index.html"; // Change if needed
-        }
-      }
-    });
-
+    // Function to show message
     function showMessage(message, divId) {
       const messageDiv = document.getElementById(divId);
       messageDiv.innerHTML = message;
@@ -206,6 +165,31 @@
       setTimeout(() => { messageDiv.style.opacity = 0; }, 5000);
     }
 
+    // On Auth State Change
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const now = Date.now();
+        const expiry = localStorage.getItem("premiumExpiry");
+
+        if (expiry && now > parseInt(expiry)) {
+          signOut(auth);
+          localStorage.clear();
+        } else {
+          localStorage.setItem("isPremiumLoggedIn", "true");
+
+          if (expiry) {
+            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
+            document.getElementById("daysLeftInfo").innerText =
+              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
+          }
+
+          document.getElementById("loginContainer").style.display = "none";
+          window.location.href = "index.html";
+        }
+      }
+    });
+
+    // On login submit
     document.getElementById("submitSignIn").addEventListener("click", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
@@ -220,15 +204,13 @@
         localStorage.setItem("isPremiumLoggedIn", "true");
 
         if (expireChecked) {
-          const now = new Date().getTime();
-          localStorage.setItem("loginTimestamp", now);
-        } else {
-          localStorage.removeItem("loginTimestamp");
+          const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
+          localStorage.setItem("premiumExpiry", expiryTime.toString());
         }
 
         showMessage("Login successful! Redirecting...", "signInMessage");
         setTimeout(() => {
-          window.location.href = "index.html"; // change this to your menu.html or go:premium
+          window.location.href = "index.html";
         }, 1500);
       } catch (error) {
         if (error.code === "auth/invalid-credential") {
