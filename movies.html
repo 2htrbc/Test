@@ -10,7 +10,7 @@
       padding: 0;
       height: 100vh;
       overflow: hidden;
-      background: #222;
+      background: linear-gradient(to bottom, #111, #222);
       font-family: 'Segoe UI', sans-serif;
       color: white;
     }
@@ -19,43 +19,55 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 10px;
+      padding: 16px;
+      box-sizing: border-box;
     }
 
     .header {
-      text-align: center;
-      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .header img {
+      height: 40px;
+      border-radius: 8px;
     }
 
     .header h2 {
       margin: 0;
-      font-size: 1.2em;
-      color: #fff;
+      font-size: 1.4em;
+      color: #ff4b2b;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
 
     .menu-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 14px;
       overflow-y: auto;
       padding-bottom: 10px;
     }
 
     .channel {
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-      border-radius: 10px;
-      padding: 6px;
+      background: #2c2c2c;
+      border-radius: 12px;
+      padding: 8px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: all 0.25s ease;
       outline: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
-    .channel:focus,
-    .channel:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    .channel:hover,
+    .channel:focus {
+      transform: scale(1.06);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
     }
 
     .channel img {
@@ -68,26 +80,33 @@
     .channel span {
       display: block;
       margin-top: 6px;
-      font-size: 0.8em;
-      color: #fff;
+      font-size: 0.85em;
+      color: #ddd;
+      font-weight: 500;
     }
 
     .locked {
       opacity: 0.4;
       pointer-events: none;
+      filter: grayscale(70%);
     }
 
     .back-btn {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 12px;
+      left: 12px;
       background: #ff4b2b;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 0.7em;
+      font-size: 0.8em;
       color: white;
       text-decoration: none;
-      box-shadow: 0 0 5px rgba(255,255,255,0.3);
+      box-shadow: 0 0 8px rgba(255,255,255,0.25);
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #e03c1f;
     }
 
     #rotate-warning {
@@ -122,7 +141,8 @@
     <a href="index.html" class="back-btn">← BACK</a>
 
     <div class="header">
-      <h2>🎬 HONOR TV - Premium Movies</h2>
+      <img src="https://i.imgur.com/8mcTlbL.png" alt="HONOR TV Logo">
+      <h2>HONOR TV - Premium Movies</h2>
     </div>
 
     <div class="menu-grid">
@@ -131,7 +151,7 @@
         <span>Movies</span>
       </div>
       <div class="channel premium-only" onclick="tryOpenChannel('hmtdflix')">
-        <img src="https://i.imgur.com/Q5mztTr.jpeg" alt="HMTDFLIX">
+        <img src="https://i.imgur.com/Q5mztTr.jpeg" alt="Tagalog Dubbed">
         <span>Tagalog Dubbed</span>
       </div>
       <div class="channel premium-only" onclick="tryOpenChannel('phmovies')">
@@ -147,7 +167,7 @@
         <span>Anime</span>
       </div>
       <div class="channel premium-only" onclick="tryOpenChannel('dkt')">
-        <img src="https://i.imgur.com/daxi6sF.jpeg" alt="dkt">
+        <img src="https://i.imgur.com/daxi6sF.jpeg" alt="Drama Kwento Tagalog">
         <span>Drama Kwento Tagalog</span>
       </div>
     </div>
@@ -163,7 +183,7 @@
       if (isLoggedIn) {
         openChannel(id);
       } else {
-        alert("This is a PREMIUM feature. Please log in first.");
+        alert("🔒 This is a PREMIUM feature. Please log in first.");
       }
     }
 
