@@ -25,27 +25,19 @@
       box-sizing: border-box;
     }
 
-    .premium-btn, .movies-btn, .contacts-btn {
-      display: inline-block;
-      margin: 6px auto;
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.75em;
-      text-align: center;
-      text-decoration: none;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
-      width: fit-content;
-    }
-
     .premium-btn {
       position: absolute;
       top: 6px;
       right: 10px;
       background: linear-gradient(to right, #ff4b2b, #ff416c);
-      font-size: 0.7em;
+      color: white;
       padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7em;
+      text-decoration: none;
+      z-index: 1000;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
     }
 
     .premium-btn:hover {
@@ -53,33 +45,22 @@
     }
 
     .movies-btn {
+      display: inline-block;
+      margin: 6px auto;
       background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75em;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
+      width: fit-content;
     }
 
     .movies-btn:hover {
       background: linear-gradient(to right, #6dd5ed, #2193b0);
-    }
-
-    .contacts-btn {
-      background: linear-gradient(to right, #8360c3, #2ebf91);
-    }
-
-    .contacts-btn:hover {
-      background: linear-gradient(to right, #2ebf91, #8360c3);
-    }
-
-    .premium-btn:focus,
-    .movies-btn:focus,
-    .contacts-btn:focus,
-    .channel:focus, .channel:hover {
-      transform: scale(1.1);
-      box-shadow:
-        0 0 8px #00f,
-        0 0 12px #0ff,
-        0 0 16px #0f0,
-        0 0 20px #ff0,
-        0 0 24px #f00;
-      outline: none;
     }
 
     .logo {
@@ -162,6 +143,18 @@
       word-wrap: break-word;
     }
 
+    .channel:focus, .channel:hover,
+    .movies-btn:focus, .premium-btn:focus {
+      transform: scale(1.1);
+      box-shadow:
+        0 0 8px #00f,
+        0 0 12px #0ff,
+        0 0 16px #0f0,
+        0 0 20px #ff0,
+        0 0 24px #f00;
+      outline: none;
+    }
+
     .footer {
       text-align: center;
       font-size: 0.6em;
@@ -208,7 +201,6 @@
     <div id="countdown-display" class="countdown-box"></div>
 
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
-    <a href="#" class="contacts-btn" tabindex="0" onclick="openFacebookApp()">Avail Premium Account</a>
 
     <div class="menu-grid">
       <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
@@ -243,15 +235,6 @@
       }
     }
 
-    function openFacebookApp() {
-      const fbAppUrl = "fb://facewebmodal/f?href=https://www.facebook.com/share/14FHzZJ4a41/";
-      const fbWebUrl = "https://www.facebook.com/share/14FHzZJ4a41/";
-      window.location.href = fbAppUrl;
-      setTimeout(() => {
-        window.location.href = fbWebUrl;
-      }, 1500);
-    }
-
     function lockAutoLandscape() {
       const tryLock = () => {
         if (screen.orientation && screen.orientation.lock) {
@@ -270,7 +253,7 @@
       warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     }
 
-    const channels = Array.from(document.querySelectorAll('.channel, .movies-btn, .premium-btn, .contacts-btn'));
+    const channels = Array.from(document.querySelectorAll('.channel, .movies-btn, .premium-btn'));
     let wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
 
     function updateCountdown() {
@@ -300,7 +283,8 @@
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s (on ${expiryDate.toLocaleString()})`;
+      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s
+(on ${expiryDate.toLocaleString()})`;
     }
 
     window.onload = () => {
@@ -314,11 +298,14 @@
 
       setInterval(() => {
         const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+
         document.querySelectorAll('.premium-only').forEach(el => {
           if (isPremium) el.classList.remove('locked');
           else el.classList.add('locked');
         });
+
         if (!isPremium && wasPremium) location.reload();
+
         updateCountdown();
         wasPremium = isPremium;
       }, 1000);
