@@ -237,12 +237,10 @@
       lockAutoLandscape();
       handleOrientationWarning();
 
-      // Initial lock state
       document.querySelectorAll('.premium-only').forEach(el => {
         if (!wasPremium) el.classList.add('locked');
       });
 
-      // Monitor login state every second
       setInterval(() => {
         const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
         document.querySelectorAll('.premium-only').forEach(el => {
@@ -254,7 +252,7 @@
         });
 
         if (!isPremium && wasPremium) {
-          location.reload(); // Refresh to reflect logout
+          location.reload();
         }
 
         wasPremium = isPremium;
@@ -280,6 +278,38 @@
     window.addEventListener('resize', handleOrientationWarning);
     window.addEventListener('orientationchange', handleOrientationWarning);
     window.addEventListener('click', lockAutoLandscape, { once: true });
+  </script>
+
+  <!-- Firebase Auth Session Monitor -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
+      authDomain: "sample-login-d2b3d.firebaseapp.com",
+      projectId: "sample-login-d2b3d",
+      storageBucket: "sample-login-d2b3d.appspot.com",
+      messagingSenderId: "1082557446832",
+      appId: "1:1082557446832:web:d7285c23db5899a3e0d975"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+
+      if (!user && isPremium) {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+        location.reload();
+      }
+    });
   </script>
 </body>
 </html>
