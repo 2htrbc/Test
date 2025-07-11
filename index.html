@@ -148,6 +148,7 @@
       z-index: 1001;
       line-height: 1.2;
       text-align: right;
+      transition: opacity 0.4s ease;
     }
   </style>
 </head>
@@ -162,43 +163,24 @@
 
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
 
-    <div class="menu-grid">
+    <div class="menu-grid" id="channelGrid">
+      <!-- Free Channel -->
       <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Free Live TV</span>
       </div>
 
       <!-- Premium Channels -->
-      <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
-        <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('astro')">
-        <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>Astro</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('phlive')">
-        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('uschannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10"><span>US CHANNEL</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('premsports')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10"><span>Premium Sports</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('skychannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s"><span>Sky Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('sportevent')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10"><span>Sports Event</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('netflixch')">
-        <img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg"><span>Netflix Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('plextv')">
-        <img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>PLEX TV</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('distrotv')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>DISTRO TV</span>
-      </div>
+      <div class="channel premium-only" data-id="livetv"><img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span></div>
+      <div class="channel premium-only" data-id="astro"><img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>Astro</span></div>
+      <div class="channel premium-only" data-id="phlive"><img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span></div>
+      <div class="channel premium-only" data-id="uschannel"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10"><span>US CHANNEL</span></div>
+      <div class="channel premium-only" data-id="premsports"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10"><span>Premium Sports</span></div>
+      <div class="channel premium-only" data-id="skychannel"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s"><span>Sky Channel</span></div>
+      <div class="channel premium-only" data-id="sportevent"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10"><span>Sports Event</span></div>
+      <div class="channel premium-only" data-id="netflixch"><img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg"><span>Netflix Channel</span></div>
+      <div class="channel premium-only" data-id="plextv"><img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>PLEX TV</span></div>
+      <div class="channel premium-only" data-id="distrotv"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>DISTRO TV</span></div>
     </div>
 
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
@@ -209,6 +191,8 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const channels = Array.from(document.querySelectorAll('.channel'));
+      const premiumChannels = document.querySelectorAll('.premium-only');
+      const expiryBox = document.getElementById("premium-expiry-info");
       let wasPremium = null;
 
       function openChannel(id) {
@@ -216,55 +200,57 @@
       }
 
       function tryOpenChannel(id) {
-        if (localStorage.getItem("isPremiumLoggedIn") === "true") {
-          openChannel(id);
-        } else {
-          alert("🔒 This is a PREMIUM channel. Please login first.");
-        }
+        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+        if (isPremium) openChannel(id);
+        else alert("🔒 This is a PREMIUM channel. Please login first.");
       }
 
       function checkPremiumStatus() {
-        const expiry = localStorage.getItem("premiumExpiry");
-        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+        const premiumData = {
+          isPremium: localStorage.getItem("isPremiumLoggedIn") === "true",
+          expiry: parseInt(localStorage.getItem("premiumExpiry") || 0)
+        };
         const now = Date.now();
-        const expiryBox = document.getElementById("premium-expiry-info");
 
-        if (!isPremium || !expiry || now > parseInt(expiry)) {
+        if (!premiumData.isPremium || now > premiumData.expiry) {
           localStorage.removeItem("isPremiumLoggedIn");
           localStorage.removeItem("premiumExpiry");
           localStorage.removeItem("loggedInUserId");
 
-          document.querySelectorAll('.premium-only').forEach(el => {
-            el.classList.add('locked');
+          premiumChannels.forEach(el => {
+            el.classList.add("locked");
             el.onclick = () => alert("🔒 This content is for Premium users only.");
           });
 
-          expiryBox.style.display = "none";
+          expiryBox.style.opacity = "0";
+          setTimeout(() => expiryBox.style.display = "none", 400);
 
           if (wasPremium === true) {
             alert("🔒 You have logged out or your session expired.");
-            window.location.reload(); // Or redirect to login
+            window.location.href = "premium-login.html";
           }
 
           wasPremium = false;
           return;
         }
 
-        const remainingMs = parseInt(expiry) - now;
+        const remainingMs = premiumData.expiry - now;
         const days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
         const hours = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((remainingMs / (1000 * 60)) % 60);
 
         expiryBox.style.display = "block";
+        expiryBox.style.opacity = "1";
         expiryBox.innerHTML = `
           <b>PREMIUM ACTIVE</b><br>
-          Expires: ${new Date(parseInt(expiry)).toLocaleString()}<br>
-          Time left: ${days}d ${hours}h ${minutes}m
+          Expires: <span style="color:#ffd700">${new Date(premiumData.expiry).toLocaleString()}</span><br>
+          Time left: <b>${days}d ${hours}h ${minutes}m</b>
         `;
 
-        document.querySelectorAll('.premium-only').forEach(el => {
-          el.classList.remove('locked');
-          el.onclick = () => tryOpenChannel(el.getAttribute("onclick").match(/'(.+?)'/)[1]);
+        premiumChannels.forEach(el => {
+          el.classList.remove("locked");
+          const id = el.getAttribute("data-id");
+          el.onclick = () => tryOpenChannel(id);
         });
 
         wasPremium = true;
