@@ -10,7 +10,7 @@
       padding: 0;
       height: 100vh;
       overflow: hidden;
-      background: #444;
+      background: #111;
       font-family: 'Segoe UI', sans-serif;
       color: white;
       touch-action: manipulation;
@@ -70,12 +70,27 @@
       font-size: 0.9em;
       margin: 3px 0;
     }
-    #countdown-display {
+
+    .countdown-box {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #00ffcc;
+      padding: 8px 14px;
+      border-radius: 12px;
       text-align: center;
-      font-size: 0.7em;
-      color: #ffd700;
-      margin-bottom: 6px;
+      font-size: 0.75em;
+      margin: 6px auto;
+      width: fit-content;
+      max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
     }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+    }
+
     .menu-grid {
       flex: 1;
       display: grid;
@@ -160,7 +175,7 @@
       <h2>HONOR TV MENU</h2>
     </div>
 
-    <div id="countdown-display"></div>
+    <div id="countdown-display" class="countdown-box"></div>
 
     <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
 
@@ -170,36 +185,12 @@
         <span>Free Live TV</span>
       </div>
 
-      <!-- Premium channels -->
-      <div class="channel premium-only" onclick="tryOpenChannel('livetv')">
-        <img src="https://i.imgur.com/hm8EUBt.jpeg" alt="PH Channels"><span>PH Channels Premium</span>
+      <!-- Add your premium channels -->
+      <div class="channel premium-only" onclick="tryOpenChannel('premium1')">
+        <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Premium</span>
       </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('astro')">
-        <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png" alt="ASTRO"><span>Astro</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('phlive')">
-        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png" alt="PILIPINAS LIVE"><span>Pilipinas Live</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('uschannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10" alt="US CHANNEL"><span>US CHANNEL</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('premsports')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10" alt="PREMIUM SPORTS"><span>Premium Sports</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('skychannel')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s" alt="SKY CHANNEL"><span>Sky Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('sportevent')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10" alt="SPORTS EVENT"><span>Sports Event</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('netflixch')">
-        <img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg" alt="Netflix"><span>Netflix Channel</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('plextv')">
-        <img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp" alt="PLEX TV"><span>PLEX TV</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('distrotv')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10" alt="DISTRO TV"><span>DISTRO TV</span>
+      <div class="channel premium-only" onclick="tryOpenChannel('premium2')">
+        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span>
       </div>
     </div>
 
@@ -254,7 +245,7 @@
       const diff = expiryDate - now;
 
       if (diff <= 0) {
-        countdownEl.textContent = "Premium expired.";
+        countdownEl.textContent = "⛔ Premium expired.";
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
         localStorage.removeItem("loggedInUserId");
@@ -267,7 +258,8 @@
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s (on ${expiryDate.toLocaleString()})`;
+      countdownEl.textContent = `⏳ Premium Expires In: ${days}d ${hours}h ${minutes}m ${seconds}s
+(on ${expiryDate.toLocaleString()})`;
     }
 
     window.onload = () => {
