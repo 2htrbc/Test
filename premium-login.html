@@ -102,6 +102,9 @@
       font-size: 14px;
       margin-bottom: 15px;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -124,8 +127,8 @@
     </div>
 
     <input type="checkbox" id="expire30" checked hidden />
-
     <button class="btn" id="submitSignIn">Sign In</button>
+    <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
   <!-- Firebase SDK -->
@@ -161,16 +164,31 @@
       setTimeout(() => { el.style.opacity = 0; }, timeout);
     };
 
+    function logoutPremium(redirect = true) {
+      signOut(auth).then(() => {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+        if (redirect) window.location.href = "index.html";
+      });
+    }
+
+    // Auto-logout if session expired
+    const expiry = localStorage.getItem("premiumExpiry");
+    if (expiry && Date.now() > parseInt(expiry)) {
+      logoutPremium(false); // No redirect yet
+    }
+
     onAuthStateChanged(auth, (user) => {
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
 
       if (user) {
         if (expiry && now > parseInt(expiry)) {
-          signOut(auth);
-          localStorage.clear();
+          logoutPremium();
         } else {
           localStorage.setItem("isPremiumLoggedIn", "true");
+          document.getElementById("logoutBtn").classList.remove("hidden");
 
           if (expiry) {
             const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
@@ -216,6 +234,8 @@
         }
       }
     });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
   </script>
 </body>
 </html>
