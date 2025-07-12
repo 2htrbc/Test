@@ -35,7 +35,7 @@
     fetch('https://api.ipify.org?format=json')
       .then(response => response.json())
       .then(data => {
-        ipBox.textContent = "Your IP Address is: " + data.ip;
+        ipBox.textContent = "Welcome your location Detected : " + data.ip;
       })
       .catch(() => {
         ipBox.textContent = "Failed to fetch IP address.";
