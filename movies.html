@@ -138,7 +138,7 @@
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
   <div class="overlay">
-    <a href="index.html" class="back-btn">← BACK</a>
+    <a href="app/home/index.html" class="back-btn">← BACK</a>
 
     <div class="header">
       <img src="https://i.imgur.com/8mcTlbL.png" alt="HONOR TV Logo">
@@ -248,19 +248,19 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Backspace" || e.key === "Escape") {
         e.preventDefault();
-        window.location.href = "index.html";
+        window.location.href = "app/home/index.html";
       }
     });
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
-        window.location.href = "index.html";
+        window.location.href = "app/home/index.html";
       }
     });
 
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
-      window.location.href = "index.html";
+      window.location.href = "app/home/index.html";
     };
   </script>
 </body>
