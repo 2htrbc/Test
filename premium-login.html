@@ -171,7 +171,7 @@
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
         localStorage.removeItem("loggedInUserId");
-        if (redirect) window.location.href = "app/home/index.html";
+        if (redirect) window.location.href = "index.html";
       });
     }
 
@@ -198,7 +198,7 @@
           }
 
           setTimeout(() => {
-            window.location.href = "app/home/index.html";
+            window.location.href = "index.html";
           }, 1500);
         }
       } else {
@@ -229,7 +229,7 @@
 
         showMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
-          window.location.href = "app/home/index.html";
+          window.location.href = "index.html";
         }, 1200);
       } catch (error) {
         if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
