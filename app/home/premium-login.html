@@ -128,9 +128,12 @@
 
     <input type="checkbox" id="expire30" checked hidden />
     <button class="btn" id="submitSignIn">Sign In</button>
+    
+    <!-- Hidden logout button that will never show -->
     <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -141,13 +144,6 @@
       browserLocalPersistence,
       signOut
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      deleteDoc
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
@@ -160,7 +156,6 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
     await setPersistence(auth, browserLocalPersistence);
 
     const showMessage = (text, id = "signInMessage", timeout = 4000) => {
@@ -171,60 +166,45 @@
       setTimeout(() => { el.style.opacity = 0; }, timeout);
     };
 
-    function generateSessionId() {
-      return Math.random().toString(36).substring(2) + Date.now().toString(36);
-    }
-
-    async function logoutPremium(redirect = true) {
-      const uid = localStorage.getItem("loggedInUserId");
-      if (uid) {
-        await deleteDoc(doc(db, "sessions", uid));
-      }
+    function logoutPremium(redirect = true) {
       signOut(auth).then(() => {
-        localStorage.clear();
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
         if (redirect) window.location.href = "index.html";
       });
     }
 
+    // Auto-logout if session expired
     const expiry = localStorage.getItem("premiumExpiry");
     if (expiry && Date.now() > parseInt(expiry)) {
       logoutPremium(false);
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        localStorage.clear();
-        return;
-      }
-
+    onAuthStateChanged(auth, (user) => {
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
 
-      if (expiry && now > parseInt(expiry)) {
-        logoutPremium();
-      } else {
-        const sessionId = localStorage.getItem("premiumSessionId");
-        if (sessionId) {
-          const sessionRef = doc(db, "sessions", user.uid);
-          const docSnap = await getDoc(sessionRef);
-          if (docSnap.exists() && docSnap.data().sessionId !== sessionId) {
-            showMessage("⚠️ Your session was logged out remotely.");
-            logoutPremium();
+      if (user) {
+        if (expiry && now > parseInt(expiry)) {
+          logoutPremium();
+        } else {
+          localStorage.setItem("isPremiumLoggedIn", "true");
+
+          if (expiry) {
+            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
+            document.getElementById("daysLeftInfo").textContent =
+              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
           }
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         }
-
-        const daysLeft = expiry
-          ? Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24))
-          : 0;
-
-        if (daysLeft >= 0) {
-          document.getElementById("daysLeftInfo").textContent =
-            `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
-        }
-
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1500);
+      } else {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
       }
     });
 
@@ -241,24 +221,10 @@
 
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const uid = user.uid;
-        const sessionRef = doc(db, "sessions", uid);
-        const existingSession = await getDoc(sessionRef);
-
-        if (existingSession.exists()) {
-          await signOut(auth);
-          showMessage("⚠️ Your account is already logged in on another device.");
-          return;
-        }
-
-        const sessionId = generateSessionId();
         const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
-        await setDoc(sessionRef, { sessionId });
-
-        localStorage.setItem("loggedInUserId", uid);
+        localStorage.setItem("loggedInUserId", user.uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
-        localStorage.setItem("premiumSessionId", sessionId);
         if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
 
         showMessage("✅ Login successful! Redirecting...");
@@ -274,12 +240,8 @@
       }
     });
 
-    window.addEventListener("beforeunload", async () => {
-      const uid = localStorage.getItem("loggedInUserId");
-      if (uid) {
-        await deleteDoc(doc(db, "sessions", uid));
-      }
-    });
+    // Do NOT enable logoutBtn
+    // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
   </script>
 </body>
 </html>
