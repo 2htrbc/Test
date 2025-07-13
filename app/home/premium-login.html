@@ -182,10 +182,7 @@
         await deleteDoc(doc(db, "sessions", uid));
       }
       signOut(auth).then(() => {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("premiumSessionId");
-        localStorage.removeItem("loggedInUserId");
+        localStorage.clear();
         if (redirect) window.location.href = "index.html";
       });
     }
@@ -228,10 +225,7 @@
           }, 1500);
         }
       } else {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("premiumSessionId");
-        localStorage.removeItem("loggedInUserId");
+        localStorage.clear();
       }
     });
 
@@ -248,15 +242,30 @@
 
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
+        const uid = user.uid;
+        const sessionRef = doc(db, "sessions", uid);
+        const existingSession = await getDoc(sessionRef);
+
+        const newSessionId = generateSessionId();
+
+        if (existingSession.exists()) {
+          const storedSessionId = existingSession.data().sessionId;
+          const localSessionId = localStorage.getItem("premiumSessionId");
+
+          if (!localSessionId || localSessionId !== storedSessionId) {
+            await signOut(auth);
+            showMessage("⚠️ Your account is already logged in on another device.");
+            return;
+          }
+        }
+
         const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
-        const sessionId = generateSessionId();
+        await setDoc(sessionRef, { sessionId: newSessionId });
 
-        localStorage.setItem("loggedInUserId", user.uid);
+        localStorage.setItem("loggedInUserId", uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
-        localStorage.setItem("premiumSessionId", sessionId);
+        localStorage.setItem("premiumSessionId", newSessionId);
         if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
-
-        await setDoc(doc(db, "sessions", user.uid), { sessionId });
 
         showMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
