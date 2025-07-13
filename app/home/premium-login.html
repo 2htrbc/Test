@@ -146,7 +146,8 @@
       doc,
       setDoc,
       getDoc,
-      deleteDoc
+      deleteDoc,
+      onSnapshot
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -181,7 +182,10 @@
         await deleteDoc(doc(db, "sessions", uid));
       }
       signOut(auth).then(() => {
-        localStorage.clear();
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("premiumSessionId");
+        localStorage.removeItem("loggedInUserId");
         if (redirect) window.location.href = "index.html";
       });
     }
@@ -192,39 +196,42 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        localStorage.clear();
-        return;
-      }
-
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
 
-      if (expiry && now > parseInt(expiry)) {
-        logoutPremium();
-      } else {
-        const sessionId = localStorage.getItem("premiumSessionId");
-        if (sessionId) {
-          const sessionRef = doc(db, "sessions", user.uid);
-          const docSnap = await getDoc(sessionRef);
-          if (docSnap.exists() && docSnap.data().sessionId !== sessionId) {
-            showMessage("⚠️ Your session was logged out remotely.");
-            logoutPremium();
+      if (user) {
+        localStorage.setItem("loggedInUserId", user.uid);
+        if (expiry && now > parseInt(expiry)) {
+          logoutPremium();
+        } else {
+          localStorage.setItem("isPremiumLoggedIn", "true");
+
+          const sessionId = localStorage.getItem("premiumSessionId");
+          if (sessionId) {
+            const sessionRef = doc(db, "sessions", user.uid);
+            onSnapshot(sessionRef, (docSnap) => {
+              if (docSnap.exists() && docSnap.data().sessionId !== sessionId) {
+                showMessage("⚠️ Logged in from another device. Logging out...");
+                logoutPremium();
+              }
+            });
           }
+
+          if (expiry) {
+            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
+            document.getElementById("daysLeftInfo").textContent =
+              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
+          }
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         }
-
-        const daysLeft = expiry
-          ? Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24))
-          : 0;
-
-        if (daysLeft >= 0) {
-          document.getElementById("daysLeftInfo").textContent =
-            `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
-        }
-
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1500);
+      } else {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("premiumSessionId");
+        localStorage.removeItem("loggedInUserId");
       }
     });
 
@@ -241,25 +248,15 @@
 
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const uid = user.uid;
-        const sessionRef = doc(db, "sessions", uid);
-        const existingSession = await getDoc(sessionRef);
-
-        if (existingSession.exists()) {
-          await signOut(auth);
-          showMessage("⚠️ Your account is already logged in on another device.");
-          return;
-        }
-
-        const sessionId = generateSessionId();
         const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
+        const sessionId = generateSessionId();
 
-        await setDoc(sessionRef, { sessionId });
-
-        localStorage.setItem("loggedInUserId", uid);
+        localStorage.setItem("loggedInUserId", user.uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
         localStorage.setItem("premiumSessionId", sessionId);
         if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
+
+        await setDoc(doc(db, "sessions", user.uid), { sessionId });
 
         showMessage("✅ Login successful! Redirecting...");
         setTimeout(() => {
