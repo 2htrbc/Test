@@ -251,22 +251,11 @@
         const uid = user.uid;
         const sessionId = generateSessionId();
         const sessionRef = doc(db, "sessions", uid);
-        const sessionSnap = await getDoc(sessionRef);
 
-        if (sessionSnap.exists()) {
-          const existingSessionId = sessionSnap.data().sessionId;
-          const storedSessionId = localStorage.getItem("premiumSessionId");
-
-          if (!storedSessionId || existingSessionId !== storedSessionId) {
-            await signOut(auth);
-            showMessage("⚠️ Already logged in on another device.");
-            return;
-          }
-        }
-
-        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
+        // Replace existing session (force logout old)
         await setDoc(sessionRef, { sessionId });
 
+        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
         localStorage.setItem("loggedInUserId", uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
         localStorage.setItem("premiumSessionId", sessionId);
