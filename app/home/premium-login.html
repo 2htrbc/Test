@@ -223,6 +223,22 @@
               `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
           }
 
+          // ✅ Inactivity auto logout
+          let inactivityTimer;
+          const MAX_INACTIVE_TIME = 10 * 60 * 1000; // 10 mins
+          function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+              showMessage("⚠️ You were inactive. Logging out...");
+              logoutPremium();
+            }, MAX_INACTIVE_TIME);
+          }
+          ["click", "mousemove", "keydown", "scroll", "touchstart"].forEach((event) =>
+            window.addEventListener(event, resetInactivityTimer)
+          );
+          resetInactivityTimer();
+
+          // Redirect to homepage
           setTimeout(() => {
             window.location.href = "index.html";
           }, 1500);
@@ -252,7 +268,6 @@
         const sessionId = generateSessionId();
         const sessionRef = doc(db, "sessions", uid);
 
-        // Replace existing session (force logout old)
         await setDoc(sessionRef, { sessionId });
 
         const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
