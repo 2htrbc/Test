@@ -146,8 +146,7 @@
       doc,
       setDoc,
       getDoc,
-      deleteDoc,
-      onSnapshot
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -182,10 +181,7 @@
         await deleteDoc(doc(db, "sessions", uid));
       }
       signOut(auth).then(() => {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("premiumSessionId");
-        localStorage.removeItem("loggedInUserId");
+        localStorage.clear();
         if (redirect) window.location.href = "index.html";
       });
     }
@@ -196,58 +192,39 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        localStorage.clear();
+        return;
+      }
+
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
 
-      if (user) {
-        localStorage.setItem("loggedInUserId", user.uid);
-        if (expiry && now > parseInt(expiry)) {
-          logoutPremium();
-        } else {
-          localStorage.setItem("isPremiumLoggedIn", "true");
-
-          const sessionId = localStorage.getItem("premiumSessionId");
-          if (sessionId) {
-            const sessionRef = doc(db, "sessions", user.uid);
-            onSnapshot(sessionRef, (docSnap) => {
-              if (docSnap.exists() && docSnap.data().sessionId !== sessionId) {
-                showMessage("⚠️ Logged in from another device. Logging out...");
-                logoutPremium();
-              }
-            });
-          }
-
-          if (expiry) {
-            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
-            document.getElementById("daysLeftInfo").textContent =
-              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
-          }
-
-          // ✅ Inactivity auto logout
-          let inactivityTimer;
-          const MAX_INACTIVE_TIME = 10 * 60 * 1000; // 10 mins
-          function resetInactivityTimer() {
-            clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(() => {
-              showMessage("⚠️ You were inactive. Logging out...");
-              logoutPremium();
-            }, MAX_INACTIVE_TIME);
-          }
-          ["click", "mousemove", "keydown", "scroll", "touchstart"].forEach((event) =>
-            window.addEventListener(event, resetInactivityTimer)
-          );
-          resetInactivityTimer();
-
-          // Redirect to homepage
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
+      if (expiry && now > parseInt(expiry)) {
+        logoutPremium();
       } else {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("premiumSessionId");
-        localStorage.removeItem("loggedInUserId");
+        const sessionId = localStorage.getItem("premiumSessionId");
+        if (sessionId) {
+          const sessionRef = doc(db, "sessions", user.uid);
+          const docSnap = await getDoc(sessionRef);
+          if (docSnap.exists() && docSnap.data().sessionId !== sessionId) {
+            showMessage("⚠️ Your session was logged out remotely.");
+            logoutPremium();
+          }
+        }
+
+        const daysLeft = expiry
+          ? Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24))
+          : 0;
+
+        if (daysLeft >= 0) {
+          document.getElementById("daysLeftInfo").textContent =
+            `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
+        }
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1500);
       }
     });
 
@@ -265,12 +242,20 @@
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
         const uid = user.uid;
-        const sessionId = generateSessionId();
         const sessionRef = doc(db, "sessions", uid);
+        const existingSession = await getDoc(sessionRef);
+
+        if (existingSession.exists()) {
+          await signOut(auth);
+          showMessage("⚠️ Your account is already logged in on another device.");
+          return;
+        }
+
+        const sessionId = generateSessionId();
+        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
         await setDoc(sessionRef, { sessionId });
 
-        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
         localStorage.setItem("loggedInUserId", uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
         localStorage.setItem("premiumSessionId", sessionId);
