@@ -42,7 +42,7 @@
     }
     .input-group {
       position: relative;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       text-align: left;
     }
     .input-group i {
@@ -73,7 +73,6 @@
       padding: 0 5px;
       font-size: 12px;
       color: #00d4ff;
-      pointer-events: none;
     }
     .btn {
       width: 100%;
@@ -85,25 +84,26 @@
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
     .btn:hover {
       background: #00b8e6;
     }
     .messageDiv {
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       padding: 10px;
       border-radius: 6px;
       background-color: #222;
       font-size: 14px;
       display: none;
-      transition: opacity 0.4s ease;
     }
     #daysLeftInfo {
       text-align: center;
       color: #00ff8c;
       font-size: 14px;
       margin-bottom: 15px;
+    }
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -126,9 +126,14 @@
       <label for="password">Password</label>
     </div>
 
+    <input type="checkbox" id="expire30" checked hidden />
     <button class="btn" id="submitSignIn">Sign In</button>
+    
+    <!-- Hidden logout button that will never show -->
+    <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -140,5 +145,103 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-    import {
-      getFirestore,
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
+      authDomain: "sample-login-d2b3d.firebaseapp.com",
+      projectId: "sample-login-d2b3d",
+      storageBucket: "sample-login-d2b3d.appspot.com",
+      messagingSenderId: "1082557446832",
+      appId: "1:1082557446832:web:d7285c23db5899a3e0d975"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    await setPersistence(auth, browserLocalPersistence);
+
+    const showMessage = (text, id = "signInMessage", timeout = 4000) => {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.style.display = "block";
+      el.style.opacity = 1;
+      setTimeout(() => { el.style.opacity = 0; }, timeout);
+    };
+
+    function logoutPremium(redirect = true) {
+      signOut(auth).then(() => {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+        if (redirect) window.location.href = "index.html";
+      });
+    }
+
+    // Auto-logout if session expired
+    const expiry = localStorage.getItem("premiumExpiry");
+    if (expiry && Date.now() > parseInt(expiry)) {
+      logoutPremium(false);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const now = Date.now();
+      const expiry = localStorage.getItem("premiumExpiry");
+
+      if (user) {
+        if (expiry && now > parseInt(expiry)) {
+          logoutPremium();
+        } else {
+          localStorage.setItem("isPremiumLoggedIn", "true");
+
+          if (expiry) {
+            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
+            document.getElementById("daysLeftInfo").textContent =
+              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
+          }
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
+        }
+      } else {
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        localStorage.removeItem("loggedInUserId");
+      }
+    });
+
+    document.getElementById("submitSignIn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const expireChecked = document.getElementById("expire30").checked;
+
+      if (!email || !password) {
+        showMessage("❗ Please enter both email and password.");
+        return;
+      }
+
+      try {
+        const { user } = await signInWithEmailAndPassword(auth, email, password);
+        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
+
+        localStorage.setItem("loggedInUserId", user.uid);
+        localStorage.setItem("isPremiumLoggedIn", "true");
+        if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
+
+        showMessage("✅ Login successful! Redirecting...");
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
+      } catch (error) {
+        if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+          showMessage("❌ Incorrect Email or Password.");
+        } else {
+          showMessage("❌ " + error.message);
+        }
+      }
+    });
+
+    // Do NOT enable logoutBtn
+    // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
+  </script>
+</body>
+</html>
