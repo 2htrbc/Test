@@ -128,12 +128,9 @@
 
     <input type="checkbox" id="expire30" checked hidden />
     <button class="btn" id="submitSignIn">Sign In</button>
-    
-    <!-- Hidden logout button that will never show -->
-    <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -144,6 +141,14 @@
       browserLocalPersistence,
       signOut
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      deleteDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
@@ -156,6 +161,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     await setPersistence(auth, browserLocalPersistence);
 
     const showMessage = (text, id = "signInMessage", timeout = 4000) => {
@@ -166,22 +172,30 @@
       setTimeout(() => { el.style.opacity = 0; }, timeout);
     };
 
-    function logoutPremium(redirect = true) {
-      signOut(auth).then(() => {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
-        if (redirect) window.location.href = "index.html";
-      });
+    async function isUserLoggedInElsewhere(uid) {
+      const sessionRef = doc(db, "sessions", uid);
+      const sessionSnap = await getDoc(sessionRef);
+      return sessionSnap.exists();
     }
 
-    // Auto-logout if session expired
+    async function logoutPremium(redirect = true) {
+      const uid = localStorage.getItem("loggedInUserId");
+      if (uid) {
+        await deleteDoc(doc(db, "sessions", uid));
+      }
+      await signOut(auth);
+      localStorage.removeItem("isPremiumLoggedIn");
+      localStorage.removeItem("premiumExpiry");
+      localStorage.removeItem("loggedInUserId");
+      if (redirect) window.location.href = "index.html";
+    }
+
     const expiry = localStorage.getItem("premiumExpiry");
     if (expiry && Date.now() > parseInt(expiry)) {
       logoutPremium(false);
     }
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
 
@@ -221,8 +235,18 @@
 
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
+        const alreadyLoggedIn = await isUserLoggedInElsewhere(user.uid);
+        if (alreadyLoggedIn) {
+          await signOut(auth);
+          showMessage("❌ This account is already logged in on another device.");
+          return;
+        }
 
+        await setDoc(doc(db, "sessions", user.uid), {
+          timestamp: serverTimestamp()
+        });
+
+        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
         localStorage.setItem("loggedInUserId", user.uid);
         localStorage.setItem("isPremiumLoggedIn", "true");
         if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
@@ -239,9 +263,6 @@
         }
       }
     });
-
-    // Do NOT enable logoutBtn
-    // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
   </script>
 </body>
 </html>
