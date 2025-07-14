@@ -128,12 +128,10 @@
 
     <input type="checkbox" id="expire30" checked hidden />
     <button class="btn" id="submitSignIn">Sign In</button>
-    
-    <!-- Hidden logout button that will never show -->
     <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase + Auto-Logout Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -175,12 +173,27 @@
       });
     }
 
-    // Auto-logout if session expired
-    const expiry = localStorage.getItem("premiumExpiry");
-    if (expiry && Date.now() > parseInt(expiry)) {
+    function scheduleAutoLogout() {
+      const expiry = localStorage.getItem("premiumExpiry");
+      if (!expiry) return;
+
+      const timeLeft = parseInt(expiry) - Date.now();
+      if (timeLeft > 0) {
+        setTimeout(() => {
+          logoutPremium(); // Session expired
+        }, timeLeft);
+      } else {
+        logoutPremium(); // Already expired
+      }
+    }
+
+    // Check immediately on load
+    const expiryNow = localStorage.getItem("premiumExpiry");
+    if (expiryNow && Date.now() > parseInt(expiryNow)) {
       logoutPremium(false);
     }
 
+    // Firebase auth listener
     onAuthStateChanged(auth, (user) => {
       const now = Date.now();
       const expiry = localStorage.getItem("premiumExpiry");
@@ -197,6 +210,7 @@
               `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
           }
 
+          scheduleAutoLogout(); // Schedule real-time logout
           setTimeout(() => {
             window.location.href = "index.html";
           }, 1500);
@@ -208,6 +222,7 @@
       }
     });
 
+    // Handle login
     document.getElementById("submitSignIn").addEventListener("click", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
@@ -228,6 +243,7 @@
         if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
 
         showMessage("✅ Login successful! Redirecting...");
+        scheduleAutoLogout(); // Set timeout for this session
         setTimeout(() => {
           window.location.href = "index.html";
         }, 1200);
@@ -240,7 +256,7 @@
       }
     });
 
-    // Do NOT enable logoutBtn
+    // Do NOT use logout button in UI
     // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
   </script>
 </body>
