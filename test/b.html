@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-
     body {
       background: #0e101c;
       color: #fff;
@@ -17,7 +16,6 @@
       min-height: 100vh;
       padding: 20px;
     }
-
     .container {
       background: #1a1d2b;
       padding: 30px 25px;
@@ -27,26 +25,22 @@
       box-shadow: 0 8px 16px rgba(0,0,0,0.4);
       text-align: center;
     }
-
     .logo {
       display: block;
       margin: 0 auto 20px auto;
       max-width: 100px;
       height: auto;
     }
-
     .form-title {
       margin-bottom: 20px;
       font-size: 26px;
       color: #00d4ff;
     }
-
     .input-group {
       position: relative;
       margin-bottom: 20px;
       text-align: left;
     }
-
     .input-group i {
       position: absolute;
       top: 50%;
@@ -54,7 +48,6 @@
       transform: translateY(-50%);
       color: #aaa;
     }
-
     .input-group input {
       width: 100%;
       padding: 12px 12px 12px 36px;
@@ -65,11 +58,9 @@
       font-size: 14px;
       outline: none;
     }
-
     .input-group input:focus {
       border-color: #00d4ff;
     }
-
     .input-group label {
       position: absolute;
       top: -10px;
@@ -79,7 +70,6 @@
       font-size: 12px;
       color: #00d4ff;
     }
-
     .btn {
       width: 100%;
       padding: 12px;
@@ -91,11 +81,9 @@
       font-size: 16px;
       cursor: pointer;
     }
-
     .btn:hover {
       background: #00b8e6;
     }
-
     .messageDiv {
       margin-bottom: 10px;
       padding: 10px;
@@ -104,16 +92,6 @@
       color: #fff;
       font-size: 14px;
       display: none;
-    }
-
-    .expire-checkbox {
-      margin-bottom: 20px;
-      font-size: 14px;
-      text-align: left;
-    }
-
-    .expire-checkbox input {
-      margin-right: 6px;
     }
   </style>
 </head>
@@ -141,11 +119,6 @@
       <label for="password">Password</label>
     </div>
 
-    <div class="expire-checkbox">
-      <input type="checkbox" id="expire30" />
-      <label for="expire30">Expire login after 30 days (Required)</label>
-    </div>
-
     <button class="btn" id="signUpBtn">Sign Up</button>
   </div>
 
@@ -162,9 +135,15 @@
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    import {
       getDatabase,
       ref,
-      set
+      set as rtdbSet
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -177,8 +156,9 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
+    const auth = getAuth(app);
     const db = getDatabase(app);
+    const firestore = getFirestore(app);
 
     setPersistence(auth, browserLocalPersistence);
 
@@ -186,21 +166,19 @@
       if (user) {
         const savedTime = localStorage.getItem("loginTimestamp");
         if (savedTime) {
-          const now = new Date().getTime();
-          const expireIn = 30 * 24 * 60 * 60 * 1000;
+          const now = Date.now();
+          const expireIn = 2 * 60 * 60 * 1000; // 2 hours
           if (now - savedTime > expireIn) {
             signOut(auth);
             localStorage.clear();
             alert("Session expired. Please sign up again.");
-            return;
+          } else {
+            window.location.href = "homepage.html";
           }
         } else {
           signOut(auth);
           localStorage.clear();
-          return;
         }
-
-        window.location.href = "homepage.html";
       }
     });
 
@@ -214,18 +192,13 @@
 
     document.getElementById("signUpBtn").addEventListener("click", async (e) => {
       e.preventDefault();
+
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-      const expireChecked = document.getElementById("expire30").checked;
 
       if (!name || !email || !password) {
         showMessage("All fields are required.");
-        return;
-      }
-
-      if (!expireChecked) {
-        showMessage("You must check the 30-day expiration agreement to proceed.");
         return;
       }
 
@@ -233,17 +206,26 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await updateProfile(user, {
-          displayName: name
-        });
+        await updateProfile(user, { displayName: name });
 
-        await set(ref(db, 'users/' + user.uid), {
-          name: name,
-          email: email,
+        const now = Date.now();
+        const expiry = now + 2 * 60 * 60 * 1000; // 2 hours from now
+
+        // Save to Realtime Database (optional)
+        await rtdbSet(ref(db, 'users/' + user.uid), {
+          name,
+          email,
           createdAt: new Date().toISOString()
         });
 
-        const now = new Date().getTime();
+        // Save to Firestore with expiry timestamp
+        await setDoc(doc(firestore, "users", user.uid), {
+          name,
+          email,
+          createdAt: now,
+          expiry
+        });
+
         localStorage.setItem("loginTimestamp", now);
         localStorage.setItem("loggedInUserId", user.uid);
 
