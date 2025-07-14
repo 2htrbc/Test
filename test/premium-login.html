@@ -2,145 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Premium Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-    }
     body {
-      background: #0e101c;
+      background: #111;
       color: #fff;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      margin: 0;
     }
-    .container {
-      background: #1a1d2b;
-      padding: 30px 25px;
-      border-radius: 12px;
-      width: 100%;
+    .box {
+      background: #1a1a2e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.6);
       max-width: 400px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      width: 100%;
+    }
+    .box h2 {
+      margin-bottom: 20px;
+      color: #00d4ff;
       text-align: center;
     }
-    .logo {
-      display: block;
-      margin: 0 auto 20px;
-      max-width: 120px;
-    }
-    .form-title {
-      margin-bottom: 20px;
-      font-size: 26px;
-      color: #00d4ff;
-    }
-    .input-group {
-      position: relative;
-      margin-bottom: 20px;
-      text-align: left;
-    }
-    .input-group i {
-      position: absolute;
-      top: 50%;
-      left: 10px;
-      transform: translateY(-50%);
-      color: #aaa;
-    }
-    .input-group input {
-      width: 100%;
-      padding: 12px 12px 12px 36px;
-      background: #262b3e;
-      border: 1px solid #3a3f55;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-    .input-group input:focus {
-      border-color: #00d4ff;
-    }
-    .input-group label {
-      position: absolute;
-      top: -10px;
-      left: 36px;
-      background: #1a1d2b;
-      padding: 0 5px;
-      font-size: 12px;
-      color: #00d4ff;
-    }
-    .btn {
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background: #252945;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
       background: #00d4ff;
       border: none;
       border-radius: 6px;
-      color: #000;
       font-weight: bold;
-      font-size: 16px;
       cursor: pointer;
     }
-    .btn:hover {
+    button:hover {
       background: #00b8e6;
     }
-    .messageDiv {
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      background-color: #222;
-      font-size: 14px;
-      display: none;
-    }
-    #daysLeftInfo {
+    .msg {
+      margin-top: 15px;
+      color: #0f0;
       text-align: center;
-      color: #00ff8c;
       font-size: 14px;
-      margin-bottom: 15px;
     }
-    .hidden {
-      display: none !important;
+    .error {
+      color: #f55;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="loginContainer">
-    <img src="https://i.imgur.com/C6CD0gF.jpeg" alt="Logo" class="logo" />
-    <div class="form-title">Premium Sign In</div>
-    <div id="signInMessage" class="messageDiv"></div>
-    <div id="daysLeftInfo"></div>
-
-    <div class="input-group">
-      <i class="fas fa-envelope"></i>
-      <input type="email" id="email" placeholder="Email" required />
-      <label for="email">Email</label>
-    </div>
-
-    <div class="input-group">
-      <i class="fas fa-lock"></i>
-      <input type="password" id="password" placeholder="Password" required />
-      <label for="password">Password</label>
-    </div>
-
-    <input type="checkbox" id="expire30" checked hidden />
-    <button class="btn" id="submitSignIn">Sign In</button>
-    <button id="logoutBtn" class="btn hidden">Logout</button>
+  <div class="box">
+    <h2>Premium Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <div class="msg" id="msg"></div>
   </div>
 
-  <!-- Firebase + Auto-Logout Script -->
+  <!-- Firebase and logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
       getAuth,
-      signInWithEmailAndPassword,
-      onAuthStateChanged,
       setPersistence,
+      signInWithEmailAndPassword,
+      signOut,
       browserLocalPersistence,
-      signOut
+      onAuthStateChanged,
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -156,108 +96,66 @@
     const auth = getAuth(app);
     await setPersistence(auth, browserLocalPersistence);
 
-    const showMessage = (text, id = "signInMessage", timeout = 4000) => {
-      const el = document.getElementById(id);
-      el.textContent = text;
-      el.style.display = "block";
-      el.style.opacity = 1;
-      setTimeout(() => { el.style.opacity = 0; }, timeout);
-    };
+    const msg = document.getElementById("msg");
 
-    function logoutPremium(redirect = true) {
+    function showMessage(text, isError = false) {
+      msg.textContent = text;
+      msg.className = "msg " + (isError ? "error" : "");
+    }
+
+    function setExpiryTimer(expiryTimestamp) {
+      const msLeft = expiryTimestamp - Date.now();
+      if (msLeft > 0) {
+        setTimeout(() => {
+          logoutNow("Your session expired. Please login again.");
+        }, msLeft);
+      } else {
+        logoutNow("Your session has already expired.");
+      }
+    }
+
+    function logoutNow(message) {
+      localStorage.removeItem("premiumExpiry");
+      localStorage.removeItem("isPremiumLoggedIn");
       signOut(auth).then(() => {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
-        if (redirect) window.location.href = "index.html";
+        showMessage(message, true);
       });
     }
 
-    function scheduleAutoLogout() {
-      const expiry = localStorage.getItem("premiumExpiry");
-      if (!expiry) return;
-
-      const timeLeft = parseInt(expiry) - Date.now();
-      if (timeLeft > 0) {
-        setTimeout(() => {
-          logoutPremium(); // Session expired
-        }, timeLeft);
-      } else {
-        logoutPremium(); // Already expired
-      }
-    }
-
-    // Check immediately on load
-    const expiryNow = localStorage.getItem("premiumExpiry");
-    if (expiryNow && Date.now() > parseInt(expiryNow)) {
-      logoutPremium(false);
-    }
-
-    // Firebase auth listener
-    onAuthStateChanged(auth, (user) => {
-      const now = Date.now();
-      const expiry = localStorage.getItem("premiumExpiry");
-
-      if (user) {
-        if (expiry && now > parseInt(expiry)) {
-          logoutPremium();
-        } else {
-          localStorage.setItem("isPremiumLoggedIn", "true");
-
-          if (expiry) {
-            const daysLeft = Math.floor((parseInt(expiry) - now) / (1000 * 60 * 60 * 24));
-            document.getElementById("daysLeftInfo").textContent =
-              `✅ Session active. Expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
-          }
-
-          scheduleAutoLogout(); // Schedule real-time logout
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      } else {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
-      }
-    });
-
-    // Handle login
-    document.getElementById("submitSignIn").addEventListener("click", async (e) => {
-      e.preventDefault();
+    document.getElementById("loginBtn").addEventListener("click", async () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const expireChecked = document.getElementById("expire30").checked;
-
       if (!email || !password) {
-        showMessage("❗ Please enter both email and password.");
+        showMessage("Please enter email and password.", true);
         return;
       }
 
       try {
-        const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
-
-        localStorage.setItem("loggedInUserId", user.uid);
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        const expiry = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
+        localStorage.setItem("premiumExpiry", expiry.toString());
         localStorage.setItem("isPremiumLoggedIn", "true");
-        if (expireChecked) localStorage.setItem("premiumExpiry", expiryTime.toString());
-
-        showMessage("✅ Login successful! Redirecting...");
-        scheduleAutoLogout(); // Set timeout for this session
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1200);
-      } catch (error) {
-        if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
-          showMessage("❌ Incorrect Email or Password.");
-        } else {
-          showMessage("❌ " + error.message);
-        }
+        showMessage("Login successful. Redirecting...");
+        setExpiryTimer(expiry);
+        setTimeout(() => window.location.href = "index.html", 1500);
+      } catch (err) {
+        showMessage("Login failed: " + err.message, true);
       }
     });
 
-    // Do NOT use logout button in UI
-    // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
+    // Check auth and expiry on load
+    onAuthStateChanged(auth, user => {
+      const expiry = parseInt(localStorage.getItem("premiumExpiry") || "0");
+      if (user && expiry) {
+        if (Date.now() > expiry) {
+          logoutNow("Your session has expired.");
+        } else {
+          const daysLeft = Math.floor((expiry - Date.now()) / (1000 * 60 * 60 * 24));
+          showMessage(`Welcome back! Session expires in ${daysLeft} day(s).`);
+          setExpiryTimer(expiry);
+        }
+      }
+    });
   </script>
 </body>
 </html>
