@@ -3,72 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Homepage</title>
+  <title>Register</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      background-color: #0e101c;
-      color: #fff;
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: #0e101c;
+      color: #fff;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       min-height: 100vh;
-      text-align: center;
       padding: 20px;
     }
-
-    h1 {
-      font-size: 32px;
+    .container {
+      background: #1a1d2b;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+    .form-title {
+      text-align: center;
+      font-size: 26px;
       color: #00d4ff;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
-
-    p {
-      font-size: 16px;
-      color: #ccc;
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
     }
-
-    .logout-btn {
-      margin-top: 30px;
-      padding: 12px 24px;
-      background-color: #00d4ff;
-      color: #000;
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 12px 12px 12px 36px;
+      background: #262b3e;
+      border: 1px solid #3a3f55;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .input-group label {
+      position: absolute;
+      top: -10px;
+      left: 36px;
+      background: #1a1d2b;
+      padding: 0 5px;
+      font-size: 12px;
+      color: #00d4ff;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #00d4ff;
       border: none;
       border-radius: 6px;
+      color: #000;
+      font-weight: bold;
       font-size: 16px;
       cursor: pointer;
     }
-
-    .logout-btn:hover {
-      background-color: #00b8e6;
+    .btn:hover {
+      background: #00b8e6;
+    }
+    .messageDiv {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #222;
+      color: #fff;
+      font-size: 14px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome 🎉</h1>
-  <p>Your session is active.</p>
-  <button class="logout-btn" id="logoutBtn">Logout</button>
+  <div class="container">
+    <div class="form-title">Register</div>
+    <div id="signUpMessage" class="messageDiv"></div>
 
-  <!-- ✅ Firebase Auto Logout Script -->
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="fName" placeholder="First Name" required />
+      <label for="fName">First Name</label>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="lName" placeholder="Last Name" required />
+      <label for="lName">Last Name</label>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="rEmail" placeholder="Email" required />
+      <label for="rEmail">Email</label>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="rPassword" placeholder="Password" required />
+      <label for="rPassword">Password</label>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-clock"></i>
+      <select id="expirationSelect">
+        <option value="2">2 Hours</option>
+        <option value="30">30 Days</option>
+      </select>
+      <label for="expirationSelect">Access Duration</label>
+    </div>
+
+    <button class="btn" id="submitSignUp">Sign Up</button>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
@@ -80,50 +141,76 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const firestore = getFirestore(app);
+    const auth = getAuth();
+    const db = getFirestore();
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "index.html";
+    function showMessage(message, divId) {
+      const div = document.getElementById(divId);
+      div.textContent = message;
+      div.style.display = "block";
+      div.style.opacity = 1;
+      setTimeout(() => { div.style.opacity = 0; }, 5000);
+    }
+
+    document.getElementById("submitSignUp").addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const fName = document.getElementById("fName").value.trim();
+      const lName = document.getElementById("lName").value.trim();
+      const email = document.getElementById("rEmail").value.trim();
+      const password = document.getElementById("rPassword").value;
+      const duration = parseInt(document.getElementById("expirationSelect").value);
+
+      if (!fName || !lName || !email || !password || !duration) {
+        showMessage("All fields are required", "signUpMessage");
         return;
       }
 
       try {
-        const docRef = doc(firestore, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
 
-        if (!docSnap.exists()) {
-          await signOut(auth);
-          localStorage.clear();
-          alert("User record not found. Please sign in again.");
-          window.location.href = "index.html";
-          return;
-        }
+        const now = Date.now();
+        const expiresIn = duration === 2 ? 2 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000; // 2 hrs or 30 days
+        const expiryTime = now + expiresIn;
 
-        const userData = docSnap.data();
-        const expiry = userData.expiry;
+        await setDoc(doc(db, "users", user.uid), {
+          email,
+          firstName: fName,
+          lastName: lName,
+          createdAt: now,
+          expiresAt: expiryTime
+        });
 
-        if (!expiry || Date.now() > expiry) {
-          await signOut(auth);
-          localStorage.clear();
-          alert("⏳ Session expired. Please sign in again.");
-          window.location.href = "index.html";
-        }
+        localStorage.setItem("expiresAt", expiryTime);
+
+        showMessage("Account Created!", "signUpMessage");
+        window.location.href = "homepage.html";
       } catch (error) {
-        console.error("Error checking session:", error);
-        await signOut(auth);
-        localStorage.clear();
-        alert("Something went wrong. Logged out.");
-        window.location.href = "index.html";
+        showMessage("Error: " + error.message, "signUpMessage");
       }
     });
 
-    // Manual logout
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      localStorage.clear();
-      window.location.href = "index.html";
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const { expiresAt } = userSnap.data();
+          const now = Date.now();
+          if (now > expiresAt) {
+            await signOut(auth);
+            alert("Access expired. Please sign up again.");
+            localStorage.clear();
+          } else {
+            // Optional: redirect or allow access
+            console.log("User session valid");
+          }
+        } else {
+          await signOut(auth);
+        }
+      }
     });
   </script>
 </body>
