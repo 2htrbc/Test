@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9574065,document.createElement('script'))</script>
   <meta charset="UTF-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
@@ -30,13 +29,7 @@
     #ad-status {
       font-size: 1em;
       color: #00ffcc;
-      margin: 0.5em 0 0.5em;
-    }
-
-    #countdown {
-      font-size: 1.5em;
-      color: #ffcc00;
-      margin-bottom: 1.5em;
+      margin: 0.5em 0 1.5em;
     }
 
     #continue-btn {
@@ -63,15 +56,10 @@
 <body>
   <h1>🎥 Please watch this short ad to continue</h1>
   <div id="ad-status">Ad is loading...</div>
-  <div id="countdown">⏳ 30 seconds remaining...</div>
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
 
   <script>
     let adLoaded = false;
-    let countdownTime = 30;
-    const countdownEl = document.getElementById("countdown");
-    const statusEl = document.getElementById("ad-status");
-    const continueBtn = document.getElementById("continue-btn");
 
     function detectAdBlock(callback) {
       const adTest = document.createElement('div');
@@ -81,54 +69,54 @@
       adTest.style.height = '1px';
       document.body.appendChild(adTest);
 
-      window.setTimeout(() => {
-        callback(adTest.offsetHeight === 0);
+      setTimeout(() => {
+        const blocked = adTest.offsetHeight === 0;
         adTest.remove();
+        callback(blocked);
       }, 100);
     }
 
-    // Load Monetag Ad
-    (function(d, z, s) {
-      s.src = 'https://' + d + '/401/' + z;
-      try {
-        (document.body || document.documentElement).appendChild(s);
+    function loadAdScript() {
+      const adScript = document.createElement('script');
+      adScript.src = 'https://groleegni.net/401/9574065';
+
+      adScript.onload = () => {
         adLoaded = true;
-      } catch (e) {
+      };
+
+      adScript.onerror = () => {
         adLoaded = false;
-      }
-    })('groleegni.net', 9574065, document.createElement('script'));
+      };
 
-    // Countdown Timer
-    const countdownInterval = setInterval(() => {
-      countdownTime--;
-      countdownEl.textContent = `⏳ ${countdownTime} seconds remaining...`;
-
-      if (countdownTime <= 0) {
-        clearInterval(countdownInterval);
-        detectAdBlock(function (blocked) {
-          if (blocked) {
-            statusEl.textContent = '⚠️ Ad blocker detected. Please disable to continue.';
-            countdownEl.textContent = '';
-          } else {
-            statusEl.textContent = '✅ Ad finished! Redirecting...';
-            countdownEl.textContent = '';
-            continueBtn.style.display = 'inline-block';
-            // Auto-click the button after short delay
-            setTimeout(() => {
-              continueBtn.click();
-            }, 1000); // 1 second delay before auto-click
-          }
-        });
-      }
-    }, 1000);
+      (document.body || document.documentElement).appendChild(adScript);
+    }
 
     function unlockPremium() {
       const now = Date.now();
       localStorage.setItem("lastAdClick", now);
       localStorage.setItem("isPremiumLoggedIn", "true");
-      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
+      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 mins
       window.location.href = "index.html";
     }
+
+    // Load ad script now
+    loadAdScript();
+
+    // After 20 seconds, check ad status
+    setTimeout(() => {
+      detectAdBlock((blocked) => {
+        const status = document.getElementById('ad-status');
+        const btn = document.getElementById('continue-btn');
+
+        if (blocked || !adLoaded) {
+          status.textContent = '❌ Ad Blocked or DNS Blocked. Please allow ads to continue.';
+          btn.style.display = 'none';
+        } else {
+          status.textContent = '✅ Ad finished! You can continue.';
+          btn.style.display = 'inline-block';
+        }
+      });
+    }, 20000);
   </script>
 </body>
 </html>
