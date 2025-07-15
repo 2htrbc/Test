@@ -14,94 +14,95 @@
       font-family: 'Segoe UI', sans-serif;
       color: white;
       overflow: hidden;
+      font-size: 2.5vw;
       touch-action: manipulation;
-      font-size: 3.5vw; /* Base font size for small screens */
     }
 
     .overlay {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: 2vw;
+      padding: 1vw;
       box-sizing: border-box;
     }
 
     a:focus, .channel:focus {
-      outline: 2px solid #0ff;
-      outline-offset: 2px;
+      outline: 1px solid #0ff;
+      outline-offset: 1px;
     }
 
     .premium-btn, .ads-btn, .movies-btn {
-      padding: 2.5vw 3vw;
-      border-radius: 4vw;
-      font-size: 3.5vw;
+      padding: 1.5vw 2vw;
+      border-radius: 3vw;
+      font-size: 2.5vw;
       text-decoration: none;
       text-align: center;
-      box-shadow: 0 0 0.7vw rgba(255,255,255,0.3);
+      box-shadow: 0 0 0.3vw rgba(255,255,255,0.3);
       display: inline-block;
     }
 
     .premium-btn {
       background: linear-gradient(to right, #ff4b2b, #ff416c);
       position: absolute;
-      top: 2vw;
-      right: 2vw;
+      top: 1vw;
+      right: 1vw;
     }
 
     .ads-btn {
       background: linear-gradient(to right, #00c6ff, #0072ff);
       position: absolute;
-      top: 12vw;
-      right: 2vw;
+      top: 6vw;
+      right: 1vw;
     }
 
     .movies-btn {
       background: linear-gradient(to right, #2193b0, #6dd5ed);
       align-self: center;
-      margin-top: 8vw;
-      width: 80%;
+      margin-top: 4vw;
+      width: 70%;
     }
 
     .logo {
       text-align: center;
-      margin-top: 14vw;
+      margin-top: 6vw;
     }
 
     .logo img {
-      width: 14vw;
-      height: 14vw;
+      width: 10vw;
+      height: 10vw;
       border-radius: 50%;
     }
 
     h2 {
-      font-size: 4vw;
-      margin: 2vw 0 0;
+      font-size: 3vw;
+      margin: 1vw 0 0;
     }
 
     .countdown-box {
-      margin: 2vw auto;
+      margin: 1.5vw auto;
       background: #203a43;
-      padding: 2.5vw;
-      border-radius: 3vw;
-      font-size: 3vw;
+      padding: 2vw;
+      border-radius: 2.5vw;
+      font-size: 2vw;
       color: #00ffcc;
       text-align: center;
-      max-width: 90%;
+      max-width: 92%;
+      line-height: 1.3;
     }
 
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(16vw, 1fr));
-      gap: 2vw;
-      margin-top: 3vw;
+      grid-template-columns: repeat(auto-fill, minmax(12vw, 1fr));
+      gap: 1.5vw;
+      margin-top: 2vw;
       padding-bottom: 2vw;
       overflow-y: auto;
       flex-grow: 1;
     }
 
     .channel {
-      width: 16vw;
-      height: 16vw;
+      width: 12vw;
+      height: 12vw;
       border-radius: 50%;
       background: rgba(255,255,255,0.08);
       display: flex;
@@ -120,14 +121,14 @@
     }
 
     .channel span {
-      margin-top: 1vw;
-      font-size: 2.5vw;
+      margin-top: 0.5vw;
+      font-size: 1.8vw;
       text-align: center;
     }
 
     .channel:hover, .channel:focus {
-      transform: scale(1.1);
-      box-shadow: 0 0 1vw #0ff, 0 0 1.5vw #0ff;
+      transform: scale(1.05);
+      box-shadow: 0 0 1vw #0ff, 0 0 1.2vw #0ff;
     }
 
     .premium-only.locked {
@@ -136,10 +137,10 @@
     }
 
     .footer {
-      font-size: 2.5vw;
+      font-size: 2vw;
       text-align: center;
       color: #ccc;
-      margin-top: 2vw;
+      margin-top: 1.5vw;
     }
 
     #rotate-warning {
@@ -153,8 +154,8 @@
       justify-content: center;
       z-index: 9999;
       text-align: center;
-      font-size: 5vw;
-      padding: 5vw;
+      font-size: 4vw;
+      padding: 4vw;
     }
 
     @media screen and (orientation: portrait) {
@@ -170,15 +171,15 @@
 <body>
   <div id="rotate-warning">🔄 Please rotate your device to landscape</div>
   <div class="overlay">
-    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
-    <a href="#" class="ads-btn" tabindex="0" id="adClickBtn">🎁 WATCH AD</a>
+    <a href="premium-login.html" class="premium-btn" tabindex="0">LOGIN</a>
+    <a href="#" class="ads-btn" tabindex="0" id="adClickBtn">🎁 AD</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" />
-      <h2>HONOR TV MENU</h2>
+      <h2>HONOR TV</h2>
     </div>
 
-    <div id="countdown-display" class="countdown-box">Checking premium status...</div>
+    <div id="countdown-display" class="countdown-box">Checking premium...</div>
     <div id="ad-status" class="countdown-box">⏳ Please wait...</div>
 
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
@@ -202,7 +203,7 @@
       <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('distrotv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>DISTRO TV</span></div>
     </div>
 
-    <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+    <div class="footer">HONOR TV ©</div>
   </div>
 
   <script>
@@ -212,7 +213,7 @@
 
     function tryOpenChannel(id) {
       if (isPremiumActive()) openChannel(id);
-      else alert("⛔ This channel is for premium users only.");
+      else alert("⛔ Premium only");
     }
 
     function isPremiumActive() {
@@ -223,39 +224,35 @@
     function updateCountdown() {
       const expiry = parseInt(localStorage.getItem("premiumExpiry") || 0);
       const now = Date.now();
-      const premiumOnly = document.querySelectorAll(".premium-only");
       const countdown = document.getElementById("countdown-display");
+      const premiumOnly = document.querySelectorAll(".premium-only");
 
       if (expiry > now) {
-        const remaining = expiry - now;
-        const mins = Math.floor(remaining / 60000);
-        const secs = Math.floor((remaining % 60000) / 1000);
-        const dateStr = new Date(expiry).toLocaleString('en-US', {
-          month: 'short', day: 'numeric',
-          hour: '2-digit', minute: '2-digit', hour12: true
-        });
-        countdown.innerHTML = `⭐ Premium active<br>Until: ${dateStr}<br>Remaining: ${mins}m ${secs}s`;
+        const mins = Math.floor((expiry - now) / 60000);
+        const secs = Math.floor(((expiry - now) % 60000) / 1000);
+        const until = new Date(expiry).toLocaleTimeString();
+        countdown.innerHTML = `⭐ Until: ${until}<br>${mins}m ${secs}s left`;
         premiumOnly.forEach(el => el.classList.remove("locked"));
         setTimeout(updateCountdown, 1000);
       } else {
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
-        countdown.innerHTML = "⛔ Premium not active";
+        countdown.innerHTML = "⛔ Premium inactive";
         premiumOnly.forEach(el => el.classList.add("locked"));
         updateAdStatus();
       }
     }
 
     function updateAdStatus() {
-      const lastClicked = parseInt(localStorage.getItem("lastAdClick") || 0);
+      const last = parseInt(localStorage.getItem("lastAdClick") || 0);
       const now = Date.now();
       const adBtn = document.getElementById("adClickBtn");
       const adStatus = document.getElementById("ad-status");
 
-      if (now - lastClicked >= 20 * 60 * 1000) {
+      if (now - last >= 20 * 60 * 1000) {
         adBtn.style.pointerEvents = "auto";
         adBtn.style.opacity = "1";
-        adStatus.textContent = "🎁 Click to unlock 30 min premium";
+        adStatus.textContent = "🎁 Click to get 30min premium";
         adBtn.onclick = () => {
           const now = Date.now();
           localStorage.setItem("lastAdClick", now);
@@ -265,12 +262,12 @@
           updateAdStatus();
         };
       } else {
-        const remaining = 20 * 60 * 1000 - (now - lastClicked);
-        const mins = Math.floor(remaining / 60000);
-        const secs = Math.floor((remaining % 60000) / 1000);
+        const remain = 20 * 60 * 1000 - (now - last);
+        const mins = Math.floor(remain / 60000);
+        const secs = Math.floor((remain % 60000) / 1000);
         adBtn.style.pointerEvents = "none";
         adBtn.style.opacity = "0.6";
-        adStatus.textContent = `⏳ Wait ${mins}m ${secs}s to watch again`;
+        adStatus.textContent = `⏳ Wait ${mins}m ${secs}s`;
         setTimeout(updateAdStatus, 1000);
       }
     }
@@ -294,15 +291,14 @@
         else if (e.key === "ArrowLeft") delta = -1;
         else if (e.key === "ArrowDown") delta = cols;
         else if (e.key === "ArrowUp") delta = -cols;
-        const nextIndex = focusIndex + delta;
-        if (nextIndex >= 0 && nextIndex < focusables.length) setFocus(nextIndex);
+        const next = focusIndex + delta;
+        if (next >= 0 && next < focusables.length) setFocus(next);
       } else if (e.key === "Enter") {
         const el = document.activeElement;
         if (el && typeof el.click === "function") el.click();
       }
     });
 
-    // Init
     updateCountdown();
     updateAdStatus();
     setFocus(0);
