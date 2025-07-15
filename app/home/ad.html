@@ -42,7 +42,8 @@
       box-shadow: 0 0 12px rgba(0, 255, 200, 0.6);
     }
 
-    #continue-btn:hover, #continue-btn:focus {
+    #continue-btn:hover,
+    #continue-btn:focus {
       background: linear-gradient(to right, #0072ff, #00ffcc);
       outline: none;
     }
@@ -78,6 +79,14 @@
         console.warn("❌ Monetag ad was blocked.");
       };
       document.body.appendChild(script);
+
+      // Detect ad blockers (fallback in case onerror is bypassed)
+      setTimeout(() => {
+        if (!adLoaded) {
+          document.getElementById('ad-status').textContent = '❌ Ad failed to load.';
+          document.getElementById('ad-block-warning').style.display = 'block';
+        }
+      }, 3000);
     }
 
     loadMonetagAd();
@@ -85,10 +94,11 @@
     setTimeout(() => {
       if (adLoaded) {
         document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
-        document.getElementById('continue-btn').style.display = 'inline-block';
-        document.getElementById('continue-btn').focus(); // TV remote/keyboard focus
+        const btn = document.getElementById('continue-btn');
+        btn.style.display = 'inline-block';
+        btn.focus(); // For keyboard/remote focus
       }
-    }, 20000); // 20 seconds
+    }, 20000); // Wait 20 seconds
   </script>
 
   <script>
@@ -96,8 +106,8 @@
       const now = Date.now();
       localStorage.setItem("lastAdClick", now);
       localStorage.setItem("isPremiumLoggedIn", "true");
-      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 mins
-      window.location.href = "index.html"; // Go to IPTV menu
+      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
+      window.location.href = "index.html"; // Redirect to IPTV menu
     }
   </script>
 </body>
