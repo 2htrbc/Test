@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Watch Ad - HONOR TV</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.2em;
+      margin: 1em 0 0.5em;
+    }
+
+    #ad-status {
+      font-size: 1em;
+      color: #00ffcc;
+      margin: 0.5em 0 1.5em;
+    }
+
+    #continue-btn {
+      display: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      background: linear-gradient(to right, #00ffcc, #0072ff);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0, 255, 200, 0.6);
+    }
+
+    #continue-btn:hover {
+      background: linear-gradient(to right, #0072ff, #00ffcc);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎥 Please watch this short ad to continue</h1>
+  <div id="ad-status">Ad is loading...</div>
+
+  <!-- ✅ Monetag Interstitial Ad Script -->
+  <script>
+    (function(d,z,s){
+      s.src='https://' + d + '/401/' + z;
+      try {
+        (document.body || document.documentElement).appendChild(s);
+      } catch(e) {}
+    })('groleegni.net', 9574065, document.createElement('script'));
+  </script>
+
+  <!-- ✅ Continue Button -->
+  <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
+
+  <script>
+    // Show continue button after 20 seconds
+    setTimeout(() => {
+      document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
+      document.getElementById('continue-btn').style.display = 'inline-block';
+    }, 20000); // 20 seconds
+
+    function unlockPremium() {
+      const now = Date.now();
+      localStorage.setItem("lastAdClick", now);
+      localStorage.setItem("isPremiumLoggedIn", "true");
+      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
+      window.location.href = "index.html"; // Go back to menu page
+    }
+  </script>
+</body>
+</html>
