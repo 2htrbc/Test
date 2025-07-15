@@ -29,7 +29,13 @@
     #ad-status {
       font-size: 1em;
       color: #00ffcc;
-      margin: 0.5em 0 1.5em;
+      margin: 0.5em 0 0.5em;
+    }
+
+    #countdown {
+      font-size: 1.5em;
+      color: #ffcc00;
+      margin-bottom: 1.5em;
     }
 
     #continue-btn {
@@ -56,11 +62,15 @@
 <body>
   <h1>🎥 Please watch this short ad to continue</h1>
   <div id="ad-status">Ad is loading...</div>
+  <div id="countdown">⏳ 30 seconds remaining...</div>
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
 
-  <!-- Monetag Interstitial Ad Script -->
   <script>
     let adLoaded = false;
+    let countdownTime = 30;
+    const countdownEl = document.getElementById("countdown");
+    const statusEl = document.getElementById("ad-status");
+    const continueBtn = document.getElementById("continue-btn");
 
     function detectAdBlock(callback) {
       const adTest = document.createElement('div');
@@ -76,7 +86,7 @@
       }, 100);
     }
 
-    // Load Ad
+    // Load Monetag Ad
     (function(d, z, s) {
       s.src = 'https://' + d + '/401/' + z;
       try {
@@ -87,25 +97,35 @@
       }
     })('groleegni.net', 9574065, document.createElement('script'));
 
-    // Wait 20 seconds to show Continue if ad is not blocked
-    setTimeout(() => {
-      detectAdBlock(function (blocked) {
-        if (blocked) {
-          document.getElementById('ad-status').textContent =
-            '⚠️ Ad blocker detected. Please disable to continue.';
-        } else {
-          document.getElementById('ad-status').textContent =
-            '✅ Ad finished! You can continue.';
-          document.getElementById('continue-btn').style.display = 'inline-block';
-        }
-      });
-    }, 20000);
+    // Countdown Timer
+    const countdownInterval = setInterval(() => {
+      countdownTime--;
+      countdownEl.textContent = `⏳ ${countdownTime} seconds remaining...`;
+
+      if (countdownTime <= 0) {
+        clearInterval(countdownInterval);
+        detectAdBlock(function (blocked) {
+          if (blocked) {
+            statusEl.textContent = '⚠️ Ad blocker detected. Please disable to continue.';
+            countdownEl.textContent = '';
+          } else {
+            statusEl.textContent = '✅ Ad finished! Redirecting...';
+            countdownEl.textContent = '';
+            continueBtn.style.display = 'inline-block';
+            // Auto-click the button after short delay
+            setTimeout(() => {
+              continueBtn.click();
+            }, 1000); // 1 second delay before auto-click
+          }
+        });
+      }
+    }, 1000);
 
     function unlockPremium() {
       const now = Date.now();
       localStorage.setItem("lastAdClick", now);
       localStorage.setItem("isPremiumLoggedIn", "true");
-      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 mins
+      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
       window.location.href = "index.html";
     }
   </script>
