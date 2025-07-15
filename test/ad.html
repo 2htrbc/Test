@@ -51,14 +51,21 @@
   <h1>🎥 Please watch this short ad to continue</h1>
   <div id="ad-status">Ad is loading...</div>
 
-  <!-- Monetag Interstitial Video Ad -->
-  <script async type="text/javascript" src="https://go.monetag.com/interstitial/YOUR_SITE_ID.js"></script>
+  <!-- ✅ Monetag Interstitial Ad Script -->
+  <script>
+    (function(d,z,s){
+      s.src='https://' + d + '/401/' + z;
+      try {
+        (document.body || document.documentElement).appendChild(s);
+      } catch(e) {}
+    })('groleegni.net', 9574065, document.createElement('script'));
+  </script>
 
-  <!-- Continue Button -->
+  <!-- ✅ Continue Button -->
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
 
   <script>
-    // Unlock button after 20 seconds
+    // Show continue button after 20 seconds
     setTimeout(() => {
       document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
       document.getElementById('continue-btn').style.display = 'inline-block';
@@ -69,7 +76,7 @@
       localStorage.setItem("lastAdClick", now);
       localStorage.setItem("isPremiumLoggedIn", "true");
       localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
-      window.location.href = "index.html"; // Change if your menu page has a different filename
+      window.location.href = "index.html"; // Go back to menu page
     }
   </script>
 </body>
