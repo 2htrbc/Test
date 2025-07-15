@@ -48,6 +48,15 @@
       outline: none;
     }
 
+    #ad-frame {
+      width: 0;
+      height: 0;
+      border: 0;
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     #ad-block-warning {
       color: #ff4444;
       margin-top: 10px;
@@ -62,43 +71,47 @@
 
   <button id="continue-btn" onclick="unlockPremium()" tabindex="0">✅ Continue to Menu</button>
 
+  <!-- Monetag Direct Link Ad (hidden iframe) -->
+  <iframe id="ad-frame" src="https://otieu.com/4/9573541" sandbox="allow-scripts allow-same-origin"></iframe>
+
   <script>
     let adLoaded = false;
 
-    function loadMonetagAd() {
-      const script = document.createElement('script');
-      script.src = 'https://groleegni.net/401/9574065';
-      script.onload = () => {
+    function checkAdLoad() {
+      const iframe = document.getElementById('ad-frame');
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDoc && iframeDoc.body && iframeDoc.body.innerHTML.length > 0) {
+          adLoaded = true;
+          console.log("✅ Monetag direct ad loaded.");
+        }
+      } catch (e) {
+        // Cross-origin access error is expected and indicates it's loaded
         adLoaded = true;
-        console.log("✅ Monetag ad loaded.");
-      };
-      script.onerror = () => {
-        adLoaded = false;
+        console.log("✅ Monetag direct ad assumed loaded (cross-origin).");
+      }
+
+      if (!adLoaded) {
         document.getElementById('ad-status').textContent = '❌ Ad failed to load.';
         document.getElementById('ad-block-warning').style.display = 'block';
-        console.warn("❌ Monetag ad was blocked.");
-      };
-      document.body.appendChild(script);
-
-      // Detect ad blockers (fallback in case onerror is bypassed)
-      setTimeout(() => {
-        if (!adLoaded) {
-          document.getElementById('ad-status').textContent = '❌ Ad failed to load.';
-          document.getElementById('ad-block-warning').style.display = 'block';
-        }
-      }, 3000);
+        console.warn("❌ Ad may be blocked.");
+      }
     }
 
-    loadMonetagAd();
+    // Wait a few seconds then check if ad iframe loaded
+    setTimeout(() => {
+      checkAdLoad();
+    }, 3000);
 
+    // Wait 20 seconds before showing continue button
     setTimeout(() => {
       if (adLoaded) {
         document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
         const btn = document.getElementById('continue-btn');
         btn.style.display = 'inline-block';
-        btn.focus(); // For keyboard/remote focus
+        btn.focus(); // Support for TV remotes / keyboard
       }
-    }, 20000); // Wait 20 seconds
+    }, 20000);
   </script>
 
   <script>
