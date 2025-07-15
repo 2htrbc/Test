@@ -20,7 +20,7 @@
     }
 
     h1 {
-      font-size: 1.2em;
+      font-size: 1.4em;
       margin: 1em 0 0.5em;
     }
 
@@ -32,51 +32,72 @@
 
     #continue-btn {
       display: none;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 1em;
       background: linear-gradient(to right, #00ffcc, #0072ff);
       color: #000;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(0, 255, 200, 0.6);
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.6);
     }
 
-    #continue-btn:hover {
+    #continue-btn:hover, #continue-btn:focus {
       background: linear-gradient(to right, #0072ff, #00ffcc);
+      outline: none;
+    }
+
+    #ad-block-warning {
+      color: #ff4444;
+      margin-top: 10px;
+      font-size: 0.95em;
     }
   </style>
 </head>
 <body>
   <h1>🎥 Please watch this short ad to continue</h1>
   <div id="ad-status">Ad is loading...</div>
+  <div id="ad-block-warning" style="display:none;">❌ Ad Blocker detected. Please disable it to continue.</div>
 
-  <!-- ✅ Monetag Interstitial Ad Script -->
+  <button id="continue-btn" onclick="unlockPremium()" tabindex="0">✅ Continue to Menu</button>
+
   <script>
-    (function(d,z,s){
-      s.src='https://' + d + '/401/' + z;
-      try {
-        (document.body || document.documentElement).appendChild(s);
-      } catch(e) {}
-    })('groleegni.net', 9574065, document.createElement('script'));
+    let adLoaded = false;
+
+    function loadMonetagAd() {
+      const script = document.createElement('script');
+      script.src = 'https://groleegni.net/401/9574065';
+      script.onload = () => {
+        adLoaded = true;
+        console.log("✅ Monetag ad loaded.");
+      };
+      script.onerror = () => {
+        adLoaded = false;
+        document.getElementById('ad-status').textContent = '❌ Ad failed to load.';
+        document.getElementById('ad-block-warning').style.display = 'block';
+        console.warn("❌ Monetag ad was blocked.");
+      };
+      document.body.appendChild(script);
+    }
+
+    loadMonetagAd();
+
+    setTimeout(() => {
+      if (adLoaded) {
+        document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
+        document.getElementById('continue-btn').style.display = 'inline-block';
+        document.getElementById('continue-btn').focus(); // TV remote/keyboard focus
+      }
+    }, 20000); // 20 seconds
   </script>
 
-  <!-- ✅ Continue Button -->
-  <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
-
   <script>
-    // Show continue button after 20 seconds
-    setTimeout(() => {
-      document.getElementById('ad-status').textContent = '✅ Ad finished! You can continue.';
-      document.getElementById('continue-btn').style.display = 'inline-block';
-    }, 20000); // 20 seconds
-
     function unlockPremium() {
       const now = Date.now();
       localStorage.setItem("lastAdClick", now);
       localStorage.setItem("isPremiumLoggedIn", "true");
-      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 minutes
-      window.location.href = "index.html"; // Go back to menu page
+      localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 mins
+      window.location.href = "index.html"; // Go to IPTV menu
     }
   </script>
 </body>
