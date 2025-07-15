@@ -54,6 +54,15 @@
       background: linear-gradient(to right, #0072ff, #00ffcc);
     }
 
+    .banner-container {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: auto;
+      z-index: 10;
+      text-align: center;
+    }
+
     iframe {
       width: 1px;
       height: 1px;
@@ -70,8 +79,22 @@
   <div id="countdown">⏳ Please wait 30 seconds...</div>
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
 
-  <!-- Monetag Direct Link Hidden Iframe -->
+  <!-- Monetag Direct Link (Hidden) -->
   <iframe src="https://otieu.com/4/9573541" loading="lazy"></iframe>
+
+  <!-- Monetag Banner Ad (728x90 or auto responsive) -->
+  <div class="banner-container">
+    <script type="text/javascript">
+      var atOptions = {
+        'key': '9574065',
+        'format': 'iframe',
+        'height': 90,
+        'width': 728,
+        'params': {}
+      };
+      document.write('<scr' + 'ipt type="text/javascript" src="https://groleegni.net/401/9574065"></scr' + 'ipt>');
+    </script>
+  </div>
 
   <script>
     let adLoaded = false;
@@ -133,15 +156,14 @@
           status.textContent = '✅ Ad finished! You can continue.';
           btn.style.display = 'inline-block';
 
-          // Auto-click for Smart TVs and others
+          // Auto-click for Smart TVs or remotes
           setTimeout(() => {
             btn.click();
-          }, 2000); // Auto-click after 2 seconds
+          }, 2000);
         }
       });
     }
 
-    // Initialize ad loading and countdown
     loadAdScript();
     startCountdown(30);
   </script>
