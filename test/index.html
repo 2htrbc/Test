@@ -24,17 +24,21 @@
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
       transition: background 0.3s, box-shadow 0.3s;
     }
+
     .premium-btn {
       top: 6px; right: 10px;
       background: linear-gradient(to right, #ff4b2b, #ff416c);
     }
+
     .premium-btn:hover {
       background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
+
     .ads-btn {
       top: 42px; right: 10px;
       background: linear-gradient(to right, #00c6ff, #0072ff);
     }
+
     .ads-btn:hover {
       background: linear-gradient(to right, #0072ff, #00c6ff);
     }
@@ -86,10 +90,12 @@
       align-items: center; justify-content: center;
       transition: transform 0.3s, box-shadow 0.3s; outline: none;
     }
+
     .channel img {
       width: 100%; height: 100%;
       border-radius: 50%; object-fit: cover;
     }
+
     .channel span {
       display: block; font-size: 0.6em;
       color: #fff; margin-top: 4px; text-align: center;
@@ -98,15 +104,15 @@
 
     .channel:focus, .channel:hover {
       transform: scale(1.1);
-      box-shadow:
-        0 0 8px #00f,
-        0 0 12px #0ff,
-        0 0 16px #0f0,
-        0 0 20px #ff0,
-        0 0 24px #f00;
+      box-shadow: 0 0 8px #00f, 0 0 12px #0ff, 0 0 16px #0f0, 0 0 20px #ff0, 0 0 24px #f00;
     }
 
-    .footer { text-align: center; font-size: 0.6em; color: #ccc; margin-top: 3px; }
+    .footer {
+      text-align: center;
+      font-size: 0.6em;
+      color: #ccc;
+      margin-top: 3px;
+    }
 
     .premium-only.locked {
       opacity: 0.4;
@@ -130,8 +136,8 @@
 <body>
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
   <div class="overlay">
-    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
-    <a href="ad.html" class="ads-btn" tabindex="0" id="watchAdBtn">🎁 WATCH AD - GET 30 MIN</a>
+    <a href="premium-login.html" class="premium-btn">PREMIUM LOGIN</a>
+    <a href="ad.html" class="ads-btn" id="watchAdBtn">🎁 WATCH AD - GET 30 MIN</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
@@ -139,9 +145,9 @@
     </div>
 
     <div id="countdown-display" class="countdown-box">Checking premium status...</div>
-    <div id="ad-status" class="countdown-box">⏳ Please wait to unlock ad...</div>
+    <div id="ad-status" class="countdown-box">⏳ Please wait 20 minutes to watch the ad.</div>
 
-    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
 
     <div class="menu-grid">
       <div class="channel" onclick="openChannel('phchannel')">
@@ -158,7 +164,7 @@
 
   <script>
     function openChannel(id) {
-      alert("📺 Opening: " + id);
+      alert("📺 Opening channel: " + id);
     }
 
     function tryOpenChannel(id) {
@@ -183,7 +189,7 @@
         const remaining = premiumUntil - now;
         const mins = Math.floor(remaining / 60000);
         const secs = Math.floor((remaining % 60000) / 1000);
-        document.getElementById("countdown-display").textContent = `⭐ Premium active for ${mins}m ${secs}s`;
+        document.getElementById("countdown-display").textContent = `⭐ Premium active: ${mins}m ${secs}s left`;
 
         premiumOnly.forEach(btn => btn.classList.remove("locked"));
         setTimeout(updateCountdown, 1000);
@@ -200,13 +206,13 @@
     function updateAdStatus() {
       const lastClicked = parseInt(localStorage.getItem("lastAdClick") || 0);
       const now = Date.now();
-      const adBtn = document.querySelector(".ads-btn");
+      const adBtn = document.getElementById("watchAdBtn");
       const adStatus = document.getElementById("ad-status");
 
       if (now - lastClicked >= 20 * 60 * 1000) {
         adBtn.style.pointerEvents = "auto";
         adBtn.style.opacity = "1";
-        adStatus.textContent = "🎁 Click to watch ad and unlock 30 min premium!";
+        adStatus.textContent = "🎁 You can now watch ad to unlock 30 minutes premium!";
       } else {
         const remaining = 20 * 60 * 1000 - (now - lastClicked);
         const mins = Math.floor(remaining / 60000);
