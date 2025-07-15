@@ -9,18 +9,20 @@
       margin: 0;
       padding: 0;
       height: 100vh;
+      width: 100vw;
       background: #111;
       font-family: 'Segoe UI', sans-serif;
       color: white;
       overflow: hidden;
       touch-action: manipulation;
+      font-size: 3.5vw; /* Base font size for small screens */
     }
 
     .overlay {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: 6px 10px;
+      padding: 2vw;
       box-sizing: border-box;
     }
 
@@ -30,101 +32,102 @@
     }
 
     .premium-btn, .ads-btn, .movies-btn {
-      padding: 10px 16px;
-      border-radius: 18px;
-      font-size: 1em;
+      padding: 2.5vw 3vw;
+      border-radius: 4vw;
+      font-size: 3.5vw;
       text-decoration: none;
-      display: inline-block;
       text-align: center;
-      box-shadow: 0 0 5px rgba(255,255,255,0.3);
+      box-shadow: 0 0 0.7vw rgba(255,255,255,0.3);
+      display: inline-block;
     }
 
     .premium-btn {
       background: linear-gradient(to right, #ff4b2b, #ff416c);
       position: absolute;
-      top: 10px;
-      right: 12px;
+      top: 2vw;
+      right: 2vw;
     }
 
     .ads-btn {
       background: linear-gradient(to right, #00c6ff, #0072ff);
       position: absolute;
-      top: 55px;
-      right: 12px;
+      top: 12vw;
+      right: 2vw;
     }
 
     .movies-btn {
       background: linear-gradient(to right, #2193b0, #6dd5ed);
       align-self: center;
-      margin-top: 80px;
+      margin-top: 8vw;
+      width: 80%;
     }
 
     .logo {
       text-align: center;
-      margin-top: 70px;
+      margin-top: 14vw;
     }
 
     .logo img {
-      width: 64px;
+      width: 14vw;
+      height: 14vw;
       border-radius: 50%;
     }
 
     h2 {
-      font-size: 1em;
-      margin: 8px 0 0;
+      font-size: 4vw;
+      margin: 2vw 0 0;
     }
 
     .countdown-box {
-      margin: 8px auto;
+      margin: 2vw auto;
       background: #203a43;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.9em;
+      padding: 2.5vw;
+      border-radius: 3vw;
+      font-size: 3vw;
       color: #00ffcc;
       text-align: center;
-      line-height: 1.4;
       max-width: 90%;
     }
 
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-      padding-bottom: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(16vw, 1fr));
+      gap: 2vw;
+      margin-top: 3vw;
+      padding-bottom: 2vw;
       overflow-y: auto;
       flex-grow: 1;
     }
 
     .channel {
-      width: 70px;
-      height: 70px;
+      width: 16vw;
+      height: 16vw;
       border-radius: 50%;
+      background: rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: rgba(255, 255, 255, 0.07);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .channel img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
+      border-radius: 50%;
     }
 
     .channel span {
-      margin-top: 4px;
-      font-size: 0.65em;
+      margin-top: 1vw;
+      font-size: 2.5vw;
       text-align: center;
     }
 
-    .channel:focus, .channel:hover {
+    .channel:hover, .channel:focus {
       transform: scale(1.1);
-      box-shadow: 0 0 8px #0ff, 0 0 12px #0ff;
+      box-shadow: 0 0 1vw #0ff, 0 0 1.5vw #0ff;
     }
 
     .premium-only.locked {
@@ -133,10 +136,10 @@
     }
 
     .footer {
-      font-size: 0.7em;
+      font-size: 2.5vw;
       text-align: center;
       color: #ccc;
-      margin-top: 4px;
+      margin-top: 2vw;
     }
 
     #rotate-warning {
@@ -150,42 +153,16 @@
       justify-content: center;
       z-index: 9999;
       text-align: center;
-      font-size: 1.2em;
-      padding: 20px;
+      font-size: 5vw;
+      padding: 5vw;
     }
 
     @media screen and (orientation: portrait) {
       #rotate-warning {
         display: flex;
       }
-    }
-
-    @media (min-width: 768px) {
-      .channel {
-        width: 90px;
-        height: 90px;
-      }
-      .channel span {
-        font-size: 0.75em;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .menu-grid {
-        grid-template-columns: repeat(6, 1fr);
-      }
-      .premium-btn, .ads-btn {
-        font-size: 1.1em;
-      }
-      .movies-btn {
-        font-size: 1.1em;
-        padding: 12px 20px;
-      }
-    }
-
-    @media (min-width: 1600px) {
-      .menu-grid {
-        grid-template-columns: repeat(7, 1fr);
+      body > .overlay {
+        display: none;
       }
     }
   </style>
@@ -194,7 +171,7 @@
   <div id="rotate-warning">🔄 Please rotate your device to landscape</div>
   <div class="overlay">
     <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
-    <a href="#" class="ads-btn" tabindex="0" id="adClickBtn">🎁 WATCH AD - GET 30 MIN</a>
+    <a href="#" class="ads-btn" tabindex="0" id="adClickBtn">🎁 WATCH AD</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" />
@@ -223,7 +200,6 @@
       <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('netflixch')"><img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg"><span>Netflix Channel</span></div>
       <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('plextv')"><img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>PLEX TV</span></div>
       <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('distrotv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>DISTRO TV</span></div>
-    </div>
     </div>
 
     <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
@@ -299,7 +275,7 @@
       }
     }
 
-    // TV remote navigation
+    // TV remote nav
     const focusables = Array.from(document.querySelectorAll('[tabindex]'));
     let focusIndex = 0;
     function setFocus(index) {
@@ -326,7 +302,7 @@
       }
     });
 
-    // Initialize
+    // Init
     updateCountdown();
     updateAdStatus();
     setFocus(0);
