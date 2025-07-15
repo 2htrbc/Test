@@ -29,7 +29,6 @@
       top: 6px; right: 10px;
       background: linear-gradient(to right, #ff4b2b, #ff416c);
     }
-
     .premium-btn:hover {
       background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
@@ -38,7 +37,6 @@
       top: 42px; right: 10px;
       background: linear-gradient(to right, #00c6ff, #0072ff);
     }
-
     .ads-btn:hover {
       background: linear-gradient(to right, #0072ff, #00c6ff);
     }
@@ -88,7 +86,7 @@
       width: 52px; height: 52px; cursor: pointer;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      transition: transform 0.3s, box-shadow 0.3s; outline: none;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .channel img {
@@ -104,7 +102,17 @@
 
     .channel:focus, .channel:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 8px #00f, 0 0 12px #0ff, 0 0 16px #0f0, 0 0 20px #ff0, 0 0 24px #f00;
+      box-shadow:
+        0 0 8px #00f,
+        0 0 12px #0ff,
+        0 0 16px #0f0,
+        0 0 20px #ff0,
+        0 0 24px #f00;
+    }
+
+    .premium-only.locked {
+      opacity: 0.4;
+      pointer-events: none;
     }
 
     .footer {
@@ -112,11 +120,6 @@
       font-size: 0.6em;
       color: #ccc;
       margin-top: 3px;
-    }
-
-    .premium-only.locked {
-      opacity: 0.4;
-      pointer-events: none;
     }
 
     #rotate-warning {
@@ -135,9 +138,10 @@
 </head>
 <body>
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
+
   <div class="overlay">
-    <a href="premium-login.html" class="premium-btn">PREMIUM LOGIN</a>
-    <a href="ad.html" class="ads-btn" id="watchAdBtn">🎁 WATCH AD - GET 30 MIN</a>
+    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
+    <a href="#" class="ads-btn" id="adClickBtn" tabindex="0">🎁 WATCH AD - GET 30 MIN</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
@@ -145,18 +149,24 @@
     </div>
 
     <div id="countdown-display" class="countdown-box">Checking premium status...</div>
-    <div id="ad-status" class="countdown-box">⏳ Please wait 20 minutes to watch the ad.</div>
+    <div id="ad-status" class="countdown-box">⏳ Please wait...</div>
 
-    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid">
       <div class="channel" onclick="openChannel('phchannel')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Free Live TV</span>
       </div>
-      <div class="channel premium-only locked" onclick="tryOpenChannel('livetv')"><img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span></div>
-      <div class="channel premium-only locked" onclick="tryOpenChannel('astro')"><img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>Astro</span></div>
-      <div class="channel premium-only locked" onclick="tryOpenChannel('phlive')"><img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span></div>
+      <div class="channel premium-only locked" onclick="tryOpenChannel('livetv')">
+        <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span>
+      </div>
+      <div class="channel premium-only locked" onclick="tryOpenChannel('astro')">
+        <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>Astro</span>
+      </div>
+      <div class="channel premium-only locked" onclick="tryOpenChannel('phlive')">
+        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span>
+      </div>
     </div>
 
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
@@ -164,7 +174,7 @@
 
   <script>
     function openChannel(id) {
-      alert("📺 Opening channel: " + id);
+      alert("Opening channel: " + id);
     }
 
     function tryOpenChannel(id) {
@@ -189,16 +199,14 @@
         const remaining = premiumUntil - now;
         const mins = Math.floor(remaining / 60000);
         const secs = Math.floor((remaining % 60000) / 1000);
-        document.getElementById("countdown-display").textContent = `⭐ Premium active: ${mins}m ${secs}s left`;
-
-        premiumOnly.forEach(btn => btn.classList.remove("locked"));
+        document.getElementById("countdown-display").textContent = `⭐ Premium active for ${mins}m ${secs}s`;
+        premiumOnly.forEach(el => el.classList.remove("locked"));
         setTimeout(updateCountdown, 1000);
       } else {
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
         document.getElementById("countdown-display").textContent = "⛔ Premium not active";
-
-        premiumOnly.forEach(btn => btn.classList.add("locked"));
+        premiumOnly.forEach(el => el.classList.add("locked"));
         updateAdStatus();
       }
     }
@@ -206,13 +214,21 @@
     function updateAdStatus() {
       const lastClicked = parseInt(localStorage.getItem("lastAdClick") || 0);
       const now = Date.now();
-      const adBtn = document.getElementById("watchAdBtn");
+      const adBtn = document.getElementById("adClickBtn");
       const adStatus = document.getElementById("ad-status");
 
       if (now - lastClicked >= 20 * 60 * 1000) {
         adBtn.style.pointerEvents = "auto";
         adBtn.style.opacity = "1";
-        adStatus.textContent = "🎁 You can now watch ad to unlock 30 minutes premium!";
+        adStatus.textContent = "🎁 Click to watch ad and unlock 30 min premium!";
+        adBtn.onclick = () => {
+          const now = Date.now();
+          localStorage.setItem("lastAdClick", now);
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          localStorage.setItem("premiumExpiry", now + 30 * 60 * 1000); // 30 mins
+          updateCountdown();
+          updateAdStatus();
+        };
       } else {
         const remaining = 20 * 60 * 1000 - (now - lastClicked);
         const mins = Math.floor(remaining / 60000);
