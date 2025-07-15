@@ -3,183 +3,216 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>HONOR TV - Ads Premium Access</title>
+  <title>HONOR TV IPTV Menu</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background: #111;
-      color: white;
-      font-family: sans-serif;
+      margin: 0; padding: 0; height: 100vh; overflow: hidden;
+      background: #111; font-family: 'Segoe UI', sans-serif;
+      color: white; touch-action: manipulation;
     }
 
-    .top-right {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
-    .btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.75em;
-      color: #fff;
-      text-decoration: none;
-      cursor: pointer;
-      box-shadow: 0 0 6px rgba(255,255,255,0.2);
-    }
-
+    .overlay { display: flex; flex-direction: column; height: 100vh; padding: 4px 6px; position: relative; box-sizing: border-box; }
     .premium-btn {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      position: absolute; top: 6px; right: 10px;
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      color: white; padding: 6px 12px; border-radius: 20px;
+      font-size: 0.7em; text-decoration: none; z-index: 1000;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
+      margin-top: 36px;
+    }
+    .premium-btn:hover { background: linear-gradient(to right, #ff416c, #ff4b2b); }
+
+    .movies-btn {
+      display: inline-block; margin: 6px auto;
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white; padding: 6px 16px; border-radius: 20px;
+      font-size: 0.75em; text-align: center; text-decoration: none;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s; width: fit-content;
+    }
+    .movies-btn:hover { background: linear-gradient(to right, #6dd5ed, #2193b0); }
+
+    .logo { text-align: center; margin-bottom: 4px; }
+    .logo img {
+      width: 50px; border-radius: 50%;
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
     }
 
-    .ads-btn {
-      background: linear-gradient(to right, #28a745, #218838);
-    }
+    h2 { font-size: 0.9em; margin: 3px 0; }
 
     .countdown-box {
-      text-align: center;
-      margin: 12px auto;
-      padding: 8px 14px;
-      font-size: 0.8em;
-      border-radius: 12px;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      box-shadow: 0 0 10px rgba(0,255,200,0.3);
-      color: #00ffcc;
+      color: #00ffcc; padding: 8px 14px; border-radius: 12px;
+      text-align: center; font-size: 0.75em; margin: 6px auto;
+      width: fit-content; max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
     }
 
-    .premium-only.locked {
-      opacity: 0.4;
-      pointer-events: none;
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
     }
 
-    .channel-grid {
-      margin-top: 100px;
+    .menu-grid {
+      flex: 1;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      padding: 10px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px; justify-items: center; align-items: center;
+      overflow-y: auto; padding: 4px;
     }
 
     .channel {
-      background: #222;
-      padding: 8px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 0.7em;
-      box-shadow: 0 0 5px rgba(255,255,255,0.1);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border-radius: 50%; padding: 4px;
+      width: 52px; height: 52px; cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: transform 0.3s, box-shadow 0.3s; outline: none;
+    }
+    .channel img {
+      width: 100%; height: 100%;
+      border-radius: 50%; object-fit: cover;
+    }
+    .channel span {
+      display: block; font-size: 0.6em;
+      color: #fff; margin-top: 4px; text-align: center;
+      line-height: 1.1; max-width: 60px; word-wrap: break-word;
     }
 
-    .footer {
-      text-align: center;
-      color: #aaa;
-      font-size: 0.7em;
-      margin-top: 20px;
+    .channel:focus, .channel:hover,
+    .movies-btn:focus, .premium-btn:focus {
+      transform: scale(1.1);
+      box-shadow:
+        0 0 8px #00f,
+        0 0 12px #0ff,
+        0 0 16px #0f0,
+        0 0 20px #ff0,
+        0 0 24px #f00;
+      outline: none;
+    }
+
+    .footer { text-align: center; font-size: 0.6em; color: #ccc; margin-top: 3px; }
+    .premium-only.locked { opacity: 0.4; pointer-events: none; }
+
+    #rotate-warning {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000; color: white;
+      z-index: 9999; display: none;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 20px; font-size: 1.2em;
+    }
+
+    @media screen and (orientation: portrait) {
+      #rotate-warning { display: flex; }
     }
   </style>
 </head>
 <body>
+  <div id="rotate-warning">Please rotate your device to landscape mode.</div>
+  <div class="overlay">
+    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
+    <button class="premium-btn" onclick="watchAds()">ADS (CLAIM PREMIUM)</button>
 
-  <div class="top-right">
-    <a href="premium-login.html" class="btn premium-btn">PREMIUM LOGIN</a>
-    <button id="adsButton" class="btn ads-btn">🎁 Watch Ads - Claim 30min Premium</button>
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
+      <h2>HONOR TV MENU</h2>
+    </div>
+    <div id="countdown-display" class="countdown-box"></div>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+
+    <div class="menu-grid">
+      <!-- Add your channels here (same as before) -->
+      <!-- Example channel -->
+      <div class="channel" tabindex="0" onclick="openChannel('phchannel')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
+        <span>Free Live TV</span>
+      </div>
+      <!-- Premium Channels below... -->
+    </div>
+
+    <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
-  <div id="countdown" class="countdown-box"></div>
-
-  <div class="channel-grid">
-    <div class="channel">Free Channel 1</div>
-    <div class="channel">Free Channel 2</div>
-    <div class="channel premium-only">Premium Channel A</div>
-    <div class="channel premium-only">Premium Channel B</div>
-  </div>
-
-  <div class="footer">Honor TV - Ad Reward Demo</div>
-
+  <!-- Premium Logic and Countdown -->
   <script>
-    const adsBtn = document.getElementById("adsButton");
-    const countdownEl = document.getElementById("countdown");
-
-    function grantPremiumAccess() {
-      const expiryTime = Date.now() + 30 * 60 * 1000;
-      localStorage.setItem("isPremiumLoggedIn", "true");
-      localStorage.setItem("premiumExpiry", expiryTime.toString());
-      alert("✅ You now have Premium access for 30 minutes!");
-      applyPremiumUI();
+    function openChannel(id) {
+      window.location.href = "go:" + id;
     }
 
-    function startAdCountdown() {
-      adsBtn.disabled = true;
-      adsBtn.style.opacity = 0.6;
-
-      let seconds = 20;
-      countdownEl.textContent = `⏳ Watching Ad... ${seconds}s`;
-
-      const interval = setInterval(() => {
-        seconds--;
-        countdownEl.textContent = `⏳ Watching Ad... ${seconds}s`;
-
-        if (seconds <= 0) {
-          clearInterval(interval);
-          grantPremiumAccess();
-          adsBtn.disabled = false;
-          adsBtn.style.opacity = 1;
-        }
-      }, 1000);
-    }
-
-    adsBtn.addEventListener("click", () => {
+    function tryOpenChannel(id) {
       if (localStorage.getItem("isPremiumLoggedIn") === "true") {
-        alert("✅ You already have Premium access.");
+        openChannel(id);
+      } else {
+        alert("This is a PREMIUM channel. Please login or watch ads.");
+      }
+    }
+
+    function updateCountdown() {
+      const countdownEl = document.getElementById("countdown-display");
+      const expiry = localStorage.getItem("premiumExpiry");
+      if (!expiry) {
+        countdownEl.textContent = "";
+        return;
+      }
+      const expiryDate = new Date(parseInt(expiry));
+      const now = new Date();
+      const diff = expiryDate - now;
+      if (diff <= 0) {
+        countdownEl.textContent = "⛔ Premium expired.";
+        localStorage.removeItem("isPremiumLoggedIn");
+        localStorage.removeItem("premiumExpiry");
+        location.reload();
+        return;
+      }
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      countdownEl.textContent = `⏳ Premium Expires In: ${d}d ${h}h ${m}m ${s}s (on ${expiryDate.toLocaleString()})`;
+    }
+
+    function watchAds() {
+      const adUrl = "https://otieu.com/4/9379028"; // 🔁 Replace this with real ad link
+      const adWindow = window.open(adUrl, "_blank");
+
+      if (!adWindow) {
+        alert("⚠️ Please allow popups to claim premium access.");
         return;
       }
 
-      window.open("https://otieu.com/4/9379028", "_blank"); // Replace with real ad link
+      setTimeout(() => {
+        if (!adWindow.closed) {
+          adWindow.close();
+          const premiumUntil = Date.now() + 30 * 60 * 1000; // 30 min
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          localStorage.setItem("premiumExpiry", premiumUntil.toString());
+          alert("🎉 You've earned 30 minutes of premium access!");
+          location.reload();
+        } else {
+          alert("❌ Keep the ad open for at least 20 seconds.");
+        }
+      }, 20000);
+    }
 
-      const onReturn = () => {
-        window.removeEventListener("focus", onReturn);
-        startAdCountdown();
-      };
-
-      window.addEventListener("focus", onReturn);
-    });
-
-    function applyPremiumUI() {
-      const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+    window.onload = () => {
+      const wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
       document.querySelectorAll('.premium-only').forEach(el => {
-        el.classList.toggle("locked", !isPremium);
+        if (!wasPremium) el.classList.add('locked');
       });
-    }
 
-    function checkPremiumExpiry() {
-      const expiry = localStorage.getItem("premiumExpiry");
-      const now = Date.now();
-
-      if (expiry && parseInt(expiry) > now) {
-        const remaining = parseInt(expiry) - now;
-        const m = Math.floor((remaining / 1000 / 60) % 60);
-        const s = Math.floor((remaining / 1000) % 60);
-        countdownEl.textContent = `⏳ Premium active: ${m}m ${s}s`;
-      } else if (localStorage.getItem("isPremiumLoggedIn") === "true") {
-        // Expired
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        applyPremiumUI();
-        countdownEl.textContent = "⛔ Premium expired.";
-      } else {
-        countdownEl.textContent = "";
-      }
-    }
-
-    applyPremiumUI();
-    checkPremiumExpiry();
-    setInterval(checkPremiumExpiry, 1000);
+      setInterval(() => {
+        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+        document.querySelectorAll('.premium-only').forEach(el => {
+          el.classList.toggle('locked', !isPremium);
+        });
+        if (!isPremium && wasPremium) location.reload();
+        updateCountdown();
+      }, 1000);
+    };
   </script>
-
 </body>
 </html>
