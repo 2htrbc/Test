@@ -11,49 +11,40 @@
       color: white; touch-action: manipulation;
     }
 
-    .overlay { display: flex; flex-direction: column; height: 100vh; padding: 4px 6px; position: relative; box-sizing: border-box; }
+    .overlay {
+      display: flex; flex-direction: column;
+      height: 100vh; padding: 4px 6px;
+      position: relative; box-sizing: border-box;
+    }
 
     .top-buttons {
       position: absolute;
-      top: 6px;
-      right: 10px;
-      display: flex;
-      gap: 8px;
+      top: 6px; right: 10px;
+      display: flex; flex-direction: column;
+      align-items: flex-end; gap: 8px;
       z-index: 1000;
     }
 
-    .premium-btn,
-    .ads-btn {
-      background: linear-gradient(to right, #ff4b2b, #ff416c);
-      color: white; padding: 6px 12px; border-radius: 20px;
+    .premium-btn, .ads-btn {
+      padding: 6px 12px; border-radius: 20px;
       font-size: 0.7em; text-decoration: none;
+      color: white;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
       transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .premium-btn {
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+    }
+    .premium-btn:hover {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
 
     .ads-btn {
       background: linear-gradient(to right, #28a745, #218838);
     }
-
-    .premium-btn:hover {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-    }
-
     .ads-btn:hover {
       background: linear-gradient(to right, #218838, #28a745);
-    }
-
-    .movies-btn {
-      display: inline-block; margin: 6px auto;
-      background: linear-gradient(to right, #2193b0, #6dd5ed);
-      color: white; padding: 6px 16px; border-radius: 20px;
-      font-size: 0.75em; text-align: center; text-decoration: none;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s, box-shadow 0.3s; width: fit-content;
-    }
-
-    .movies-btn:hover {
-      background: linear-gradient(to right, #6dd5ed, #2193b0);
     }
 
     .logo { text-align: center; margin-bottom: 4px; }
@@ -79,21 +70,38 @@
       100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
     }
 
+    .movies-btn {
+      display: inline-block; margin: 6px auto;
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white; padding: 6px 16px; border-radius: 20px;
+      font-size: 0.75em; text-align: center; text-decoration: none;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
+      width: fit-content;
+    }
+
+    .movies-btn:hover {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+    }
+
     .menu-grid {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 6px; justify-items: center; align-items: center;
-      overflow-y: auto; padding: 4px;
+      gap: 6px;
+      justify-items: center;
+      align-items: center;
+      overflow-y: auto;
+      padding: 4px;
     }
 
     .channel {
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-      border-radius: 50%; padding: 4px;
-      width: 52px; height: 52px; cursor: pointer;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      transition: transform 0.3s, box-shadow 0.3s; outline: none;
+      border-radius: 50%;
+      padding: 4px; width: 52px; height: 52px;
+      cursor: pointer; display: flex;
+      flex-direction: column; align-items: center;
+      justify-content: center; transition: transform 0.3s, box-shadow 0.3s; outline: none;
     }
 
     .channel img {
@@ -103,32 +111,47 @@
 
     .channel span {
       display: block; font-size: 0.6em;
-      color: #fff; margin-top: 4px; text-align: center;
-      line-height: 1.1; max-width: 60px; word-wrap: break-word;
+      color: #fff; margin-top: 4px;
+      text-align: center; line-height: 1.1;
+      max-width: 60px; word-wrap: break-word;
     }
 
     .channel:focus, .channel:hover,
     .movies-btn:focus, .premium-btn:focus, .ads-btn:focus {
       transform: scale(1.1);
-      box-shadow:
-        0 0 8px #00f,
-        0 0 12px #0ff,
-        0 0 16px #0f0,
-        0 0 20px #ff0,
-        0 0 24px #f00;
+      box-shadow: 0 0 8px #00f,
+                  0 0 12px #0ff,
+                  0 0 16px #0f0,
+                  0 0 20px #ff0,
+                  0 0 24px #f00;
       outline: none;
     }
 
-    .footer { text-align: center; font-size: 0.6em; color: #ccc; margin-top: 3px; }
-    .premium-only.locked { opacity: 0.4; pointer-events: none; }
+    .footer {
+      text-align: center;
+      font-size: 0.6em;
+      color: #ccc;
+      margin-top: 3px;
+    }
+
+    .premium-only.locked {
+      opacity: 0.4;
+      pointer-events: none;
+    }
 
     #rotate-warning {
-      position: fixed; top: 0; left: 0;
+      position: fixed;
+      top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: #000; color: white;
-      z-index: 9999; display: none;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 20px; font-size: 1.2em;
+      background: #000;
+      color: white;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.2em;
     }
 
     @media screen and (orientation: portrait) {
@@ -138,9 +161,9 @@
 </head>
 <body>
   <div id="rotate-warning">Please rotate your device to landscape mode.</div>
-  <div class="overlay">
 
-    <!-- TOP BUTTONS -->
+  <div class="overlay">
+    <!-- Buttons -->
     <div class="top-buttons">
       <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
       <a id="ads-reward-btn" class="ads-btn" tabindex="0">🎁 Watch Ads - Claim 30min Premium</a>
@@ -163,13 +186,11 @@
       <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('livetv')">
         <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels Premium</span>
       </div>
-      <!-- Add more premium-only channels as needed -->
     </div>
 
     <div class="footer">Welcome to: HONOR TV MENU - Enjoy Watching</div>
   </div>
 
-  <!-- JS Logic -->
   <script>
     function openChannel(id) {
       window.location.href = "go:" + id;
@@ -183,39 +204,20 @@
       }
     }
 
-    function lockAutoLandscape() {
-      const tryLock = () => {
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
-        }
-      };
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().then(tryLock).catch(tryLock);
-      } else {
-        tryLock();
-      }
-    }
-
-    function handleOrientationWarning() {
-      const warning = document.getElementById('rotate-warning');
-      warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
-    }
-
     function updateCountdown() {
-      const countdownEl = document.getElementById("countdown-display");
+      const el = document.getElementById("countdown-display");
       const expiry = localStorage.getItem("premiumExpiry");
       if (!expiry) {
-        countdownEl.textContent = "";
+        el.textContent = "";
         return;
       }
       const expiryDate = new Date(parseInt(expiry));
       const now = new Date();
       const diff = expiryDate - now;
       if (diff <= 0) {
-        countdownEl.textContent = "⛔ Premium expired.";
+        el.textContent = "⛔ Premium expired.";
         localStorage.removeItem("isPremiumLoggedIn");
         localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
         location.reload();
         return;
       }
@@ -223,53 +225,8 @@
       const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const m = Math.floor((diff / (1000 * 60)) % 60);
       const s = Math.floor((diff / 1000) % 60);
-      countdownEl.textContent = `⏳ Premium Expires In: ${d}d ${h}h ${m}m ${s}s (on ${expiryDate.toLocaleString()})`;
+      el.textContent = `⏳ Premium Expires In: ${d}d ${h}h ${m}m ${s}s (on ${expiryDate.toLocaleString()})`;
     }
-
-    const channels = Array.from(document.querySelectorAll('.channel, .movies-btn, .premium-btn, .ads-btn'));
-    let wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-
-    window.onload = () => {
-      if (channels.length > 0) channels[0].focus();
-      lockAutoLandscape();
-      handleOrientationWarning();
-
-      document.querySelectorAll('.premium-only').forEach(el => {
-        if (!wasPremium) el.classList.add('locked');
-      });
-
-      setInterval(() => {
-        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
-        document.querySelectorAll('.premium-only').forEach(el => {
-          el.classList.toggle('locked', !isPremium);
-        });
-        if (!isPremium && wasPremium) location.reload();
-        updateCountdown();
-        wasPremium = isPremium;
-      }, 1000);
-    };
-
-    document.addEventListener('keydown', (e) => {
-      const focused = document.activeElement;
-      const index = channels.indexOf(focused);
-      const columns = 6;
-      switch (e.key) {
-        case "ArrowRight": if (index < channels.length - 1) channels[index + 1].focus(); break;
-        case "ArrowLeft": if (index > 0) channels[index - 1].focus(); break;
-        case "ArrowDown": if (index + columns < channels.length) channels[index + columns].focus(); break;
-        case "ArrowUp": if (index - columns >= 0) channels[index - columns].focus(); break;
-        case "Enter":
-        case "OK": if (focused) focused.click(); break;
-        case "Backspace":
-        case "Escape": history.back(); break;
-      }
-    });
-
-    window.addEventListener('resize', handleOrientationWarning);
-    window.addEventListener('orientationchange', handleOrientationWarning);
-    window.addEventListener('click', lockAutoLandscape, { once: true });
-
-    const adsBtn = document.getElementById("ads-reward-btn");
 
     function grantTemporaryPremium() {
       const now = Date.now();
@@ -280,55 +237,56 @@
       location.reload();
     }
 
+    const adsBtn = document.getElementById("ads-reward-btn");
     adsBtn.addEventListener("click", () => {
       if (localStorage.getItem("isPremiumLoggedIn") === "true") {
         alert("You already have Premium access.");
         return;
       }
 
-      adsBtn.textContent = "⏳ Watching Ad... 20s";
-      adsBtn.disabled = true;
-      adsBtn.style.pointerEvents = "none";
+      const adWindow = window.open("https://example.com/ad", "_blank"); // Replace with your real ad link
 
-      let countdown = 20;
-      const interval = setInterval(() => {
-        countdown--;
-        adsBtn.textContent = `⏳ Watching Ad... ${countdown}s`;
-        if (countdown <= 0) {
-          clearInterval(interval);
-          grantTemporaryPremium();
-          adsBtn.textContent = "🎁 Watch Ads - Claim 30min Premium";
-          adsBtn.disabled = false;
-          adsBtn.style.pointerEvents = "auto";
-        }
-      }, 1000);
+      const waitForReturn = () => {
+        window.removeEventListener("focus", waitForReturn);
+
+        adsBtn.textContent = "⏳ Watching Ad... 20s";
+        adsBtn.disabled = true;
+        adsBtn.style.pointerEvents = "none";
+
+        let countdown = 20;
+        const interval = setInterval(() => {
+          countdown--;
+          adsBtn.textContent = `⏳ Watching Ad... ${countdown}s`;
+          if (countdown <= 0) {
+            clearInterval(interval);
+            grantTemporaryPremium();
+            adsBtn.textContent = "🎁 Watch Ads - Claim 30min Premium";
+            adsBtn.disabled = false;
+            adsBtn.style.pointerEvents = "auto";
+          }
+        }, 1000);
+      };
+
+      window.addEventListener("focus", waitForReturn);
     });
-  </script>
 
-  <!-- Firebase Auth Check (Optional) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    window.onload = () => {
+      const wasPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+      document.querySelectorAll('.premium-only').forEach(el => {
+        if (!wasPremium) el.classList.add('locked');
+      });
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcmyqSpFbg5mEW7y60dUZAXQ8nEf8QHis",
-      authDomain: "sample-login-d2b3d.firebaseapp.com",
-      projectId: "sample-login-d2b3d",
-      storageBucket: "sample-login-d2b3d.appspot.com",
-      messagingSenderId: "1082557446832",
-      appId: "1:1082557446832:web:d7285c23db5899a3e0d975"
+      setInterval(() => {
+        const isPremium = localStorage.getItem("isPremiumLoggedIn") === "true";
+        document.querySelectorAll('.premium-only').forEach(el => {
+          el.classList.toggle('locked', !isPremium);
+        });
+        updateCountdown();
+      }, 1000);
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    onAuthStateChanged(auth, (user) => {
-      if (!user && localStorage.getItem("isPremiumLoggedIn") === "true") {
-        localStorage.removeItem("isPremiumLoggedIn");
-        localStorage.removeItem("premiumExpiry");
-        localStorage.removeItem("loggedInUserId");
-        location.reload();
-      }
+    window.addEventListener('resize', () => {
+      document.getElementById('rotate-warning').style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
     });
   </script>
 </body>
