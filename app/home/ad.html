@@ -29,7 +29,13 @@
     #ad-status {
       font-size: 1em;
       color: #00ffcc;
-      margin: 0.5em 0 1.5em;
+      margin: 0.5em 0;
+    }
+
+    #countdown {
+      font-size: 1.1em;
+      color: #ffcc00;
+      margin-bottom: 1em;
     }
 
     #continue-btn {
@@ -47,15 +53,12 @@
     #continue-btn:hover {
       background: linear-gradient(to right, #0072ff, #00ffcc);
     }
-
-    .hidden {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
   <h1>🎥 Please watch this short ad to continue</h1>
   <div id="ad-status">Ad is loading...</div>
+  <div id="countdown">⏳ Please wait 30 seconds...</div>
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
 
   <script>
@@ -79,16 +82,9 @@
     function loadAdScript() {
       const adScript = document.createElement('script');
       adScript.src = 'https://groleegni.net/401/9574065';
-
-      adScript.onload = () => {
-        adLoaded = true;
-      };
-
-      adScript.onerror = () => {
-        adLoaded = false;
-      };
-
-      (document.body || document.documentElement).appendChild(adScript);
+      adScript.onload = () => { adLoaded = true; };
+      adScript.onerror = () => { adLoaded = false; };
+      document.body.appendChild(adScript);
     }
 
     function unlockPremium() {
@@ -99,24 +95,48 @@
       window.location.href = "index.html";
     }
 
-    // Load ad script now
-    loadAdScript();
+    function startCountdown(seconds) {
+      const countdownEl = document.getElementById('countdown');
+      let remaining = seconds;
 
-    // After 20 seconds, check ad status
-    setTimeout(() => {
+      const interval = setInterval(() => {
+        remaining--;
+        countdownEl.textContent = `⏳ Please wait ${remaining} second${remaining === 1 ? '' : 's'}...`;
+
+        if (remaining <= 0) {
+          clearInterval(interval);
+          checkAdStatus();
+        }
+      }, 1000);
+    }
+
+    function checkAdStatus() {
       detectAdBlock((blocked) => {
         const status = document.getElementById('ad-status');
         const btn = document.getElementById('continue-btn');
 
         if (blocked || !adLoaded) {
           status.textContent = '❌ Ad Blocked or DNS Blocked. Please allow ads to continue.';
-          btn.style.display = 'none';
         } else {
           status.textContent = '✅ Ad finished! You can continue.';
           btn.style.display = 'inline-block';
+
+          // Auto-click for Smart TVs
+          setTimeout(() => {
+            if (typeof window.tvKeyEvent !== "undefined" || navigator.userAgent.includes("SmartTV")) {
+              btn.click();
+            } else {
+              // Auto-click for general cases (TV browsers without detection)
+              btn.click();
+            }
+          }, 2000); // Wait 2 seconds before auto-clicking
         }
       });
-    }, 20000);
+    }
+
+    // Initialize
+    loadAdScript();
+    startCountdown(30);
   </script>
 </body>
 </html>
