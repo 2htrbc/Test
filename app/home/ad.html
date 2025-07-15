@@ -53,6 +53,15 @@
     #continue-btn:hover {
       background: linear-gradient(to right, #0072ff, #00ffcc);
     }
+
+    iframe {
+      width: 1px;
+      height: 1px;
+      border: 0;
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+    }
   </style>
 </head>
 <body>
@@ -60,6 +69,9 @@
   <div id="ad-status">Ad is loading...</div>
   <div id="countdown">⏳ Please wait 30 seconds...</div>
   <button id="continue-btn" onclick="unlockPremium()">✅ Continue to Menu</button>
+
+  <!-- Monetag Direct Link Hidden Iframe -->
+  <iframe src="https://otieu.com/4/9573541" loading="lazy"></iframe>
 
   <script>
     let adLoaded = false;
@@ -121,20 +133,15 @@
           status.textContent = '✅ Ad finished! You can continue.';
           btn.style.display = 'inline-block';
 
-          // Auto-click for Smart TVs
+          // Auto-click for Smart TVs and others
           setTimeout(() => {
-            if (typeof window.tvKeyEvent !== "undefined" || navigator.userAgent.includes("SmartTV")) {
-              btn.click();
-            } else {
-              // Auto-click for general cases (TV browsers without detection)
-              btn.click();
-            }
-          }, 2000); // Wait 2 seconds before auto-clicking
+            btn.click();
+          }, 2000); // Auto-click after 2 seconds
         }
       });
     }
 
-    // Initialize
+    // Initialize ad loading and countdown
     loadAdScript();
     startCountdown(30);
   </script>
