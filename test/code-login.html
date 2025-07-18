@@ -79,23 +79,24 @@
   <div class="message" id="message"></div>
 
   <script>
-    // Editable valid codes list
+    // Code definitions using Philippines local expiry time
     const validCodes = {
       'HONOR2025': {
-        expiresAt: new Date('2025-12-31T23:59:59Z').getTime(),
-        duration: 30 * 24 * 60 * 60 * 1000,
+        // Dec 31, 2025 at 23:59:59 Philippines time
+        expiresAt: new Date('2025-12-31T23:59:59+08:00').getTime(),
+        duration: 30 * 24 * 60 * 60 * 1000
       },
       'VIPJULY': {
-        expiresAt: new Date('2025-07-31T23:59:59Z').getTime(),
-        duration: 15 * 24 * 60 * 60 * 1000,
+        expiresAt: new Date('2025-07-31T23:59:59+08:00').getTime(),
+        duration: 15 * 24 * 60 * 60 * 1000
       },
       'TEST': {
-        expiresAt: new Date('2025-07-20T02:34:59Z').getTime(),
-        duration: 7 * 24 * 60 * 60 * 1000,
+        expiresAt: new Date('2025-07-20T02:34:59+08:00').getTime(),
+        duration: 7 * 24 * 60 * 60 * 1000
       }
     };
 
-    // Show/hide text field content
+    // Toggle input visibility
     function toggleCode() {
       const input = document.getElementById('loginCode');
       input.type = input.type === 'text' ? 'password' : 'text';
@@ -105,7 +106,9 @@
       const codeInput = document.getElementById('loginCode');
       const code = codeInput.value.trim().toUpperCase();
       const message = document.getElementById('message');
-      const now = Date.now();
+
+      // Get current time in PH (UTC+8) by adding 8 hours to UTC
+      const now = new Date().getTime() + (8 * 60 * 60 * 1000);
 
       if (validCodes.hasOwnProperty(code)) {
         const codeInfo = validCodes[code];
@@ -122,13 +125,4 @@
           }, 1500);
         } else {
           message.textContent = "❌ Code expired. Please try another.";
-          message.className = "message error";
-        }
-      } else {
-        message.textContent = "❌ Invalid code. Please try again.";
-        message.className = "message error";
-      }
-    }
-  </script>
-</body>
-</html>
+          message.className =
