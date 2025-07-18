@@ -305,5 +305,44 @@
   }
 })();
 </script>
+
+    <script>
+    async function blockVPN() {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        if (data.security && (data.security.vpn || data.security.proxy || data.security.tor)) {
+          document.body.innerHTML = '<h1 style="color:red;text-align:center;">VPN or Proxy Detected. Access Blocked.</h1>';
+        }
+      } catch (e) {
+        console.warn("VPN check error:", e);
+      }
+    }
+
+    function blockHttpCanary() {
+      const suspicious = ['httpcanary', 'charles', 'fiddler', 'wireshark', 'proxy', 'xposed', 'burp'];
+      const ua = navigator.userAgent.toLowerCase();
+      if (suspicious.some(tool => ua.includes(tool))) {
+        document.body.innerHTML = '<h1 style="color:red;text-align:center;">Unauthorized Tool Detected. Access Blocked.</h1>';
+      }
+
+      // DevTools detector
+      let devtoolsOpen = false;
+      const el = new Image();
+      Object.defineProperty(el, 'id', {
+        get() {
+          devtoolsOpen = true;
+          throw new Error("Devtools opened");
+        }
+      });
+      console.dir(el);
+      if (devtoolsOpen) {
+        document.body.innerHTML = '<h1 style="color:red;text-align:center;">DevTools Detected. Access Blocked.</h1>';
+      }
+    }
+
+    blockVPN();
+    blockHttpCanary();
+  </script>
 </body>
 </html>
