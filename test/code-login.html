@@ -17,18 +17,33 @@
     h1 {
       font-size: 1.6em; margin-bottom: 1em;
     }
-    input {
+    .input-group {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+    }
+    input[type="text"] {
       padding: 0.6em 1em;
       font-size: 1em;
       border-radius: 1.2em;
       border: none;
       width: 100%;
-      max-width: 320px;
       text-align: center;
       outline: none;
       background: #222;
       color: #0ff;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    .toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #0ff;
+      cursor: pointer;
+      font-size: 1em;
     }
     button {
       margin-top: 1em;
@@ -50,43 +65,49 @@
       font-size: 0.9em;
       font-weight: bold;
     }
-    .success {
-      color: #0f0;
-    }
-    .error {
-      color: #f55;
-    }
+    .success { color: #0f0; }
+    .error { color: #f55; }
   </style>
 </head>
 <body>
   <h1>🔐 Enter Your Premium Code</h1>
-  <input type="text" id="loginCode" placeholder="Enter code here..." autocomplete="off" />
+  <div class="input-group">
+    <input type="text" id="loginCode" placeholder="Enter code here..." autocomplete="off" />
+    <button class="toggle-btn" onclick="toggleCode()">👁️</button>
+  </div>
   <button onclick="submitCode()">Unlock Premium</button>
   <div class="message" id="message"></div>
 
   <script>
-    // Define your valid codes and expiration timestamps (in ms)
+    // Editable valid codes list
     const validCodes = {
       'HONOR2025': {
-        expiresAt: new Date('2025-12-31T23:59:59').getTime(), // Dec 31, 2025
-        duration: 30 * 24 * 60 * 60 * 1000, // 30 days
+        expiresAt: new Date('2025-12-31T23:59:59Z').getTime(),
+        duration: 30 * 24 * 60 * 60 * 1000,
       },
       'VIPJULY': {
-        expiresAt: new Date('2025-07-31T23:59:59').getTime(), // July 31, 2025
-        duration: 15 * 24 * 60 * 60 * 1000, // 15 days
+        expiresAt: new Date('2025-07-31T23:59:59Z').getTime(),
+        duration: 15 * 24 * 60 * 60 * 1000,
       },
-      'Test': {
-        expiresAt: new Date('2025-07-18T02:34:59').getTime(), // July 20, 2025
-        duration: 7 * 24 * 60 * 60 * 1000, // 7 days
+      'TEST': {
+        expiresAt: new Date('2025-07-20T02:34:59Z').getTime(),
+        duration: 7 * 24 * 60 * 60 * 1000,
       }
     };
 
+    // Show/hide text field content
+    function toggleCode() {
+      const input = document.getElementById('loginCode');
+      input.type = input.type === 'text' ? 'password' : 'text';
+    }
+
     function submitCode() {
-      const code = document.getElementById('loginCode').value.trim().toUpperCase();
+      const codeInput = document.getElementById('loginCode');
+      const code = codeInput.value.trim().toUpperCase();
       const message = document.getElementById('message');
       const now = Date.now();
 
-      if (validCodes[code]) {
+      if (validCodes.hasOwnProperty(code)) {
         const codeInfo = validCodes[code];
         if (now <= codeInfo.expiresAt) {
           const expiry = now + codeInfo.duration;
@@ -97,7 +118,7 @@
           message.className = "message success";
 
           setTimeout(() => {
-            window.location.href = "index.html"; // or your main menu page
+            window.location.href = "index.html";
           }, 1500);
         } else {
           message.textContent = "❌ Code expired. Please try another.";
