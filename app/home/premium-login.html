@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Premium Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
@@ -51,10 +51,18 @@
       left: 10px;
       transform: translateY(-50%);
       color: #aaa;
+      pointer-events: none;
+    }
+    .input-group .toggle-password {
+      right: 10px;
+      left: auto;
+      cursor: pointer;
+      pointer-events: all;
+      color: #ccc;
     }
     .input-group input {
       width: 100%;
-      padding: 12px 12px 12px 36px;
+      padding: 12px 36px 12px 36px;
       background: #262b3e;
       border: 1px solid #3a3f55;
       border-radius: 6px;
@@ -64,6 +72,7 @@
     }
     .input-group input:focus {
       border-color: #00d4ff;
+      background-color: #2a2f47;
     }
     .input-group label {
       position: absolute;
@@ -84,9 +93,16 @@
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
     }
-    .btn:hover {
+    .btn:hover,
+    .btn:focus {
       background: #00b8e6;
+      outline: 3px solid #00d4ff;
+    }
+    .btn:active {
+      background-color: #009ac7;
+      transform: scale(0.98);
     }
     .messageDiv {
       margin-bottom: 10px;
@@ -116,24 +132,23 @@
 
     <div class="input-group">
       <i class="fas fa-envelope"></i>
-      <input type="email" id="email" placeholder="Email" required />
+      <input type="email" id="email" placeholder="Email" required tabindex="1" autofocus />
       <label for="email">Email</label>
     </div>
 
     <div class="input-group">
       <i class="fas fa-lock"></i>
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="password" id="password" placeholder="Password" required tabindex="2" />
+      <i class="fas fa-eye toggle-password" id="togglePassword"></i>
       <label for="password">Password</label>
     </div>
 
     <input type="checkbox" id="expire30" checked hidden />
-    <button class="btn" id="submitSignIn">Sign In</button>
-    
-    <!-- Hidden logout button that will never show -->
+    <button class="btn" id="submitSignIn" tabindex="3">Sign In</button>
     <button id="logoutBtn" class="btn hidden">Logout</button>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase + TV/Touch Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
@@ -175,7 +190,6 @@
       });
     }
 
-    // Auto-logout if session expired
     const expiry = localStorage.getItem("premiumExpiry");
     if (expiry && Date.now() > parseInt(expiry)) {
       logoutPremium(false);
@@ -240,8 +254,33 @@
       }
     });
 
-    // Do NOT enable logoutBtn
-    // document.getElementById("logoutBtn").addEventListener("click", () => logoutPremium());
+    // Toggle password visibility
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      togglePassword.classList.toggle("fa-eye");
+      togglePassword.classList.toggle("fa-eye-slash");
+    });
+
+    // Remote TV navigation (arrow keys)
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (!isTouchDevice) {
+      const focusable = Array.from(document.querySelectorAll('input, button'));
+      let currentIndex = 0;
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          currentIndex = (currentIndex + 1) % focusable.length;
+          focusable[currentIndex].focus();
+        } else if (e.key === 'ArrowUp') {
+          currentIndex = (currentIndex - 1 + focusable.length) % focusable.length;
+          focusable[currentIndex].focus();
+        }
+      });
+      focusable[currentIndex].focus();
+    }
   </script>
 </body>
 </html>
