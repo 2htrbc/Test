@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Login Code - Premium Unlock</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: #111; color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100vh; text-align: center;
+      padding: 0 1em;
+    }
+    h1 {
+      font-size: 1.6em; margin-bottom: 1em;
+    }
+    input {
+      padding: 0.6em 1em;
+      font-size: 1em;
+      border-radius: 1.2em;
+      border: none;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      outline: none;
+      background: #222;
+      color: #0ff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    button {
+      margin-top: 1em;
+      padding: 0.6em 2em;
+      font-size: 1em;
+      border: none;
+      border-radius: 1.5em;
+      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+      box-shadow: 0 0 5px rgba(255,255,255,0.2);
+    }
+    button:hover {
+      background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+    }
+    .message {
+      margin-top: 1em;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .success {
+      color: #0f0;
+    }
+    .error {
+      color: #f55;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Enter Your Premium Code</h1>
+  <input type="text" id="loginCode" placeholder="Enter code here..." autocomplete="off" />
+  <button onclick="submitCode()">Unlock Premium</button>
+  <div class="message" id="message"></div>
+
+  <script>
+    function submitCode() {
+      const code = document.getElementById('loginCode').value.trim().toUpperCase();
+      const validCodes = ['HONOR2025', 'VIPCODE30', 'FREE30DAYS']; // Add more codes here
+      const message = document.getElementById('message');
+
+      if (validCodes.includes(code)) {
+        const now = Date.now();
+        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+        const expiry = now + thirtyDays;
+
+        localStorage.setItem("isPremiumLoggedIn", "true");
+        localStorage.setItem("premiumExpiry", expiry.toString());
+
+        message.textContent = "✅ Premium unlocked for 30 days!";
+        message.className = "message success";
+
+        setTimeout(() => {
+          window.location.href = "index.html"; // Redirect back to main menu
+        }, 1500);
+      } else {
+        message.textContent = "❌ Invalid code. Please try again.";
+        message.className = "message error";
+      }
+    }
+  </script>
+</body>
+</html>
