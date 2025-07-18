@@ -96,7 +96,7 @@
       const msg = document.getElementById("messageBox");
 
       if (validCodes.includes(input)) {
-        const duration = 30 * 60 * 1000; // 30 minutes
+        const duration = 02 * 60 * 1000; // 30 minutes
         const expiry = Date.now() + duration;
         localStorage.setItem("isPremiumLoggedIn", "true");
         localStorage.setItem("premiumExpiry", expiry.toString());
