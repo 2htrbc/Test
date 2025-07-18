@@ -272,6 +272,43 @@
     updateAdStatus();
     setFocus(0);
   </script>
+
+  <script>
+// VPN and HTTP Canary Detection Script
+(async () => {
+  const badAgents = [
+    /httpcanary/i,
+    /charles/i,
+    /fiddler/i,
+    /mitm/i,
+    /burpsuite/i
+  ];
+
+  // Block if user agent indicates sniffing/debugging tools
+  if (badAgents.some(regex => regex.test(navigator.userAgent))) {
+    window.location.href = "https://google.com"; // Block access
+    return;
+  }
+
+  // Optional: Block basic DevTools open detection (simple trick)
+  const devtools = /./;
+  devtools.toString = function () {
+    window.location.href = "https://google.com";
+  };
+  console.log('%c', devtools);
+
+  // Basic VPN detection using ipapi.co
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    if (data?.security?.vpn || data?.security?.proxy) {
+      window.location.href = "https://google.com"; // Block VPN/Proxy
+    }
+  } catch (err) {
+    console.warn("VPN check failed:", err);
+  }
+})();
+</script>
 </body>
 </html>
 
