@@ -3,134 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>Enter Access Code - HONOR TV</title>
+  <title>Enter Login Code</title>
   <style>
-    html, body {
-      margin: 0; padding: 0;
-      height: 100vh; overflow: hidden;
-      background: #111; font-family: 'Segoe UI', sans-serif;
-      color: white; font-size: 1.5vw;
-      touch-action: manipulation;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+    body {
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(to right, #141e30, #243b55);
+      font-family: 'Segoe UI', sans-serif; color: white;
+      font-size: 1.2em; touch-action: manipulation;
     }
-
     .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2em;
+      border-radius: 1em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
       text-align: center;
-      padding: 1em;
-      box-sizing: border-box;
       width: 90%;
       max-width: 400px;
     }
-
-    .logo img {
-      width: 4em; border-radius: 50%;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
-      margin-bottom: 0.5em;
-    }
-
-    h2 {
-      font-size: 1em;
+    h1 {
       margin-bottom: 1em;
+      font-size: 1.4em;
     }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 0.7em;
-      font-size: 1em;
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 0.8em;
+      font-size: 1em; border-radius: 0.5em;
+      border: none; outline: none;
+      margin-bottom: 1em;
+      background: #222; color: #0ff;
+      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
+    }
+    .toggle-password {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -2.2em;
+      margin-bottom: 1em;
+      padding-right: 0.5em;
+    }
+    .toggle-password button {
+      background: none;
       border: none;
-      border-radius: 0.5em;
-      margin-bottom: 1em;
-      text-align: center;
-      background: #222;
       color: #0ff;
-      outline: none;
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      cursor: pointer;
+      font-size: 0.9em;
     }
-
     button {
-      width: 100%;
-      padding: 0.7em;
+      padding: 0.6em 1.5em;
       font-size: 1em;
-      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-      border: none;
-      color: white;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white; border: none;
       border-radius: 0.5em;
       cursor: pointer;
       transition: background 0.3s, transform 0.2s;
     }
-
-    button:focus,
-    button:hover {
+    button:hover, button:focus {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
       transform: scale(1.05);
       outline: none;
-      box-shadow:
-        0 0 8px #00f,
-        0 0 12px #0ff,
-        0 0 16px #0f0;
     }
-
     .message {
       margin-top: 1em;
       font-size: 0.9em;
-      color: #ccc;
+      color: #ff0;
     }
-
     .back-link {
       display: block;
       margin-top: 1.5em;
-      font-size: 0.8em;
+      font-size: 0.9em;
       color: #0ff;
       text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-      html { font-size: 4vw; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="logo">
-      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Logo" />
+    <h1>🔐 Enter Access Code</h1>
+    <input type="password" id="codeInput" placeholder="Enter your code" tabindex="0" />
+    <div class="toggle-password">
+      <button onclick="togglePassword()" tabindex="0">👁 Show</button>
     </div>
-    <h2>Enter Premium Access Code</h2>
-
-    <input type="text" id="codeInput" placeholder="Enter Code..." maxlength="12" tabindex="0" />
-    <button onclick="submitCode()" tabindex="0">🔐 Unlock Premium</button>
-
+    <button onclick="checkCode()" tabindex="0">✔ Login</button>
     <div class="message" id="messageBox"></div>
-    <a href="index.html" class="back-link" tabindex="0">⬅️ Back to Menu</a>
+    <a href="index.html" class="back-link" tabindex="0">← Back to Menu</a>
   </div>
 
   <script>
-    const validCodes = ["HONOR123", "PREMIUM2025", "HonorTV"]; // Add valid codes here
+    const validCodes = ["HONORVIP2025", "FREEACCESS123", "TESTPREMIUM"]; // You can edit or fetch dynamically
 
-    function submitCode() {
-      const input = document.getElementById("codeInput").value.trim().toUpperCase();
+    function checkCode() {
+      const input = document.getElementById("codeInput").value.trim();
       const msg = document.getElementById("messageBox");
 
       if (validCodes.includes(input)) {
         const duration = 30 * 60 * 1000; // 30 minutes
+        const expiry = Date.now() + duration;
         localStorage.setItem("isPremiumLoggedIn", "true");
-        localStorage.setItem("premiumExpiry", (Date.now() + duration).toString());
-        msg.innerHTML = "✅ Code accepted! Premium unlocked for 30 minutes.";
+        localStorage.setItem("premiumExpiry", expiry.toString());
         msg.style.color = "#0f0";
-        setTimeout(() => { window.location.href = "index.html"; }, 1500);
+        msg.textContent = "✅ Code accepted. Premium unlocked!";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
       } else {
-        msg.innerHTML = "❌ Invalid code. Please try again.";
         msg.style.color = "#f66";
+        msg.textContent = "❌ Invalid code. Try again.";
+      }
+    }
+
+    function togglePassword() {
+      const input = document.getElementById("codeInput");
+      const btn = event.currentTarget;
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈 Hide";
+      } else {
+        input.type = "password";
+        btn.textContent = "👁 Show";
+      }
+    }
+
+    // Remote navigation (Arrow keys)
+    const focusables = Array.from(document.querySelectorAll('[tabindex]'));
+    let focusIndex = 0;
+
+    function setFocus(i) {
+      if (focusables[i]) {
+        focusables[i].focus();
+        focusIndex = i;
       }
     }
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") submitCode();
+      if (["ArrowDown", "ArrowUp"].includes(e.key)) {
+        e.preventDefault();
+        const delta = e.key === "ArrowDown" ? 1 : -1;
+        const total = focusables.length;
+        focusIndex = (focusIndex + delta + total) % total;
+        setFocus(focusIndex);
+      } else if (e.key === "Enter") {
+        const el = document.activeElement;
+        if (el && typeof el.click === "function") el.click();
+      }
     });
 
-    // Auto focus
-    window.onload = () => {
-      document.getElementById("codeInput").focus();
-    };
+    setFocus(0);
   </script>
 </body>
 </html>
