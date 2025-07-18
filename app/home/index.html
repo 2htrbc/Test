@@ -272,45 +272,6 @@
     updateAdStatus();
     setFocus(0);
   </script>
-  <script>
-// Basic VPN and HTTP Canary detection
-(async () => {
-  // Check for suspicious user agents or debugging
-  const suspiciousAgents = [
-    /httpcanary/i,
-    /charles/i,
-    /fiddler/i,
-    /mitm/i,
-    /burpsuite/i
-  ];
-
-  if (suspiciousAgents.some(r => r.test(navigator.userAgent))) {
-    alert("Proxy or packet sniffer detected. Access denied.");
-    window.location.href = "https://google.com"; // redirect
-    return;
-  }
-
-  // Check if the user is using DevTools
-  const devtools = /./;
-  devtools.toString = function () {
-    alert("Developer tools are not allowed.");
-    window.location.href = "https://google.com";
-  };
-  console.log('%c', devtools);
-
-  // VPN check using public IP + DNS leak (limited)
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
-    if (data && (data.security && (data.security.vpn || data.security.proxy))) {
-      alert("VPN/Proxy detected. Access denied.");
-      window.location.href = "https://google.com";
-    }
-  } catch (e) {
-    console.warn("VPN check skipped (fetch failed)", e);
-  }
-})();
-</script>
 </body>
 </html>
 
