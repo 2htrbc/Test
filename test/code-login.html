@@ -2,171 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Login Code - Premium Unlock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Enter Access Code - HONOR TV</title>
   <style>
-    body {
+    html, body {
       margin: 0; padding: 0;
-      background: #111; color: #fff;
-      font-family: 'Segoe UI', sans-serif;
+      height: 100vh; overflow: hidden;
+      background: #111; font-family: 'Segoe UI', sans-serif;
+      color: white; font-size: 1.5vw;
+      touch-action: manipulation;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      height: 100vh; text-align: center;
-      padding: 0 1em;
     }
-    h1 {
-      font-size: 1.6em; margin-bottom: 1em;
-    }
-    .input-group {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-    }
-    input[type="text"] {
-      padding: 0.6em 1em;
-      font-size: 1em;
-      border-radius: 1.2em;
-      border: none;
-      width: 100%;
+
+    .container {
       text-align: center;
-      outline: none;
+      padding: 1em;
+      box-sizing: border-box;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .logo img {
+      width: 4em; border-radius: 50%;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+      margin-bottom: 0.5em;
+    }
+
+    h2 {
+      font-size: 1em;
+      margin-bottom: 1em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.7em;
+      font-size: 1em;
+      border: none;
+      border-radius: 0.5em;
+      margin-bottom: 1em;
+      text-align: center;
       background: #222;
       color: #0ff;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      outline: none;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
     }
-    .toggle-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #0ff;
-      cursor: pointer;
-      font-size: 1em;
-    }
+
     button {
-      margin-top: 1em;
-      padding: 0.6em 2em;
+      width: 100%;
+      padding: 0.7em;
       font-size: 1em;
-      border: none;
-      border-radius: 1.5em;
       background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+      border: none;
       color: white;
+      border-radius: 0.5em;
       cursor: pointer;
-      transition: background 0.3s;
-      box-shadow: 0 0 5px rgba(255,255,255,0.2);
+      transition: background 0.3s, transform 0.2s;
     }
+
+    button:focus,
     button:hover {
-      background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+      transform: scale(1.05);
+      outline: none;
+      box-shadow:
+        0 0 8px #00f,
+        0 0 12px #0ff,
+        0 0 16px #0f0;
     }
+
     .message {
       margin-top: 1em;
       font-size: 0.9em;
-      font-weight: bold;
+      color: #ccc;
     }
-    .success { color: #0f0; }
-    .error { color: #f55; }
-    .info { color: #0ff; margin-top: 1em; font-size: 0.9em; }
+
+    .back-link {
+      display: block;
+      margin-top: 1.5em;
+      font-size: 0.8em;
+      color: #0ff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      html { font-size: 4vw; }
+    }
   </style>
 </head>
 <body>
-  <h1>🔐 Enter Your Premium Code</h1>
-  <div class="input-group">
-    <input type="text" id="loginCode" placeholder="Enter code here..." autocomplete="off" />
-    <button class="toggle-btn" onclick="toggleCode()">👁️</button>
+  <div class="container">
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Logo" />
+    </div>
+    <h2>Enter Premium Access Code</h2>
+
+    <input type="text" id="codeInput" placeholder="Enter Code..." maxlength="12" tabindex="0" />
+    <button onclick="submitCode()" tabindex="0">🔐 Unlock Premium</button>
+
+    <div class="message" id="messageBox"></div>
+    <a href="index.html" class="back-link" tabindex="0">⬅️ Back to Menu</a>
   </div>
-  <button onclick="submitCode()">Unlock Premium</button>
-  <div class="message" id="message"></div>
-  <div class="info" id="statusInfo"></div>
 
   <script>
-    // Premium codes with expiration and duration (Philippines time)
-    const validCodes = {
-      'HONOR2025': {
-        expiresAt: new Date('2025-12-31T23:59:59+08:00').getTime(),
-        duration: 30 * 24 * 60 * 60 * 1000 // 30 days
-      },
-      'VIPJULY': {
-        expiresAt: new Date('2025-07-31T23:59:59+08:00').getTime(),
-        duration: 15 * 24 * 60 * 60 * 1000 // 15 days
-      },
-      'TEST': {
-        expiresAt: new Date('2025-07-20T02:34:59+08:00').getTime(),
-        duration: 7 * 24 * 60 * 60 * 1000 // 7 days
-      }
-    };
-
-    // Toggle input visibility
-    function toggleCode() {
-      const input = document.getElementById('loginCode');
-      input.type = input.type === 'text' ? 'password' : 'text';
-    }
-
-    // Format milliseconds into readable time
-    function formatRemainingTime(ms) {
-      const seconds = Math.floor(ms / 1000) % 60;
-      const minutes = Math.floor(ms / (1000 * 60)) % 60;
-      const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
-      const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-    // Check and show status if already premium
-    function checkPremiumStatus() {
-      const expiry = localStorage.getItem("premiumExpiry");
-      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn");
-
-      if (isLoggedIn === "true" && expiry) {
-        const nowPH = Date.now() + (8 * 60 * 60 * 1000);
-        const remaining = Number(expiry) - nowPH;
-        const status = document.getElementById("statusInfo");
-
-        if (remaining > 0) {
-          status.textContent = "⭐ Premium active. Time left: " + formatRemainingTime(remaining);
-          // Optional: Auto-redirect to main content
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 3000);
-        } else {
-          localStorage.removeItem("isPremiumLoggedIn");
-          localStorage.removeItem("premiumExpiry");
-          status.textContent = "⏳ Premium expired. Please enter a new code.";
-        }
-      }
-    }
+    const validCodes = ["HONOR123", "PREMIUM2025"]; // Add valid codes here
 
     function submitCode() {
-      const codeInput = document.getElementById('loginCode');
-      const code = codeInput.value.trim().toUpperCase();
-      const message = document.getElementById('message');
-      const nowPH = Date.now() + (8 * 60 * 60 * 1000); // PH time
+      const input = document.getElementById("codeInput").value.trim().toUpperCase();
+      const msg = document.getElementById("messageBox");
 
-      if (validCodes.hasOwnProperty(code)) {
-        const info = validCodes[code];
-        if (nowPH <= info.expiresAt) {
-          const expiry = nowPH + info.duration;
-          localStorage.setItem("isPremiumLoggedIn", "true");
-          localStorage.setItem("premiumExpiry", expiry.toString());
-
-          message.textContent = "✅ Premium unlocked!";
-          message.className = "message success";
-
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        } else {
-          message.textContent = "❌ Code expired.";
-          message.className = "message error";
-        }
+      if (validCodes.includes(input)) {
+        const duration = 30 * 60 * 1000; // 30 minutes
+        localStorage.setItem("isPremiumLoggedIn", "true");
+        localStorage.setItem("premiumExpiry", (Date.now() + duration).toString());
+        msg.innerHTML = "✅ Code accepted! Premium unlocked for 30 minutes.";
+        msg.style.color = "#0f0";
+        setTimeout(() => { window.location.href = "index.html"; }, 1500);
       } else {
-        message.textContent = "❌ Invalid code.";
-        message.className = "message error";
+        msg.innerHTML = "❌ Invalid code. Please try again.";
+        msg.style.color = "#f66";
       }
     }
 
-    // Run on load
-    checkPremiumStatus();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") submitCode();
+    });
+
+    // Auto focus
+    window.onload = () => {
+      document.getElementById("codeInput").focus();
+    };
   </script>
 </body>
 </html>
