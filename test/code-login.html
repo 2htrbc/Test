@@ -67,33 +67,25 @@
       font-size: 0.9em;
       color: #ff0;
     }
-    .back-link {
-      display: block;
-      margin-top: 1.5em;
-      font-size: 0.9em;
-      color: #0ff;
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🔐 Enter Access Code</h1>
-    <input type="password" id="codeInput" placeholder="Enter your code" tabindex="0" />
+    <input type="password" id="codeInput" placeholder="Enter your code" tabindex="0" autofocus />
     <div class="toggle-password">
-      <button onclick="togglePassword()" tabindex="0">👁 Show</button>
+      <button onclick="togglePassword()" tabindex="0" id="toggleBtn">👁 Show</button>
     </div>
-    <button onclick="checkCode()" tabindex="0">✔ Login</button>
+    <button onclick="checkCode()" tabindex="0" id="loginBtn">✔ Login</button>
     <div class="message" id="messageBox"></div>
-    <a href="index.html" class="back-link" tabindex="0">← Back to Menu</a>
   </div>
 
   <script>
-    // Code-to-duration mapping (milliseconds)
+    // Valid code and expiry duration in ms
     const validCodes = {
-      "HONORVIP2025": 24 * 60 * 60 * 1000,   // 24 hours
-      "FREEACCESS123": 1 * 60 * 60 * 1000,   // 1 hour
-      "test": 15 * 60 * 1000,                // 15 minutes
+      "HONORVIP2025": 24 * 60 * 60 * 1000,
+      "FREEACCESS123": 1 * 60 * 60 * 1000,
+      "test": 15 * 60 * 1000,
       "Mikeph": 1 * 60 * 1000
     };
 
@@ -102,8 +94,7 @@
       const msg = document.getElementById("messageBox");
 
       if (validCodes[input]) {
-        const duration = validCodes[input];
-        const expiry = Date.now() + duration;
+        const expiry = Date.now() + validCodes[input];
         localStorage.setItem("isPremiumLoggedIn", "true");
         localStorage.setItem("premiumExpiry", expiry.toString());
         msg.style.color = "#0f0";
@@ -119,7 +110,7 @@
 
     function togglePassword() {
       const input = document.getElementById("codeInput");
-      const btn = event.currentTarget;
+      const btn = document.getElementById("toggleBtn");
       if (input.type === "password") {
         input.type = "text";
         btn.textContent = "🙈 Hide";
@@ -129,30 +120,40 @@
       }
     }
 
-    // Remote navigation (Arrow keys)
-    const focusables = Array.from(document.querySelectorAll('[tabindex]'));
-    let focusIndex = 0;
+    // Smart TV + keyboard remote navigation
+    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
+    let currentFocus = 0;
 
-    function setFocus(i) {
-      if (focusables[i]) {
-        focusables[i].focus();
-        focusIndex = i;
+    function setFocus(index) {
+      if (focusable[index]) {
+        focusable[index].focus();
+        currentFocus = index;
       }
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (["ArrowDown", "ArrowUp"].includes(e.key)) {
-        e.preventDefault();
-        const delta = e.key === "ArrowDown" ? 1 : -1;
-        const total = focusables.length;
-        focusIndex = (focusIndex + delta + total) % total;
-        setFocus(focusIndex);
-      } else if (e.key === "Enter") {
-        const el = document.activeElement;
-        if (el && typeof el.click === "function") el.click();
+    document.addEventListener("keydown", function(e) {
+      const total = focusable.length;
+
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          setFocus((currentFocus + 1) % total);
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          setFocus((currentFocus - 1 + total) % total);
+          break;
+        case "Enter":
+          if (document.activeElement && typeof document.activeElement.click === "function") {
+            document.activeElement.click();
+          }
+          break;
       }
     });
 
+    // Initial focus
     setFocus(0);
   </script>
 </body>
