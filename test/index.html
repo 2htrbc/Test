@@ -15,35 +15,28 @@
       display: flex; flex-direction: column; height: 100vh;
       padding: 4px 6px; position: relative; box-sizing: border-box;
     }
-    .premium-btn, .ads-btn, .code-btn {
+    .premium-btn, .code-btn {
       position: absolute;
+      right: 10px;
       color: white; border-radius: 1.5em;
       font-size: 0.8em; text-decoration: none; z-index: 1000;
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
       transition: background 0.3s, box-shadow 0.3s;
       padding: 0.5em 1.2em;
     }
-    .code-btn {
-      top: 6px; left: 10px;
-      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-    }
-    .code-btn:hover {
-      background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
-    }
     .premium-btn {
-      top: 6px; right: 10px;
+      top: 6px;
       background: linear-gradient(to right, #ff4b2b, #ff416c);
-    }
-    .ads-btn {
-      top: 46px; right: 10px;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      opacity: 1; pointer-events: auto;
     }
     .premium-btn:hover {
       background: linear-gradient(to right, #ff416c, #ff4b2b);
     }
-    .ads-btn:hover {
-      background: linear-gradient(to right, #0072ff, #00c6ff);
+    .code-btn {
+      top: 46px;
+      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+    }
+    .code-btn:hover {
+      background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
     }
     .movies-btn {
       display: inline-block; margin: 6px auto;
@@ -98,7 +91,7 @@
       line-height: 1.2; max-width: 60px; word-wrap: break-word;
     }
     .channel:focus, .channel:hover,
-    .movies-btn:focus, .premium-btn:focus, .ads-btn:focus, .code-btn:focus {
+    .movies-btn:focus, .premium-btn:focus, .code-btn:focus {
       transform: scale(1.1);
       border: 2px solid #0ff;
       box-shadow: 0 0 8px #00f, 0 0 12px #0ff, 0 0 16px #0f0, 0 0 20px #ff0, 0 0 24px #f00;
@@ -137,18 +130,21 @@
 <body>
   <div id="rotate-warning">🔄 Please rotate your device to landscape</div>
   <div class="overlay">
-    <a href="code-login.html" class="code-btn" id="codeLoginBtn" tabindex="0">🔐 LOGIN CODE</a>
     <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
-    <a href="ad.html" class="ads-btn" id="adClickBtn" tabindex="0">🎁 WATCH AD - GET 30 MIN</a>
+    <a href="code-login.html" class="code-btn" id="codeLoginBtn" tabindex="0">🔐 LOGIN CODE</a>
+
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" />
       <h2>HONOR TV MENU</h2>
     </div>
+
     <div id="countdown-display" class="countdown-box">Checking premium status...</div>
-    <div id="ad-status" class="countdown-box">⏳ Please wait...</div>
+
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
-    <!-- CHANNEL GRID OMITTED FOR BREVITY — KEEP YOURS AS IS -->
+    <div class="menu-grid">
+      <!-- Channels... -->
+    </div>
 
     <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
   </div>
@@ -165,6 +161,7 @@
       const expiry = parseInt(localStorage.getItem("premiumExpiry") || 0);
       return localStorage.getItem("isPremiumLoggedIn") === "true" && expiry > Date.now();
     }
+
     function updateCountdown() {
       const expiry = parseInt(localStorage.getItem("premiumExpiry") || 0);
       const now = Date.now();
@@ -174,9 +171,11 @@
 
       if (expiry > now) {
         const remaining = expiry - now;
-        const mins = Math.floor(remaining / 60000);
-        const secs = Math.floor((remaining % 60000) / 1000);
-        countdown.innerHTML = `⭐ Premium active<br>Remaining: ${mins}m ${secs}s`;
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        countdown.innerHTML = `⭐ Premium active<br>Remaining: ${days}d ${hours}h ${minutes}m ${seconds}s`;
         premiumOnly.forEach(el => el.classList.remove("locked"));
         if (codeLoginBtn) codeLoginBtn.style.display = "none";
         setTimeout(updateCountdown, 1000);
@@ -186,27 +185,6 @@
         countdown.innerHTML = "⛔ Premium not active";
         premiumOnly.forEach(el => el.classList.add("locked"));
         if (codeLoginBtn) codeLoginBtn.style.display = "inline-block";
-        updateAdStatus();
-      }
-    }
-    function updateAdStatus() {
-      const lastClicked = parseInt(localStorage.getItem("lastAdClick") || 0);
-      const now = Date.now();
-      const adBtn = document.getElementById("adClickBtn");
-      const adStatus = document.getElementById("ad-status");
-      if (now - lastClicked >= 20 * 60 * 1000) {
-        adBtn.style.pointerEvents = "auto";
-        adBtn.style.opacity = "1";
-        adStatus.textContent = "🎁 Click to unlock 30 min premium";
-        adBtn.onclick = () => { window.location.href = "ad.html"; };
-      } else {
-        const remaining = 20 * 60 * 1000 - (now - lastClicked);
-        const mins = Math.floor(remaining / 60000);
-        const secs = Math.floor((remaining % 60000) / 1000);
-        adBtn.style.pointerEvents = "none";
-        adBtn.style.opacity = "0.6";
-        adStatus.textContent = `⏳ Wait ${mins}m ${secs}s to watch again`;
-        setTimeout(updateAdStatus, 1000);
       }
     }
 
@@ -238,7 +216,6 @@
     });
 
     updateCountdown();
-    updateAdStatus();
     setFocus(0);
   </script>
 </body>
