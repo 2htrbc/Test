@@ -67,6 +67,7 @@
     }
     .success { color: #0f0; }
     .error { color: #f55; }
+    .info { color: #0ff; margin-top: 1em; font-size: 0.9em; }
   </style>
 </head>
 <body>
@@ -77,22 +78,22 @@
   </div>
   <button onclick="submitCode()">Unlock Premium</button>
   <div class="message" id="message"></div>
+  <div class="info" id="statusInfo"></div>
 
   <script>
-    // Code definitions using Philippines local expiry time
+    // Premium codes with expiration and duration (Philippines time)
     const validCodes = {
       'HONOR2025': {
-        // Dec 31, 2025 at 23:59:59 Philippines time
         expiresAt: new Date('2025-12-31T23:59:59+08:00').getTime(),
-        duration: 30 * 24 * 60 * 60 * 1000
+        duration: 30 * 24 * 60 * 60 * 1000 // 30 days
       },
       'VIPJULY': {
         expiresAt: new Date('2025-07-31T23:59:59+08:00').getTime(),
-        duration: 15 * 24 * 60 * 60 * 1000
+        duration: 15 * 24 * 60 * 60 * 1000 // 15 days
       },
       'TEST': {
         expiresAt: new Date('2025-07-20T02:34:59+08:00').getTime(),
-        duration: 7 * 24 * 60 * 60 * 1000
+        duration: 7 * 24 * 60 * 60 * 1000 // 7 days
       }
     };
 
@@ -102,18 +103,49 @@
       input.type = input.type === 'text' ? 'password' : 'text';
     }
 
+    // Format milliseconds into readable time
+    function formatRemainingTime(ms) {
+      const seconds = Math.floor(ms / 1000) % 60;
+      const minutes = Math.floor(ms / (1000 * 60)) % 60;
+      const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
+      const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Check and show status if already premium
+    function checkPremiumStatus() {
+      const expiry = localStorage.getItem("premiumExpiry");
+      const isLoggedIn = localStorage.getItem("isPremiumLoggedIn");
+
+      if (isLoggedIn === "true" && expiry) {
+        const nowPH = Date.now() + (8 * 60 * 60 * 1000);
+        const remaining = Number(expiry) - nowPH;
+        const status = document.getElementById("statusInfo");
+
+        if (remaining > 0) {
+          status.textContent = "⭐ Premium active. Time left: " + formatRemainingTime(remaining);
+          // Optional: Auto-redirect to main content
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 3000);
+        } else {
+          localStorage.removeItem("isPremiumLoggedIn");
+          localStorage.removeItem("premiumExpiry");
+          status.textContent = "⏳ Premium expired. Please enter a new code.";
+        }
+      }
+    }
+
     function submitCode() {
       const codeInput = document.getElementById('loginCode');
       const code = codeInput.value.trim().toUpperCase();
       const message = document.getElementById('message');
-
-      // Get current time in PH (UTC+8) by adding 8 hours to UTC
-      const now = new Date().getTime() + (8 * 60 * 60 * 1000);
+      const nowPH = Date.now() + (8 * 60 * 60 * 1000); // PH time
 
       if (validCodes.hasOwnProperty(code)) {
-        const codeInfo = validCodes[code];
-        if (now <= codeInfo.expiresAt) {
-          const expiry = now + codeInfo.duration;
+        const info = validCodes[code];
+        if (nowPH <= info.expiresAt) {
+          const expiry = nowPH + info.duration;
           localStorage.setItem("isPremiumLoggedIn", "true");
           localStorage.setItem("premiumExpiry", expiry.toString());
 
@@ -124,5 +156,17 @@
             window.location.href = "index.html";
           }, 1500);
         } else {
-          message.textContent = "❌ Code expired. Please try another.";
-          message.className =
+          message.textContent = "❌ Code expired.";
+          message.className = "message error";
+        }
+      } else {
+        message.textContent = "❌ Invalid code.";
+        message.className = "message error";
+      }
+    }
+
+    // Run on load
+    checkPremiumStatus();
+  </script>
+</body>
+</html>
