@@ -65,25 +65,44 @@
   <div class="message" id="message"></div>
 
   <script>
+    // Define your valid codes and expiration timestamps (in ms)
+    const validCodes = {
+      'HONOR2025': {
+        expiresAt: new Date('2025-12-31T23:59:59').getTime(), // Dec 31, 2025
+        duration: 30 * 24 * 60 * 60 * 1000, // 30 days
+      },
+      'VIPJULY': {
+        expiresAt: new Date('2025-07-31T23:59:59').getTime(), // July 31, 2025
+        duration: 15 * 24 * 60 * 60 * 1000, // 15 days
+      },
+      'FREEWEEK': {
+        expiresAt: new Date('2025-07-20T23:59:59').getTime(), // July 20, 2025
+        duration: 7 * 24 * 60 * 60 * 1000, // 7 days
+      }
+    };
+
     function submitCode() {
       const code = document.getElementById('loginCode').value.trim().toUpperCase();
-      const validCodes = ['HONOR2025', 'VIPCODE30', 'FREE30DAYS']; // Add more codes here
       const message = document.getElementById('message');
+      const now = Date.now();
 
-      if (validCodes.includes(code)) {
-        const now = Date.now();
-        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-        const expiry = now + thirtyDays;
+      if (validCodes[code]) {
+        const codeInfo = validCodes[code];
+        if (now <= codeInfo.expiresAt) {
+          const expiry = now + codeInfo.duration;
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          localStorage.setItem("premiumExpiry", expiry.toString());
 
-        localStorage.setItem("isPremiumLoggedIn", "true");
-        localStorage.setItem("premiumExpiry", expiry.toString());
+          message.textContent = "✅ Premium unlocked!";
+          message.className = "message success";
 
-        message.textContent = "✅ Premium unlocked for 30 days!";
-        message.className = "message success";
-
-        setTimeout(() => {
-          window.location.href = "index.html"; // Redirect back to main menu
-        }, 1500);
+          setTimeout(() => {
+            window.location.href = "index.html"; // or your main menu page
+          }, 1500);
+        } else {
+          message.textContent = "❌ Code expired. Please try another.";
+          message.className = "message error";
+        }
       } else {
         message.textContent = "❌ Invalid code. Please try again.";
         message.className = "message error";
