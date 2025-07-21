@@ -229,26 +229,6 @@
       }
     }
 
-    function updateAdStatus() {
-      const lastClicked = parseInt(localStorage.getItem("lastAdClick") || 0);
-      const now = Date.now();
-      const adBtn = document.getElementById("adClickBtn");
-      const adStatus = document.getElementById("ad-status");
-      if (now - lastClicked >= 20 * 60 * 1000) {
-        adBtn.style.pointerEvents = "auto";
-        adBtn.style.opacity = "1";
-        adStatus.textContent = "🎁 Click to unlock 30 min premium";
-        adBtn.onclick = () => { window.location.href = "ad.html"; };
-      } else {
-        const remaining = 20 * 60 * 1000 - (now - lastClicked);
-        const mins = Math.floor(remaining / 60000);
-        const secs = Math.floor((remaining % 60000) / 1000);
-        adBtn.style.pointerEvents = "none";
-        adBtn.style.opacity = "0.6";
-        adStatus.textContent = `⏳ Wait ${mins}m ${secs}s to watch again`;
-        setTimeout(updateAdStatus, 1000);
-      }
-    }
 
     const focusables = Array.from(document.querySelectorAll('[tabindex]'));
     let focusIndex = 0;
