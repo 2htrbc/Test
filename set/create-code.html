@@ -62,10 +62,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
     .code-info {
       font-size: 0.95em;
       color: #0ff;
+    }
+    .countdown {
+      font-size: 0.9em;
+      color: #fff;
     }
     .delete-btn {
       background: #ff4444;
@@ -75,6 +80,7 @@
       border-radius: 0.4em;
       cursor: pointer;
       color: white;
+      margin-left: 0.5em;
     }
     .delete-btn:hover {
       background: #ff2222;
@@ -94,10 +100,10 @@
     </div>
   </div>
 
-  <!-- ✅ Firebase SDK (Modular v12) -->
+  <!-- ✅ Firebase SDK v12 (Modular) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, setDoc, deleteDoc, doc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, setDoc, deleteDoc, doc, collection, onSnapshot, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
@@ -111,13 +117,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const codeList = document.getElementById("codeList");
     const msg = document.getElementById("messageBox");
+    const codeList = document.getElementById("codeList");
 
-    // ✅ Create new access code
-    window.createCode = async function () {
+    // ✅ Create code with expiration timestamp
+    window.createCode = async () => {
       const code = document.getElementById("newCode").value.trim();
-      const days = parseInt(document.getElementById("durationDays").value.trim(), 10);
+      const days = parseInt(document.getElementById("durationDays").value.trim());
 
       if (!code || isNaN(days) || days <= 0) {
         msg.style.color = "#ff6";
@@ -125,37 +131,76 @@
         return;
       }
 
-      const validityMs = days * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+      const expireAt = new Date(now + days * 86400000); // ms in a day
 
       try {
-        await setDoc(doc(db, "accessCodes", code), { validityMs });
+        await setDoc(doc(db, "accessCodes", code), {
+          expireAt: Timestamp.fromDate(expireAt)
+        });
         msg.style.color = "#0f0";
         msg.textContent = `✅ Created "${code}" for ${days} days.`;
         document.getElementById("newCode").value = "";
         document.getElementById("durationDays").value = "";
-      } catch (err) {
-        console.error("Create error:", err);
+      } catch (e) {
+        console.error("Error creating code:", e);
         msg.style.color = "#f66";
         msg.textContent = "❌ Failed to create code.";
       }
-    }
+    };
 
-    // ✅ Delete code
-    window.deleteCode = async function (codeId) {
+    // ✅ Delete code manually
+    window.deleteCode = async (codeId) => {
       if (!confirm(`Delete code "${codeId}"?`)) return;
       try {
         await deleteDoc(doc(db, "accessCodes", codeId));
         msg.style.color = "#f90";
-        msg.textContent = `🗑️ Deleted code "${codeId}".`;
-      } catch (err) {
-        console.error("Delete error:", err);
+        msg.textContent = `🗑️ Deleted "${codeId}".`;
+      } catch (e) {
+        console.error("Error deleting code:", e);
         msg.style.color = "#f66";
-        msg.textContent = "❌ Failed to delete code.";
+        msg.textContent = "❌ Failed to delete.";
+      }
+    };
+
+    // ✅ Auto-remove expired codes
+    function checkAndDeleteExpired(codeId, expireAt) {
+      const now = Date.now();
+      const expireTime = expireAt.toDate().getTime();
+      if (now >= expireTime) {
+        deleteDoc(doc(db, "accessCodes", codeId));
       }
     }
 
-    // ✅ Real-time list of access codes
-    function renderCodeList() {
+    // ✅ Display live countdown
+    function formatCountdown(ms) {
+      if (ms <= 0) return "Expired";
+
+      const days = Math.floor(ms / 86400000);
+      const hours = Math.floor((ms % 86400000) / 3600000);
+      const mins = Math.floor((ms % 3600000) / 60000);
+
+      return `${days}d ${hours}h ${mins}m`;
+    }
+
+    function renderLiveCountdown(code, expireAt, container) {
+      function update() {
+        const now = Date.now();
+        const end = expireAt.toDate().getTime();
+        const ms = end - now;
+        if (ms <= 0) {
+          container.innerHTML = "⏳ Expired";
+          deleteCode(code);
+          return;
+        }
+        container.innerHTML = `⏳ ${formatCountdown(ms)}`;
+        requestAnimationFrame(update);
+      }
+      update();
+    }
+
+    // ✅ Real-time sync from Firestore
+    function loadCodes() {
       const colRef = collection(db, "accessCodes");
       onSnapshot(colRef, (snapshot) => {
         const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -166,24 +211,48 @@
     function displayCodes(codes) {
       let html = '<h2>📋 Access Codes</h2>';
       if (codes.length === 0) {
-        html += `<p>No codes found.</p>`;
-      } else {
-        codes.forEach(c => {
-          const days = Math.round(c.validityMs / (1000 * 60 * 60 * 24));
-          html += `
-            <div class="code-item">
-              <div class="code-info">🔑 <b>${c.id}</b><br>⏱ ${days} day(s)</div>
-              <button class="delete-btn" onclick="deleteCode('${c.id}')">🗑 Delete</button>
-            </div>
-          `;
-        });
+        html += "<p>No active codes.</p>";
+        codeList.innerHTML = html;
+        return;
       }
-      codeList.innerHTML = html;
+
+      codeList.innerHTML = "";
+      const header = document.createElement("h2");
+      header.textContent = "📋 Access Codes";
+      codeList.appendChild(header);
+
+      codes.forEach(({ id, expireAt }) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-item";
+
+        const info = document.createElement("div");
+        info.className = "code-info";
+        info.innerHTML = `🔑 <b>${id}</b>`;
+
+        const countdown = document.createElement("div");
+        countdown.className = "countdown";
+
+        // Start countdown + check expiration
+        if (expireAt) {
+          checkAndDeleteExpired(id, expireAt);
+          renderLiveCountdown(id, expireAt, countdown);
+        } else {
+          countdown.innerText = "⏳ Unknown";
+        }
+
+        const btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.innerText = "🗑 Delete";
+        btn.onclick = () => deleteCode(id);
+
+        wrapper.append(info, countdown, btn);
+        codeList.appendChild(wrapper);
+      });
     }
 
-    renderCodeList();
+    loadCodes();
 
-    // ✅ Smart TV / Remote support
+    // ✅ Smart TV Navigation
     const focusable = Array.from(document.querySelectorAll('[tabindex]'));
     let currentFocus = 0;
     function setFocus(index) {
