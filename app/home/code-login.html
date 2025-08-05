@@ -75,7 +75,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-    // ✅ Updated Firebase Config: honor-tv
+    // ✅ Firebase configuration for honor-tv
     const firebaseConfig = {
       apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
       authDomain: "honor-tv.firebaseapp.com",
@@ -85,6 +85,7 @@
       appId: "1:558886563379:web:c4baa6df86210da2737d46"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -118,7 +119,6 @@
           return;
         }
 
-        // Calculate expiration
         const expireAt = new Date(createdAt.getTime() + duration * 24 * 60 * 60 * 1000);
         const now = new Date();
 
@@ -127,11 +127,11 @@
           return;
         }
 
-        // Save expiration and code in localStorage
+        // Store code and expiration in localStorage
         localStorage.setItem("expireAt", expireAt.getTime());
         localStorage.setItem("loginCode", code);
 
-        // Redirect to main page
+        // Redirect to index.html
         window.location.href = "index.html";
       } catch (err) {
         console.error(err);
@@ -144,7 +144,6 @@
       messageEl.style.color = color;
     }
 
-    // Support Enter key
     submitBtn.addEventListener("click", validateCode);
     document.addEventListener("keydown", (e) => {
       if (e.key === "Enter") validateCode();
