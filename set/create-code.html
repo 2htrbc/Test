@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>Create Access Code</title>
+  <title>Admin: Manage Access Codes</title>
   <style>
     body {
       margin: 0; padding: 0; height: 100vh;
@@ -17,11 +17,10 @@
       padding: 2em;
       border-radius: 1em;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
+      width: 95%; max-width: 600px;
     }
     h1 {
+      text-align: center;
       margin-bottom: 1em;
       font-size: 1.3em;
     }
@@ -34,7 +33,7 @@
       box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
     }
     button {
-      padding: 0.6em 1.5em;
+      padding: 0.6em 1em;
       font-size: 1em;
       background: linear-gradient(to right, #00c6ff, #0072ff);
       color: white; border: none;
@@ -48,24 +47,57 @@
       outline: none;
     }
     .message {
+      margin: 1em 0;
+      font-size: 0.95em;
+      color: #0f0;
+    }
+    .code-list {
       margin-top: 1em;
+    }
+    .code-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5em;
+      padding: 0.6em 1em;
+      margin-bottom: 0.6em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .code-info {
+      font-size: 0.95em;
+      color: #0ff;
+    }
+    .delete-btn {
+      background: #ff4444;
+      padding: 0.4em 0.7em;
       font-size: 0.9em;
+      border: none;
+      border-radius: 0.4em;
+      cursor: pointer;
+      color: white;
+    }
+    .delete-btn:hover {
+      background: #ff2222;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>➕ Create New Code</h1>
+    <h1>🛠️ Admin: Manage Access Codes</h1>
     <input type="text" id="newCode" placeholder="Code name (e.g. vipTJ)" tabindex="0" />
     <input type="number" id="durationDays" placeholder="Duration in days" tabindex="0" />
-    <button onclick="createCode()" tabindex="0">💾 Save Code</button>
+    <button onclick="createCode()" tabindex="0">💾 Create Code</button>
     <div class="message" id="messageBox"></div>
+
+    <div class="code-list" id="codeList">
+      <h2>📋 Access Codes</h2>
+    </div>
   </div>
 
-  <!-- ✅ Firebase SDK (v12, Modular) -->
+  <!-- ✅ Firebase SDK (Modular v12) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, setDoc, deleteDoc, doc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
@@ -79,10 +111,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const codeList = document.getElementById("codeList");
+    const msg = document.getElementById("messageBox");
+
+    // ✅ Create new access code
     window.createCode = async function () {
       const code = document.getElementById("newCode").value.trim();
       const days = parseInt(document.getElementById("durationDays").value.trim(), 10);
-      const msg = document.getElementById("messageBox");
 
       if (!code || isNaN(days) || days <= 0) {
         msg.style.color = "#ff6";
@@ -95,17 +130,60 @@
       try {
         await setDoc(doc(db, "accessCodes", code), { validityMs });
         msg.style.color = "#0f0";
-        msg.textContent = `✅ Code "${code}" saved for ${days} day(s).`;
+        msg.textContent = `✅ Created "${code}" for ${days} days.`;
         document.getElementById("newCode").value = "";
         document.getElementById("durationDays").value = "";
       } catch (err) {
-        console.error("Error saving code:", err);
+        console.error("Create error:", err);
         msg.style.color = "#f66";
-        msg.textContent = "❌ Error saving code. Try again.";
+        msg.textContent = "❌ Failed to create code.";
       }
     }
 
-    // Smart TV / Remote support
+    // ✅ Delete code
+    window.deleteCode = async function (codeId) {
+      if (!confirm(`Delete code "${codeId}"?`)) return;
+      try {
+        await deleteDoc(doc(db, "accessCodes", codeId));
+        msg.style.color = "#f90";
+        msg.textContent = `🗑️ Deleted code "${codeId}".`;
+      } catch (err) {
+        console.error("Delete error:", err);
+        msg.style.color = "#f66";
+        msg.textContent = "❌ Failed to delete code.";
+      }
+    }
+
+    // ✅ Real-time list of access codes
+    function renderCodeList() {
+      const colRef = collection(db, "accessCodes");
+      onSnapshot(colRef, (snapshot) => {
+        const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        displayCodes(codes);
+      });
+    }
+
+    function displayCodes(codes) {
+      let html = '<h2>📋 Access Codes</h2>';
+      if (codes.length === 0) {
+        html += `<p>No codes found.</p>`;
+      } else {
+        codes.forEach(c => {
+          const days = Math.round(c.validityMs / (1000 * 60 * 60 * 24));
+          html += `
+            <div class="code-item">
+              <div class="code-info">🔑 <b>${c.id}</b><br>⏱ ${days} day(s)</div>
+              <button class="delete-btn" onclick="deleteCode('${c.id}')">🗑 Delete</button>
+            </div>
+          `;
+        });
+      }
+      codeList.innerHTML = html;
+    }
+
+    renderCodeList();
+
+    // ✅ Smart TV / Remote support
     const focusable = Array.from(document.querySelectorAll('[tabindex]'));
     let currentFocus = 0;
     function setFocus(index) {
