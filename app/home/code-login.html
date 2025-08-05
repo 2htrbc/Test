@@ -2,152 +2,169 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Login Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Enter Login Code</title>
   <style>
     body {
-      background: #121212;
-      color: white;
-      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(to right, #141e30, #243b55);
+      font-family: 'Segoe UI', sans-serif; color: white;
+      font-size: 1.2em; touch-action: manipulation;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2em;
+      border-radius: 1em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 1em;
+      font-size: 1.4em;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 0.8em;
+      font-size: 1em; border-radius: 0.5em;
+      border: none; outline: none;
+      margin-bottom: 1em;
+      background: #222; color: #0ff;
+      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
+    }
+    .toggle-password {
+      position: relative;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      text-align: center;
+      justify-content: flex-end;
+      margin-top: -2.2em;
+      margin-bottom: 1em;
+      padding-right: 0.5em;
     }
-
-    h2 {
-      color: #00ffd5;
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-
-    input {
-      padding: 12px;
-      font-size: 18px;
-      border-radius: 8px;
+    .toggle-password button {
+      background: none;
       border: none;
-      outline: none;
-      margin-bottom: 15px;
-      width: 260px;
-      text-align: center;
-      background: #1f1f1f;
-      color: white;
-    }
-
-    input:focus {
-      border: 2px solid #00ffd5;
-    }
-
-    button {
-      padding: 12px 24px;
-      background: #00ffd5;
-      color: black;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
+      color: #0ff;
       cursor: pointer;
-      transition: background 0.2s ease;
+      font-size: 0.9em;
     }
-
+    button {
+      padding: 0.6em 1.5em;
+      font-size: 1em;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white; border: none;
+      border-radius: 0.5em;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
     button:hover, button:focus {
-      background: #00c0a8;
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      transform: scale(1.05);
       outline: none;
     }
-
-    #message {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 16px;
+    .message {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ff0;
     }
   </style>
 </head>
 <body>
-  <h2>Enter Login Code</h2>
-  <input type="text" id="codeInput" maxlength="20" placeholder="Enter code" autofocus />
-  <br />
-  <button id="submitBtn">Submit</button>
-  <div id="message"></div>
+  <div class="container">
+    <h1>🔐 Enter Access Code</h1>
+    <input type="password" id="codeInput" placeholder="Enter your code" tabindex="0" autofocus />
+    <div class="toggle-password">
+      <button onclick="togglePassword()" tabindex="0" id="toggleBtn">👁 Show</button>
+    </div>
+    <button onclick="checkCode()" tabindex="0" id="loginBtn">✔ Login</button>
+    <div class="message" id="messageBox"></div>
+  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    // ✅ Firebase configuration for honor-tv
-    const firebaseConfig = {
-      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
-      authDomain: "honor-tv.firebaseapp.com",
-      projectId: "honor-tv",
-      storageBucket: "honor-tv.firebasestorage.app",
-      messagingSenderId: "558886563379",
-      appId: "1:558886563379:web:c4baa6df86210da2737d46"
+  <script>
+    // Valid code and expiry duration in ms
+    const validCodes = {
+      "vipTJ": 30 * 24 * 60 * 60 * 1000,
+      "vipwarren": 30 * 24 * 60 * 60 * 1000,
+      "vipjerome": 30 * 24 * 60 * 60 * 1000,     
+      "vipjustine": 30 * 24 * 60 * 60 * 1000,     
+      "jessrel": 30 * 24 * 60 * 60 * 1000,
+      "malupit": 18 * 24 * 60 * 60 * 1000,
+       "kunja": 23 * 24 * 60 * 60 * 1000,
+      "jerockz": 30 * 24 * 60 * 60 * 1000,
+      "ems": 28 * 24 * 60 * 60 * 1000,
+      "Dejesus": 30 * 24 * 60 * 60 * 1000,      
+      "nialro": 11 * 24 * 60 * 60 * 1000,
+      "ybkhkb": 1 * 60 * 60 * 1000,
+      "hkvkh": 15 * 60 * 1000,
+      "hkvky": 1 * 60 * 1000
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    function checkCode() {
+      const input = document.getElementById("codeInput").value.trim();
+      const msg = document.getElementById("messageBox");
 
-    const input = document.getElementById("codeInput");
-    const messageEl = document.getElementById("message");
-    const submitBtn = document.getElementById("submitBtn");
-
-    async function validateCode() {
-      const code = input.value.trim();
-
-      if (!code || code.length < 4) {
-        showMessage("⚠️ Enter a valid code (min 4 characters)", "#ff6666");
-        return;
-      }
-
-      try {
-        const ref = doc(db, "codes", code);
-        const snap = await getDoc(ref);
-
-        if (!snap.exists()) {
-          showMessage("❌ Invalid code.", "#ff6666");
-          return;
-        }
-
-        const data = snap.data();
-        const duration = data.duration;
-        const createdAt = data.createdAt?.toDate?.() || new Date();
-
-        if (![7, 15, 30].includes(duration)) {
-          showMessage("⚠️ Code has an invalid duration.", "#ffcc00");
-          return;
-        }
-
-        const expireAt = new Date(createdAt.getTime() + duration * 24 * 60 * 60 * 1000);
-        const now = new Date();
-
-        if (now > expireAt) {
-          showMessage("⏰ Code has expired.", "#ff6666");
-          return;
-        }
-
-        // Store code and expiration in localStorage
-        localStorage.setItem("expireAt", expireAt.getTime());
-        localStorage.setItem("loginCode", code);
-
-        // Redirect to index.html
-        window.location.href = "index.html";
-      } catch (err) {
-        console.error(err);
-        showMessage("❌ Error validating code.", "#ff4444");
+      if (validCodes[input]) {
+        const expiry = Date.now() + validCodes[input];
+        localStorage.setItem("isPremiumLoggedIn", "true");
+        localStorage.setItem("premiumExpiry", expiry.toString());
+        msg.style.color = "#0f0";
+        msg.textContent = "✅ Code accepted. Premium unlocked!";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } else {
+        msg.style.color = "#f66";
+        msg.textContent = "❌ Invalid code. Try again.";
       }
     }
 
-    function showMessage(text, color) {
-      messageEl.textContent = text;
-      messageEl.style.color = color;
+    function togglePassword() {
+      const input = document.getElementById("codeInput");
+      const btn = document.getElementById("toggleBtn");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈 Hide";
+      } else {
+        input.type = "password";
+        btn.textContent = "👁 Show";
+      }
     }
 
-    submitBtn.addEventListener("click", validateCode);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") validateCode();
+    // Smart TV + keyboard remote navigation
+    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
+    let currentFocus = 0;
+
+    function setFocus(index) {
+      if (focusable[index]) {
+        focusable[index].focus();
+        currentFocus = index;
+      }
+    }
+
+    document.addEventListener("keydown", function(e) {
+      const total = focusable.length;
+
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          setFocus((currentFocus + 1) % total);
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          setFocus((currentFocus - 1 + total) % total);
+          break;
+        case "Enter":
+          if (document.activeElement && typeof document.activeElement.click === "function") {
+            document.activeElement.click();
+          }
+          break;
+      }
     });
+
+    // Initial focus
+    setFocus(0);
   </script>
 </body>
 </html>
