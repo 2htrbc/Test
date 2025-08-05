@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Login Code</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
 
+    h2 {
+      color: #00ffd5;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 15px;
+      width: 260px;
+      text-align: center;
+      background: #1f1f1f;
+      color: white;
+    }
+
+    input:focus {
+      border: 2px solid #00ffd5;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #00ffd5;
+      color: black;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover, button:focus {
+      background: #00c0a8;
+      outline: none;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enter Login Code</h2>
+  <input type="text" id="codeInput" maxlength="20" placeholder="Enter code" autofocus />
+  <br />
+  <button id="submitBtn">Submit</button>
+  <div id="message"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    // ✅ Updated Firebase Config: honor-tv
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
+      authDomain: "honor-tv.firebaseapp.com",
+      projectId: "honor-tv",
+      storageBucket: "honor-tv.firebasestorage.app",
+      messagingSenderId: "558886563379",
+      appId: "1:558886563379:web:c4baa6df86210da2737d46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const input = document.getElementById("codeInput");
+    const messageEl = document.getElementById("message");
+    const submitBtn = document.getElementById("submitBtn");
+
+    async function validateCode() {
+      const code = input.value.trim();
+
+      if (!code || code.length < 4) {
+        showMessage("⚠️ Enter a valid code (min 4 characters)", "#ff6666");
+        return;
+      }
+
+      try {
+        const ref = doc(db, "codes", code);
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) {
+          showMessage("❌ Invalid code.", "#ff6666");
+          return;
+        }
+
+        const data = snap.data();
+        const duration = data.duration;
+        const createdAt = data.createdAt?.toDate?.() || new Date();
+
+        if (![7, 15, 30].includes(duration)) {
+          showMessage("⚠️ Code has an invalid duration.", "#ffcc00");
+          return;
+        }
+
+        // Calculate expiration
+        const expireAt = new Date(createdAt.getTime() + duration * 24 * 60 * 60 * 1000);
+        const now = new Date();
+
+        if (now > expireAt) {
+          showMessage("⏰ Code has expired.", "#ff6666");
+          return;
+        }
+
+        // Save expiration and code in localStorage
+        localStorage.setItem("expireAt", expireAt.getTime());
+        localStorage.setItem("loginCode", code);
+
+        // Redirect to main page
+        window.location.href = "index.html";
+      } catch (err) {
+        console.error(err);
+        showMessage("❌ Error validating code.", "#ff4444");
+      }
+    }
+
+    function showMessage(text, color) {
+      messageEl.textContent = text;
+      messageEl.style.color = color;
+    }
+
+    // Support Enter key
+    submitBtn.addEventListener("click", validateCode);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") validateCode();
+    });
+  </script>
+</body>
+</html>
