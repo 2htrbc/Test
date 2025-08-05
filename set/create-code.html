@@ -2,109 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>Admin: Manage Access Codes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Access Code Manager</title>
   <style>
     body {
-      margin: 0; padding: 0; height: 100vh;
-      display: flex; justify-content: center; align-items: center;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      font-family: 'Segoe UI', sans-serif; color: white;
-      font-size: 1.1em; touch-action: manipulation;
-    }
-    .container {
-      background: rgba(0, 0, 0, 0.5);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: white;
       padding: 2em;
-      border-radius: 1em;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-      width: 95%; max-width: 600px;
+      margin: 0;
     }
     h1 {
       text-align: center;
       margin-bottom: 1em;
-      font-size: 1.3em;
     }
-    input[type="text"], input[type="number"] {
-      width: 100%; padding: 0.7em;
-      font-size: 1em; border-radius: 0.5em;
-      border: none; outline: none;
-      margin-bottom: 1em;
-      background: #222; color: #0ff;
-      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
+    .form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto 2em;
+      gap: 1em;
     }
-    button {
-      padding: 0.6em 1em;
+    input, button {
+      padding: 0.8em;
       font-size: 1em;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white; border: none;
-      border-radius: 0.5em;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-    }
-    button:hover, button:focus {
-      background: linear-gradient(to right, #0072ff, #00c6ff);
-      transform: scale(1.05);
+      border-radius: 0.4em;
+      border: none;
       outline: none;
     }
-    .message {
-      margin: 1em 0;
-      font-size: 0.95em;
-      color: #0f0;
+    input {
+      background: #222;
+      color: #0ff;
+      box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.3);
     }
-    .code-list {
-      margin-top: 1em;
+    button {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
-    .code-item {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 0.5em;
-      padding: 0.6em 1em;
-      margin-bottom: 0.6em;
+    button:hover {
+      transform: scale(1.03);
+    }
+    .codes {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+    .code-entry {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1em;
+      border-radius: 0.6em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
     }
-    .code-info {
-      font-size: 0.95em;
-      color: #0ff;
+    .code-text {
+      font-size: 1.1em;
+      margin-right: 1em;
     }
     .countdown {
-      font-size: 0.9em;
-      color: #fff;
+      color: #ff0;
+      font-weight: bold;
+      margin-right: 1em;
     }
     .delete-btn {
-      background: #ff4444;
-      padding: 0.4em 0.7em;
-      font-size: 0.9em;
-      border: none;
+      background: red;
+      padding: 0.5em 1em;
       border-radius: 0.4em;
-      cursor: pointer;
-      color: white;
-      margin-left: 0.5em;
-    }
-    .delete-btn:hover {
-      background: #ff2222;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🛠️ Admin: Manage Access Codes</h1>
-    <input type="text" id="newCode" placeholder="Code name (e.g. vipTJ)" tabindex="0" />
-    <input type="number" id="durationDays" placeholder="Duration in days" tabindex="0" />
-    <button onclick="createCode()" tabindex="0">💾 Create Code</button>
-    <div class="message" id="messageBox"></div>
+  <h1>🛠 Access Code Manager</h1>
 
-    <div class="code-list" id="codeList">
-      <h2>📋 Access Codes</h2>
-    </div>
+  <div class="form">
+    <input type="text" id="codeInput" placeholder="Enter access code (e.g., vipUser)" />
+    <input type="number" id="durationInput" placeholder="Duration (in days)" min="1" />
+    <button onclick="createCode()">➕ Create Code</button>
   </div>
 
-  <!-- ✅ Firebase SDK v12 (Modular) -->
+  <div class="codes" id="codeList"></div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, setDoc, deleteDoc, doc, collection, onSnapshot, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, onSnapshot, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+    // ✅ Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
       authDomain: "honor-tv.firebaseapp.com",
@@ -114,75 +103,51 @@
       appId: "1:558886563379:web:c4baa6df86210da2737d46"
     };
 
+    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const codesRef = collection(db, "accessCodes");
 
-    const msg = document.getElementById("messageBox");
-    const codeList = document.getElementById("codeList");
-
-    // ✅ Create code with expiration timestamp
-    window.createCode = async () => {
-      const code = document.getElementById("newCode").value.trim();
-      const days = parseInt(document.getElementById("durationDays").value.trim());
+    // ✅ Create new code
+    async function createCode() {
+      const code = document.getElementById("codeInput").value.trim();
+      const days = parseInt(document.getElementById("durationInput").value.trim());
 
       if (!code || isNaN(days) || days <= 0) {
-        msg.style.color = "#ff6";
-        msg.textContent = "⚠️ Enter valid code and duration.";
+        alert("Please enter a valid code and duration.");
         return;
       }
 
       const now = Date.now();
-      const expireAt = new Date(now + days * 86400000); // ms in a day
+      const expireAt = Timestamp.fromMillis(now + days * 24 * 60 * 60 * 1000);
 
-      try {
-        await setDoc(doc(db, "accessCodes", code), {
-          expireAt: Timestamp.fromDate(expireAt)
-        });
-        msg.style.color = "#0f0";
-        msg.textContent = `✅ Created "${code}" for ${days} days.`;
-        document.getElementById("newCode").value = "";
-        document.getElementById("durationDays").value = "";
-      } catch (e) {
-        console.error("Error creating code:", e);
-        msg.style.color = "#f66";
-        msg.textContent = "❌ Failed to create code.";
-      }
-    };
+      await setDoc(doc(codesRef, code), {
+        createdAt: serverTimestamp(),
+        expireAt: expireAt
+      });
 
-    // ✅ Delete code manually
-    window.deleteCode = async (codeId) => {
-      if (!confirm(`Delete code "${codeId}"?`)) return;
-      try {
-        await deleteDoc(doc(db, "accessCodes", codeId));
-        msg.style.color = "#f90";
-        msg.textContent = `🗑️ Deleted "${codeId}".`;
-      } catch (e) {
-        console.error("Error deleting code:", e);
-        msg.style.color = "#f66";
-        msg.textContent = "❌ Failed to delete.";
-      }
-    };
-
-    // ✅ Auto-remove expired codes
-    function checkAndDeleteExpired(codeId, expireAt) {
-      const now = Date.now();
-      const expireTime = expireAt.toDate().getTime();
-      if (now >= expireTime) {
-        deleteDoc(doc(db, "accessCodes", codeId));
-      }
+      document.getElementById("codeInput").value = "";
+      document.getElementById("durationInput").value = "";
     }
 
-    // ✅ Display live countdown
+    // ✅ Delete a code manually
+    async function deleteCode(code) {
+      await deleteDoc(doc(codesRef, code));
+    }
+
+    // ✅ Format countdown string
     function formatCountdown(ms) {
       if (ms <= 0) return "Expired";
 
       const days = Math.floor(ms / 86400000);
       const hours = Math.floor((ms % 86400000) / 3600000);
-      const mins = Math.floor((ms % 3600000) / 60000);
+      const minutes = Math.floor((ms % 3600000) / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
 
-      return `${days}d ${hours}h ${mins}m`;
+      return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
     }
 
+    // ✅ Render live countdown
     function renderLiveCountdown(code, expireAt, container) {
       function update() {
         const now = Date.now();
@@ -194,94 +159,57 @@
           return;
         }
         container.innerHTML = `⏳ ${formatCountdown(ms)}`;
-        requestAnimationFrame(update);
       }
+
       update();
+      const interval = setInterval(() => {
+        const now = Date.now();
+        const end = expireAt.toDate().getTime();
+        const ms = end - now;
+
+        if (ms <= 0) {
+          clearInterval(interval);
+          container.innerHTML = "⏳ Expired";
+          deleteCode(code);
+        } else {
+          container.innerHTML = `⏳ ${formatCountdown(ms)}`;
+        }
+      }, 1000);
     }
 
-    // ✅ Real-time sync from Firestore
-    function loadCodes() {
-      const colRef = collection(db, "accessCodes");
-      onSnapshot(colRef, (snapshot) => {
-        const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        displayCodes(codes);
-      });
-    }
+    // ✅ Listen for real-time updates
+    onSnapshot(codesRef, (snapshot) => {
+      const list = document.getElementById("codeList");
+      list.innerHTML = "";
 
-    function displayCodes(codes) {
-      let html = '<h2>📋 Access Codes</h2>';
-      if (codes.length === 0) {
-        html += "<p>No active codes.</p>";
-        codeList.innerHTML = html;
-        return;
-      }
+      snapshot.forEach(docSnap => {
+        const code = docSnap.id;
+        const data = docSnap.data();
+        const expireAt = data.expireAt;
 
-      codeList.innerHTML = "";
-      const header = document.createElement("h2");
-      header.textContent = "📋 Access Codes";
-      codeList.appendChild(header);
+        const div = document.createElement("div");
+        div.className = "code-entry";
 
-      codes.forEach(({ id, expireAt }) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "code-item";
-
-        const info = document.createElement("div");
-        info.className = "code-info";
-        info.innerHTML = `🔑 <b>${id}</b>`;
+        const codeText = document.createElement("div");
+        codeText.className = "code-text";
+        codeText.textContent = `🔑 ${code}`;
 
         const countdown = document.createElement("div");
         countdown.className = "countdown";
 
-        // Start countdown + check expiration
-        if (expireAt) {
-          checkAndDeleteExpired(id, expireAt);
-          renderLiveCountdown(id, expireAt, countdown);
-        } else {
-          countdown.innerText = "⏳ Unknown";
-        }
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "🗑 Delete";
+        delBtn.onclick = () => deleteCode(code);
 
-        const btn = document.createElement("button");
-        btn.className = "delete-btn";
-        btn.innerText = "🗑 Delete";
-        btn.onclick = () => deleteCode(id);
+        renderLiveCountdown(code, expireAt, countdown);
 
-        wrapper.append(info, countdown, btn);
-        codeList.appendChild(wrapper);
+        div.appendChild(codeText);
+        div.appendChild(countdown);
+        div.appendChild(delBtn);
+        list.appendChild(div);
       });
-    }
-
-    loadCodes();
-
-    // ✅ Smart TV Navigation
-    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
-    let currentFocus = 0;
-    function setFocus(index) {
-      if (focusable[index]) {
-        focusable[index].focus();
-        currentFocus = index;
-      }
-    }
-    document.addEventListener("keydown", function (e) {
-      const total = focusable.length;
-      switch (e.key) {
-        case "ArrowDown":
-        case "ArrowRight":
-          e.preventDefault();
-          setFocus((currentFocus + 1) % total);
-          break;
-        case "ArrowUp":
-        case "ArrowLeft":
-          e.preventDefault();
-          setFocus((currentFocus - 1 + total) % total);
-          break;
-        case "Enter":
-          if (document.activeElement && typeof document.activeElement.click === "function") {
-            document.activeElement.click();
-          }
-          break;
-      }
     });
-    setFocus(0);
   </script>
 </body>
 </html>
