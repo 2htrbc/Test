@@ -74,7 +74,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      gap: 0.5em;
+    }
+    .code-left {
+      display: flex;
+      flex-direction: column;
     }
     .code-info {
       color: #0ff;
@@ -92,7 +96,8 @@
       color: white;
       font-size: 0.9em;
       cursor: pointer;
-      margin-left: 0.5em;
+      margin-left: auto;
+      white-space: nowrap;
     }
     .delete-btn:hover {
       background: #ff2222;
@@ -205,6 +210,9 @@
         const wrapper = document.createElement("div");
         wrapper.className = "code-item";
 
+        const leftSide = document.createElement("div");
+        leftSide.className = "code-left";
+
         const info = document.createElement("div");
         info.className = "code-info";
         info.innerHTML = `🔑 <b>${id}</b>`;
@@ -214,6 +222,8 @@
         if (expireAt) renderLiveCountdown(id, expireAt, countdown);
         else countdown.textContent = "⏳ Unknown";
 
+        leftSide.append(info, countdown);
+
         const btn = document.createElement("button");
         btn.className = "delete-btn";
         btn.textContent = "🗑 Delete";
@@ -221,7 +231,7 @@
           if (confirm(`Delete code "${id}"?`)) deleteCode(id);
         };
 
-        wrapper.append(info, countdown, btn);
+        wrapper.append(leftSide, btn);
         codeList.appendChild(wrapper);
       });
     }
