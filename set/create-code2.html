@@ -5,38 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>Admin: Manage Access Codes</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 0;
-      height: 100vh;
+      padding: 1em;
+      min-height: 100vh;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       font-family: 'Segoe UI', sans-serif;
       color: white;
       font-size: 1em;
       touch-action: manipulation;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
     }
 
     .container {
       width: 100%;
       max-width: 500px;
-      padding: 1.5em;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       border-radius: 1em;
+      padding: 1.5em;
       box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
     }
 
     h1 {
       font-size: 1.4em;
       text-align: center;
-      margin-bottom: 1.2em;
+      margin-bottom: 1em;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
       padding: 0.9em;
       font-size: 1em;
@@ -75,37 +78,45 @@
 
     .code-list {
       margin-top: 1em;
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
     }
 
     .code-item {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 0.8em;
-      border-radius: 0.5em;
-      margin-bottom: 0.8em;
       display: flex;
-      flex-direction: column;
-      gap: 0.4em;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1em;
+      border-radius: 0.8em;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+      flex-wrap: wrap;
     }
 
     .code-info {
       color: #0ff;
       font-weight: bold;
+      font-size: 0.95em;
+      flex: 1;
     }
 
     .countdown {
       color: #fff;
       font-size: 0.9em;
+      margin-top: 0.4em;
     }
 
     .delete-btn {
-      padding: 0.6em;
-      font-size: 0.9em;
       background: #ff4444;
       color: #fff;
       border: none;
       border-radius: 0.4em;
+      padding: 0.6em 1em;
+      font-size: 0.9em;
       cursor: pointer;
-      width: 100%;
+      margin-left: 1em;
+      white-space: nowrap;
     }
 
     .delete-btn:hover {
@@ -117,199 +128,122 @@
         font-size: 0.95em;
       }
 
-      h1 {
-        font-size: 1.2em;
-      }
-
       .container {
         padding: 1em;
-        border-radius: 0.5em;
+        border-radius: 0.6em;
+      }
+
+      .code-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .delete-btn {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 0.8em;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🛠️ Admin: Manage Access Codes</h1>
-    <input type="text" id="newCode" placeholder="Code name (e.g. vipTJ)" tabindex="0" />
-    <input type="number" id="durationDays" placeholder="Duration in days" tabindex="0" />
-    <button onclick="createCode()" tabindex="0">💾 Create Code</button>
-    <div class="message" id="messageBox"></div>
-    <div class="code-list" id="codeList">
-      <h2>📋 Access Codes</h2>
-    </div>
+    <h1>Manage Access Codes</h1>
+
+    <input type="text" placeholder="Enter code" id="codeInput" />
+    <input type="number" placeholder="Duration (days)" id="durationInput" />
+
+    <button onclick="createCode()">Create Code</button>
+    <div id="message" class="message"></div>
+
+    <div id="codeList" class="code-list"></div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore,
-      setDoc,
-      deleteDoc,
-      doc,
-      collection,
-      onSnapshot,
-      Timestamp
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  <script>
+    const codeListDiv = document.getElementById('codeList');
+    const messageDiv = document.getElementById('message');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
-      authDomain: "honor-tv.firebaseapp.com",
-      projectId: "honor-tv",
-      storageBucket: "honor-tv.firebasestorage.app",
-      messagingSenderId: "558886563379",
-      appId: "1:558886563379:web:c4baa6df86210da2737d46"
-    };
+    const codes = [];
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    function createCode() {
+      const code = document.getElementById('codeInput').value.trim();
+      const duration = parseInt(document.getElementById('durationInput').value.trim());
 
-    const msg = document.getElementById("messageBox");
-    const codeList = document.getElementById("codeList");
-
-    window.createCode = async () => {
-      const code = document.getElementById("newCode").value.trim();
-      const days = parseInt(document.getElementById("durationDays").value.trim());
-
-      if (!code || isNaN(days) || days <= 0) {
-        msg.style.color = "#ff6";
-        msg.textContent = "⚠️ Enter valid code and duration.";
+      if (!code || isNaN(duration) || duration <= 0) {
+        showMessage('Please enter a valid code and duration.', true);
         return;
       }
 
-      const now = Date.now();
-      const expireAt = new Date(now + days * 86400000);
+      const expiration = new Date();
+      expiration.setDate(expiration.getDate() + duration);
 
-      try {
-        await setDoc(doc(db, "accessCodes", code), {
-          expireAt: Timestamp.fromDate(expireAt)
-        });
-        msg.style.color = "#0f0";
-        msg.textContent = `✅ Created "${code}" for ${days} days.`;
-        document.getElementById("newCode").value = "";
-        document.getElementById("durationDays").value = "";
-      } catch (e) {
-        console.error("Error creating code:", e);
-        msg.style.color = "#f66";
-        msg.textContent = "❌ Failed to create code.";
-      }
-    };
+      codes.push({ code, expiration });
+      updateCodeList();
+      showMessage(`Code "${code}" created for ${duration} day(s).`);
 
-    window.deleteCode = async (codeId) => {
-      try {
-        await deleteDoc(doc(db, "accessCodes", codeId));
-        msg.style.color = "#f90";
-        msg.textContent = `🗑️ Deleted "${codeId}".`;
-      } catch (e) {
-        console.error("Error deleting code:", e);
-        msg.style.color = "#f66";
-        msg.textContent = "❌ Failed to delete.";
-      }
-    };
-
-    function formatCountdown(ms) {
-      const days = Math.floor(ms / 86400000);
-      const hours = Math.floor((ms % 86400000) / 3600000);
-      const mins = Math.floor((ms % 3600000) / 60000);
-      return `${days}d ${hours}h ${mins}m`;
+      document.getElementById('codeInput').value = '';
+      document.getElementById('durationInput').value = '';
     }
 
-    function renderLiveCountdown(codeId, expireAt, countdownEl) {
-      const update = () => {
-        const now = Date.now();
-        const expireTime = expireAt.toDate().getTime();
-        const timeLeft = expireTime - now;
+    function updateCodeList() {
+      codeListDiv.innerHTML = '';
 
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          countdownEl.textContent = "⏳ Expired";
-          deleteCode(codeId);
-        } else {
-          countdownEl.textContent = `⏳ ${formatCountdown(timeLeft)}`;
-        }
-      };
+      codes.forEach((item, index) => {
+        const codeItem = document.createElement('div');
+        codeItem.className = 'code-item';
 
-      update();
-      const timer = setInterval(update, 60000); // every 60 seconds
-    }
+        const info = document.createElement('div');
+        info.className = 'code-info';
+        info.innerHTML = `Code: ${item.code}<br><span class="countdown" id="timer-${index}">Loading...</span>`;
 
-    function displayCodes(codes) {
-      codeList.innerHTML = "<h2>📋 Access Codes</h2>";
-
-      if (codes.length === 0) {
-        codeList.innerHTML += "<p>No active codes.</p>";
-        return;
-      }
-
-      codes.forEach(({ id, expireAt }) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "code-item";
-
-        const info = document.createElement("div");
-        info.className = "code-info";
-        info.innerHTML = `🔑 <b>${id}</b>`;
-
-        const countdown = document.createElement("div");
-        countdown.className = "countdown";
-
-        if (expireAt) {
-          renderLiveCountdown(id, expireAt, countdown);
-        } else {
-          countdown.textContent = "⏳ Unknown";
-        }
-
-        const btn = document.createElement("button");
-        btn.className = "delete-btn";
-        btn.textContent = "🗑 Delete";
-        btn.onclick = () => {
-          if (confirm(`Delete code "${id}"?`)) deleteCode(id);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => {
+          codes.splice(index, 1);
+          updateCodeList();
         };
 
-        wrapper.append(info, countdown, btn);
-        codeList.appendChild(wrapper);
+        codeItem.appendChild(info);
+        codeItem.appendChild(deleteBtn);
+        codeListDiv.appendChild(codeItem);
+
+        updateCountdown(index, item.expiration);
       });
     }
 
-    function loadCodes() {
-      const colRef = collection(db, "accessCodes");
-      onSnapshot(colRef, (snapshot) => {
-        const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        displayCodes(codes);
-      });
+    function updateCountdown(index, expirationDate) {
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = new Date(expirationDate).getTime() - now;
+
+        const timerSpan = document.getElementById(`timer-${index}`);
+        if (!timerSpan) {
+          clearInterval(timer);
+          return;
+        }
+
+        if (distance <= 0) {
+          timerSpan.innerText = 'Expired';
+          clearInterval(timer);
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          timerSpan.innerText = `Expires in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+      }, 1000);
     }
 
-    loadCodes();
+    function showMessage(msg, isError = false) {
+      messageDiv.textContent = msg;
+      messageDiv.style.color = isError ? 'red' : '#0f0';
 
-    // Smart TV Navigation
-    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
-    let currentFocus = 0;
-    function setFocus(index) {
-      if (focusable[index]) {
-        focusable[index].focus();
-        currentFocus = index;
-      }
+      setTimeout(() => {
+        messageDiv.textContent = '';
+      }, 3000);
     }
-    document.addEventListener("keydown", function (e) {
-      const total = focusable.length;
-      switch (e.key) {
-        case "ArrowDown":
-        case "ArrowRight":
-          e.preventDefault();
-          setFocus((currentFocus + 1) % total);
-          break;
-        case "ArrowUp":
-        case "ArrowLeft":
-          e.preventDefault();
-          setFocus((currentFocus - 1 + total) % total);
-          break;
-        case "Enter":
-          if (document.activeElement && typeof document.activeElement.click === "function") {
-            document.activeElement.click();
-          }
-          break;
-      }
-    });
-    setFocus(0);
   </script>
 </body>
 </html>
