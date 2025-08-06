@@ -3,222 +3,269 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>Manage Access Codes</title>
+  <title>Admin: Manage Access Codes</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 1em;
-      font-family: 'Segoe UI', sans-serif;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100vh;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: white;
+      font-family: 'Segoe UI', sans-serif;
       font-size: 1em;
+      touch-action: manipulation;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 1em;
+      border-radius: 1em;
+      width: 95%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
     h1 {
       text-align: center;
-      font-size: 1.4em;
+      font-size: 1.3em;
       margin-bottom: 1em;
     }
-
-    .section {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1em;
-      margin-bottom: 1em;
-      border-radius: 0.8em;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.4em;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
+    input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 0.8em;
-      margin-bottom: 1em;
-      border: none;
+      padding: 0.6em;
+      margin-bottom: 0.8em;
+      font-size: 1em;
       border-radius: 0.5em;
+      border: none;
       background: #222;
       color: #0ff;
-      font-size: 1em;
+      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
     }
-
     button {
       width: 100%;
-      padding: 0.9em;
+      padding: 0.6em;
       font-size: 1em;
       border: none;
-      border-radius: 0.6em;
+      border-radius: 0.5em;
+      cursor: pointer;
       background: linear-gradient(to right, #00c6ff, #0072ff);
       color: white;
-      cursor: pointer;
-      transition: 0.2s ease;
+      margin-bottom: 1em;
     }
-
-    button:hover {
-      transform: scale(1.03);
-    }
-
+    button:hover { transform: scale(1.05); }
     .message {
       text-align: center;
+      margin-bottom: 1em;
       font-size: 0.95em;
-      color: #0f0;
-      margin-bottom: 1em;
     }
-
-    .code-list-section h2 {
-      text-align: center;
-      font-size: 1.2em;
-      margin-bottom: 1em;
-    }
-
     .code-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8em;
+      max-height: 50vh;
+      overflow-y: auto;
+      padding-right: 0.5em;
+      scroll-behavior: smooth;
     }
-
     .code-item {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 0.8em;
-      border-radius: 0.6em;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5em;
+      padding: 0.6em;
+      margin-bottom: 0.6em;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    .code-info {
+      color: #0ff;
       font-size: 0.95em;
     }
-
-    .code-info {
-      flex: 1;
-      overflow-wrap: break-word;
-      padding-right: 1em;
-    }
-
-    .delete-btn {
-      padding: 0.5em 0.8em;
-      background: #ff4444;
+    .countdown {
+      font-size: 0.85em;
       color: #fff;
+    }
+    .delete-btn {
+      background: #ff4444;
       border: none;
       border-radius: 0.4em;
-      font-size: 0.85em;
+      padding: 0.4em 0.7em;
+      color: white;
+      font-size: 0.9em;
       cursor: pointer;
+      margin-left: 0.5em;
     }
-
     .delete-btn:hover {
       background: #ff2222;
-    }
-
-    @media (max-width: 400px) {
-      body {
-        font-size: 0.95em;
-      }
-
-      h1 {
-        font-size: 1.2em;
-      }
     }
   </style>
 </head>
 <body>
-  <h1>Manage Access Codes</h1>
-
-  <!-- Create Code Section -->
-  <div class="section">
-    <label for="codeInput">Enter Code</label>
-    <input type="text" id="codeInput" placeholder="e.g. HONOR123" />
-
-    <label for="durationSelect">Select Duration (Days)</label>
-    <select id="durationSelect">
-      <option value="1">1 Day</option>
-      <option value="7">7 Days</option>
-      <option value="15">15 Days</option>
-      <option value="30">30 Days</option>
-    </select>
-
-    <button onclick="createCode()">Create Code</button>
-    <div class="message" id="message"></div>
+  <div class="container">
+    <h1>🛠️ Manage Access Codes</h1>
+    <input type="text" id="newCode" placeholder="Code name (e.g. vipTJ)" tabindex="0" />
+    <input type="number" id="durationDays" placeholder="Duration in days" tabindex="0" />
+    <button onclick="createCode()" tabindex="0">💾 Create Code</button>
+    <div class="message" id="messageBox"></div>
+    <div class="code-list" id="codeList">
+      <h2>📋 Access Codes</h2>
+    </div>
   </div>
 
-  <!-- Code List Section -->
-  <div class="section code-list-section">
-    <h2>Existing Codes</h2>
-    <div class="code-list" id="codeList"></div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+      getFirestore, setDoc, deleteDoc, doc,
+      collection, onSnapshot, Timestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  <script>
-    const codeInput = document.getElementById("codeInput");
-    const durationSelect = document.getElementById("durationSelect");
-    const message = document.getElementById("message");
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
+      authDomain: "honor-tv.firebaseapp.com",
+      projectId: "honor-tv",
+      storageBucket: "honor-tv.firebasestorage.app",
+      messagingSenderId: "558886563379",
+      appId: "1:558886563379:web:c4baa6df86210da2737d46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const msg = document.getElementById("messageBox");
     const codeList = document.getElementById("codeList");
 
-    function createCode() {
-      const code = codeInput.value.trim();
-      const duration = parseInt(durationSelect.value);
-
-      if (!code) {
-        message.textContent = "Code cannot be empty.";
+    window.createCode = async () => {
+      const code = document.getElementById("newCode").value.trim();
+      const days = parseInt(document.getElementById("durationDays").value.trim());
+      if (!code || isNaN(days) || days <= 0) {
+        msg.style.color = "#ff6";
+        msg.textContent = "⚠️ Enter valid code and duration.";
         return;
       }
 
-      const expiration = Date.now() + duration * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+      const expireAt = new Date(now + days * 86400000);
 
-      const codeObj = { code, expiration };
-      let codes = JSON.parse(localStorage.getItem("codes") || "[]");
-      codes.push(codeObj);
-      localStorage.setItem("codes", JSON.stringify(codes));
+      try {
+        await setDoc(doc(db, "accessCodes", code), {
+          expireAt: Timestamp.fromDate(expireAt)
+        });
+        msg.style.color = "#0f0";
+        msg.textContent = `✅ Created "${code}" for ${days} days.`;
+        document.getElementById("newCode").value = "";
+        document.getElementById("durationDays").value = "";
+      } catch (e) {
+        msg.style.color = "#f66";
+        msg.textContent = "❌ Failed to create code.";
+      }
+    };
 
-      codeInput.value = "";
-      message.textContent = `Code "${code}" created for ${duration} day(s).`;
+    window.deleteCode = async (codeId) => {
+      try {
+        await deleteDoc(doc(db, "accessCodes", codeId));
+        msg.style.color = "#f90";
+        msg.textContent = `🗑️ Deleted "${codeId}".`;
+      } catch (e) {
+        msg.style.color = "#f66";
+        msg.textContent = "❌ Failed to delete.";
+      }
+    };
 
-      renderCodes();
+    function formatCountdown(ms) {
+      const days = Math.floor(ms / 86400000);
+      const hours = Math.floor((ms % 86400000) / 3600000);
+      const mins = Math.floor((ms % 3600000) / 60000);
+      return `${days}d ${hours}h ${mins}m`;
     }
 
-    function renderCodes() {
-      const codes = JSON.parse(localStorage.getItem("codes") || "[]");
-      codeList.innerHTML = "";
-
-      codes.forEach((codeObj, index) => {
+    function renderLiveCountdown(codeId, expireAt, countdownEl) {
+      const update = () => {
         const now = Date.now();
-        const remaining = Math.max(0, codeObj.expiration - now);
-        const remainingDays = Math.floor(remaining / (24 * 60 * 60 * 1000));
-        const remainingHours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const expireTime = expireAt.toDate().getTime();
+        const timeLeft = expireTime - now;
 
-        const div = document.createElement("div");
-        div.className = "code-item";
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          countdownEl.textContent = "⏳ Expired";
+          deleteCode(codeId);
+        } else {
+          countdownEl.textContent = `⏳ ${formatCountdown(timeLeft)}`;
+        }
+      };
+      update();
+      const timer = setInterval(update, 60000);
+    }
+
+    function displayCodes(codes) {
+      codeList.innerHTML = "<h2>📋 Access Codes</h2>";
+      if (codes.length === 0) {
+        codeList.innerHTML += "<p>No active codes.</p>";
+        return;
+      }
+
+      codes.forEach(({ id, expireAt }) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-item";
 
         const info = document.createElement("div");
         info.className = "code-info";
-        info.innerHTML = `<strong>${codeObj.code}</strong><br>Expires in ${remainingDays} day(s), ${remainingHours} hour(s)`;
+        info.innerHTML = `🔑 <b>${id}</b>`;
 
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "Delete";
-        delBtn.className = "delete-btn";
-        delBtn.onclick = () => {
-          deleteCode(index);
+        const countdown = document.createElement("div");
+        countdown.className = "countdown";
+        if (expireAt) renderLiveCountdown(id, expireAt, countdown);
+        else countdown.textContent = "⏳ Unknown";
+
+        const btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.textContent = "🗑 Delete";
+        btn.onclick = () => {
+          if (confirm(`Delete code "${id}"?`)) deleteCode(id);
         };
 
-        div.appendChild(info);
-        div.appendChild(delBtn);
-        codeList.appendChild(div);
+        wrapper.append(info, countdown, btn);
+        codeList.appendChild(wrapper);
       });
     }
 
-    function deleteCode(index) {
-      let codes = JSON.parse(localStorage.getItem("codes") || "[]");
-      codes.splice(index, 1);
-      localStorage.setItem("codes", JSON.stringify(codes));
-      renderCodes();
+    function loadCodes() {
+      const colRef = collection(db, "accessCodes");
+      onSnapshot(colRef, (snapshot) => {
+        const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        displayCodes(codes);
+      });
     }
 
-    renderCodes();
+    loadCodes();
+
+    // Remote navigation
+    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
+    let currentFocus = 0;
+    function setFocus(index) {
+      if (focusable[index]) {
+        focusable[index].focus();
+        currentFocus = index;
+      }
+    }
+    document.addEventListener("keydown", function (e) {
+      const total = focusable.length;
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          setFocus((currentFocus + 1) % total);
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          setFocus((currentFocus - 1 + total) % total);
+          break;
+        case "Enter":
+          if (document.activeElement && typeof document.activeElement.click === "function") {
+            document.activeElement.click();
+          }
+          break;
+      }
+    });
+    setFocus(0);
   </script>
 </body>
 </html>
