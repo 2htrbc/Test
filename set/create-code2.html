@@ -67,37 +67,48 @@
       scroll-behavior: smooth;
     }
     .code-item {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 0.5em;
-      padding: 0.6em;
-      margin-bottom: 0.6em;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 1em;
+      padding: 0.8em 1em;
+      margin-bottom: 0.8em;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 0.5em;
+      justify-content: space-between;
+      gap: 1em;
     }
     .code-left {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      gap: 1em;
     }
     .code-info {
-      color: #0ff;
-      font-size: 0.95em;
+      color: #00e0ff;
+      font-size: 1em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
     }
     .countdown {
-      font-size: 0.85em;
+      font-size: 0.95em;
       color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
     }
     .delete-btn {
       background: #ff4444;
       border: none;
-      border-radius: 0.4em;
-      padding: 0.4em 0.7em;
+      border-radius: 0.8em;
+      padding: 0.5em 1em;
       color: white;
-      font-size: 0.9em;
+      font-size: 0.95em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
       cursor: pointer;
-      margin-left: auto;
-      white-space: nowrap;
     }
     .delete-btn:hover {
       background: #ff2222;
@@ -193,7 +204,7 @@
           countdownEl.textContent = "⏳ Expired";
           deleteCode(codeId);
         } else {
-          countdownEl.textContent = `⏳ ${formatCountdown(timeLeft)}`;
+          countdownEl.innerHTML = `⏳ ${formatCountdown(timeLeft)}`;
         }
       };
 
@@ -217,7 +228,7 @@
 
         const info = document.createElement("div");
         info.className = "code-info";
-        info.innerHTML = `🔑 <b>${id}</b>`;
+        info.innerHTML = `🔑 <span>${id}</span>`;
 
         const countdown = document.createElement("div");
         countdown.className = "countdown";
@@ -228,7 +239,7 @@
 
         const btn = document.createElement("button");
         btn.className = "delete-btn";
-        btn.textContent = "🗑 Delete";
+        btn.innerHTML = "🗑 Delete";
         btn.onclick = () => {
           if (confirm(`Delete code "${id}"?`)) deleteCode(id);
         };
@@ -248,7 +259,7 @@
 
     loadCodes();
 
-    // Remote/TV navigation support
+    // Remote navigation
     const focusable = Array.from(document.querySelectorAll('[tabindex]'));
     let currentFocus = 0;
 
