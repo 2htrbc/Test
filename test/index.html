@@ -11,23 +11,35 @@
       color: white; touch-action: manipulation;
       font-size: 1.5vw; overscroll-behavior: none;
     }
+
+    .login-code-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+    }
+    .login-code-button button {
+      background: linear-gradient(to right, #0f2027, #2c5364);
+      color: white;
+      padding: 0.4em 1.2em;
+      border: none;
+      border-radius: 1em;
+      font-size: 0.8em;
+      box-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .login-code-button button:hover,
+    .login-code-button button:focus {
+      transform: scale(1.1);
+      box-shadow: 0 0 8px #00f, 0 0 12px #0ff, 0 0 16px #0f0, 0 0 20px #ff0, 0 0 24px #f00;
+      outline: none;
+    }
+
     .overlay {
       display: flex; flex-direction: column; height: 100vh;
       padding: 4px 6px; position: relative; box-sizing: border-box;
     }
-    .premium-btn, .code-btn {
-      position: absolute;
-      color: white; border-radius: 1.5em;
-      font-size: 0.8em; text-decoration: none; z-index: 1000;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      transition: background 0.3s, box-shadow 0.3s;
-      padding: 0.5em 1.2em;
-    }
-    .code-btn { top: 6px; left: 10px; background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59); }
-    .premium-btn { top: 6px; right: 10px; background: linear-gradient(to right, #ff4b2b, #ff416c); }
-    .code-btn:hover { background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); }
-    .premium-btn:hover { background: linear-gradient(to right, #ff416c, #ff4b2b); }
-
     .movies-btn {
       display: inline-block; margin: 6px auto;
       background: linear-gradient(to right, #2193b0, #6dd5ed);
@@ -37,26 +49,12 @@
       transition: background 0.3s, box-shadow 0.3s;
       width: fit-content;
     }
-    .movies-btn:hover { background: linear-gradient(to right, #6dd5ed, #2193b0); }
-
+    .movies-btn:hover {
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+    }
     .logo { text-align: center; margin-bottom: 0.4em; }
     .logo img { width: 3em; border-radius: 50%; box-shadow: 0 0 4px rgba(255, 255, 255, 0.3); }
     h2 { font-size: 1em; margin: 0.3em 0; }
-
-    .countdown-box {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #00ffcc; padding: 0.5em 1.2em; border-radius: 1em;
-      text-align: center; font-size: 0.8em; margin: 0.5em auto;
-      width: fit-content; max-width: 90%;
-      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
-      animation: pulseGlow 2s infinite;
-    }
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
-      50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
-      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
-    }
-
     .menu-grid {
       flex: 1;
       display: grid;
@@ -82,21 +80,18 @@
       line-height: 1.2; max-width: 60px; word-wrap: break-word;
     }
     .channel:focus, .channel:hover,
-    .movies-btn:focus, .premium-btn:focus, .code-btn:focus {
+    .movies-btn:focus {
       transform: scale(1.1);
       border: 2px solid #0ff;
       box-shadow: 0 0 8px #00f, 0 0 12px #0ff, 0 0 16px #0f0, 0 0 20px #ff0, 0 0 24px #f00;
       outline: none;
     }
-
     .footer {
       text-align: center;
       font-size: 0.7em;
       color: #ccc;
       margin-top: 0.4em;
     }
-    .premium-only.locked { opacity: 0.4; pointer-events: none; }
-
     #rotate-warning {
       position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
@@ -122,101 +117,79 @@
 </head>
 <body>
   <div id="rotate-warning">🔄 Please rotate your device to landscape</div>
-  <div class="overlay">
-    <a href="code-login.html" class="code-btn" id="codeLoginBtn" tabindex="0">🔐 LOGIN CODE</a>
-    <a href="premium-login.html" class="premium-btn" tabindex="0">PREMIUM LOGIN</a>
 
+  <!-- 🔐 Login Code Button -->
+  <div class="login-code-button">
+    <button onclick="enterLoginCode()">🔐 LOGIN CODE</button>
+  </div>
+
+  <div class="overlay">
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" />
       <h2>HONOR TV MENU</h2>
     </div>
 
-    <div id="countdown-display" class="countdown-box">Checking premium status...</div>
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid">
-      <!-- your channels here (already complete) -->
+      <div class="channel" tabindex="0" onclick="openChannel('livetv')">
+        <img src="https://via.placeholder.com/64" alt="Live TV" />
+        <span>Live TV Premium</span>
+      </div>
+      <div class="channel" tabindex="0" onclick="openChannel('kidsch')">
+        <img src="https://via.placeholder.com/64" alt="Kids" />
+        <span>KIDS CHANNEL</span>
+      </div>
+      <!-- Add more channels as needed -->
     </div>
+
     <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
   </div>
 
   <script>
-    let isLoggedIn = false;
+    function openChannel(id) {
+      window.location.href = "go:" + id;
+    }
 
-    function tryOpenChannel(id) {
-      if (isLoggedIn) {
-        window.location.href = "go:" + id;
-      } else {
-        alert("🔒 Please login to access this channel.");
+    const focusables = Array.from(document.querySelectorAll('[tabindex]'));
+    let focusIndex = 0;
+    function setFocus(index) {
+      if (focusables[index] && focusables[index].offsetParent !== null) {
+        focusables[index].focus();
+        focusIndex = index;
       }
     }
-
-    function checkLogin() {
-      const expireAt = localStorage.getItem('expireAt');
-      const now = Date.now();
-
-      if (expireAt && now < parseInt(expireAt)) {
-        isLoggedIn = true;
-        updateCountdown(parseInt(expireAt));
-      } else {
-        isLoggedIn = false;
-        document.getElementById("countdown-display").innerText = "🔒 Please login to access channels.";
-      }
-
-      // Toggle channel lock
-      const channels = document.querySelectorAll('.premium-only');
-      channels.forEach(c => {
-        c.classList.toggle('locked', !isLoggedIn);
-      });
-    }
-
-    function updateCountdown(expireAt) {
-      const countdownEl = document.getElementById("countdown-display");
-      const interval = setInterval(() => {
-        const now = Date.now();
-        const diff = expireAt - now;
-
-        if (diff <= 0) {
-          clearInterval(interval);
-          localStorage.removeItem("expireAt");
-          location.reload();
-          return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        countdownEl.innerText = `🔓 Access valid for: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-      }, 1000);
-    }
-
-    document.addEventListener('keydown', function (e) {
-      const focusable = Array.from(document.querySelectorAll('.channel, .movies-btn, .code-btn, .premium-btn'));
-      const currentIndex = focusable.indexOf(document.activeElement);
-      const cols = Math.floor(window.innerWidth / 100);
-
-      if (e.key === 'ArrowRight') {
-        focusable[currentIndex + 1]?.focus();
-      } else if (e.key === 'ArrowLeft') {
-        focusable[currentIndex - 1]?.focus();
-      } else if (e.key === 'ArrowDown') {
-        focusable[currentIndex + cols]?.focus();
-      } else if (e.key === 'ArrowUp') {
-        focusable[currentIndex - cols]?.focus();
-      } else if (e.key === 'Enter') {
-        document.activeElement?.click();
+    document.addEventListener("keydown", (e) => {
+      const cols = 4;
+      if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) {
+        e.preventDefault();
+        let delta = 0;
+        if (e.key === "ArrowRight") delta = 1;
+        else if (e.key === "ArrowLeft") delta = -1;
+        else if (e.key === "ArrowDown") delta = cols;
+        else if (e.key === "ArrowUp") delta = -cols;
+        const nextIndex = focusIndex + delta;
+        const total = focusables.length;
+        const wrapIndex = (i) => ((i % total) + total) % total;
+        setFocus(wrapIndex(nextIndex));
+      } else if (e.key === "Enter") {
+        const el = document.activeElement;
+        if (el && typeof el.click === "function") el.click();
       }
     });
 
-    window.onload = () => {
-      checkLogin();
-      document.querySelector('.channel, .movies-btn')?.focus();
-    };
+    setFocus(0);
   </script>
 
   <script>
+    function enterLoginCode() {
+      const code = prompt("Enter your login code:");
+      if (code) {
+        localStorage.setItem("login_code", code);
+        alert("Code saved! Premium access unlocked.");
+      }
+    }
+
     async function blockVPN() {
       try {
         const res = await fetch('https://ipapi.co/json/');
@@ -230,18 +203,24 @@
     }
 
     function blockHttpCanary() {
-      const tools = ['httpcanary', 'charles', 'fiddler', 'wireshark', 'proxy', 'xposed', 'burp'];
+      const suspicious = ['httpcanary', 'charles', 'fiddler', 'wireshark', 'proxy', 'xposed', 'burp'];
       const ua = navigator.userAgent.toLowerCase();
-      if (tools.some(tool => ua.includes(tool))) {
+      if (suspicious.some(tool => ua.includes(tool))) {
         document.body.innerHTML = '<h1 style="color:red;text-align:center;">Unauthorized Tool Detected. Access Blocked.</h1>';
       }
 
-      // Simple DevTools detection
-      const devtools = /./;
-      devtools.toString = function () {
+      let devtoolsOpen = false;
+      const el = new Image();
+      Object.defineProperty(el, 'id', {
+        get() {
+          devtoolsOpen = true;
+          throw new Error("Devtools opened");
+        }
+      });
+      console.dir(el);
+      if (devtoolsOpen) {
         document.body.innerHTML = '<h1 style="color:red;text-align:center;">DevTools Detected. Access Blocked.</h1>';
-      };
-      console.log('%c', devtools);
+      }
     }
 
     blockVPN();
