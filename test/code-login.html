@@ -80,35 +80,64 @@
     <div class="message" id="messageBox"></div>
   </div>
 
-  <script>
-    // Valid code and expiry duration in ms
-    const validCodes = {
-      "HONORVIP2025": 24 * 60 * 60 * 1000,
-      "FREEACCESS123": 1 * 60 * 60 * 1000,
-      "test": 15 * 60 * 1000,
-      "Mikeph": 1 * 60 * 1000
+  <!-- ✅ Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
+      authDomain: "honor-tv.firebaseapp.com",
+      projectId: "honor-tv",
+      storageBucket: "honor-tv.firebasestorage.app",
+      messagingSenderId: "558886563379",
+      appId: "1:558886563379:web:c4baa6df86210da2737d46"
     };
 
-    function checkCode() {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ✅ Check code logic
+    window.checkCode = async function () {
       const input = document.getElementById("codeInput").value.trim();
       const msg = document.getElementById("messageBox");
 
-      if (validCodes[input]) {
-        const expiry = Date.now() + validCodes[input];
-        localStorage.setItem("isPremiumLoggedIn", "true");
-        localStorage.setItem("premiumExpiry", expiry.toString());
-        msg.style.color = "#0f0";
-        msg.textContent = "✅ Code accepted. Premium unlocked!";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1000);
-      } else {
+      if (!input) {
         msg.style.color = "#f66";
-        msg.textContent = "❌ Invalid code. Try again.";
+        msg.textContent = "❌ Please enter a code.";
+        return;
+      }
+
+      try {
+        const codeRef = doc(db, "accessCodes", input);
+        const docSnap = await getDoc(codeRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const validityMs = data.validityMs || 30 * 24 * 60 * 60 * 1000;
+          const expiry = Date.now() + validityMs;
+
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          localStorage.setItem("premiumExpiry", expiry.toString());
+
+          msg.style.color = "#0f0";
+          msg.textContent = "✅ Code accepted. Premium unlocked!";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        } else {
+          msg.style.color = "#f66";
+          msg.textContent = "❌ Invalid code. Try again.";
+        }
+      } catch (err) {
+        console.error("Firebase error:", err);
+        msg.style.color = "#f66";
+        msg.textContent = "⚠️ An error occurred. Try again.";
       }
     }
 
-    function togglePassword() {
+    // ✅ Toggle password visibility
+    window.togglePassword = function () {
       const input = document.getElementById("codeInput");
       const btn = document.getElementById("toggleBtn");
       if (input.type === "password") {
@@ -120,20 +149,17 @@
       }
     }
 
-    // Smart TV + keyboard remote navigation
+    // ✅ Smart TV / Keyboard nav
     const focusable = Array.from(document.querySelectorAll('[tabindex]'));
     let currentFocus = 0;
-
     function setFocus(index) {
       if (focusable[index]) {
         focusable[index].focus();
         currentFocus = index;
       }
     }
-
-    document.addEventListener("keydown", function(e) {
+    document.addEventListener("keydown", function (e) {
       const total = focusable.length;
-
       switch (e.key) {
         case "ArrowDown":
         case "ArrowRight":
@@ -152,8 +178,6 @@
           break;
       }
     });
-
-    // Initial focus
     setFocus(0);
   </script>
 </body>
