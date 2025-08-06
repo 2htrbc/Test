@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-  <title>Admin: Manage Access Codes</title>
+  <title>Manage Access Codes</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,50 +12,49 @@
     body {
       margin: 0;
       padding: 1em;
-      min-height: 100vh;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: white;
       font-size: 1em;
-      touch-action: manipulation;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 500px;
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 1em;
-      padding: 1.5em;
-      box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
     }
 
     h1 {
-      font-size: 1.4em;
       text-align: center;
+      font-size: 1.4em;
       margin-bottom: 1em;
     }
 
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1em;
+      margin-bottom: 1em;
+      border-radius: 0.8em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4em;
+      font-weight: bold;
+    }
+
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    select {
       width: 100%;
-      padding: 0.9em;
-      font-size: 1em;
+      padding: 0.8em;
       margin-bottom: 1em;
       border: none;
-      border-radius: 0.6em;
+      border-radius: 0.5em;
       background: #222;
       color: #0ff;
-      box-shadow: inset 0 0 6px rgba(0, 255, 255, 0.25);
+      font-size: 1em;
     }
 
     button {
       width: 100%;
       padding: 0.9em;
       font-size: 1em;
-      margin-bottom: 1em;
       border: none;
       border-radius: 0.6em;
       background: linear-gradient(to right, #00c6ff, #0072ff);
@@ -66,57 +65,51 @@
 
     button:hover {
       transform: scale(1.03);
-      background: linear-gradient(to right, #0072ff, #00c6ff);
     }
 
     .message {
+      text-align: center;
       font-size: 0.95em;
       color: #0f0;
+      margin-bottom: 1em;
+    }
+
+    .code-list-section h2 {
       text-align: center;
+      font-size: 1.2em;
       margin-bottom: 1em;
     }
 
     .code-list {
-      margin-top: 1em;
       display: flex;
       flex-direction: column;
-      gap: 1em;
+      gap: 0.8em;
     }
 
     .code-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.8em;
+      border-radius: 0.6em;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      padding: 1em;
-      border-radius: 0.8em;
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-      flex-wrap: wrap;
+      align-items: center;
+      font-size: 0.95em;
     }
 
     .code-info {
-      color: #0ff;
-      font-weight: bold;
-      font-size: 0.95em;
       flex: 1;
-    }
-
-    .countdown {
-      color: #fff;
-      font-size: 0.9em;
-      margin-top: 0.4em;
+      overflow-wrap: break-word;
+      padding-right: 1em;
     }
 
     .delete-btn {
+      padding: 0.5em 0.8em;
       background: #ff4444;
       color: #fff;
       border: none;
       border-radius: 0.4em;
-      padding: 0.6em 1em;
-      font-size: 0.9em;
+      font-size: 0.85em;
       cursor: pointer;
-      margin-left: 1em;
-      white-space: nowrap;
     }
 
     .delete-btn:hover {
@@ -128,122 +121,104 @@
         font-size: 0.95em;
       }
 
-      .container {
-        padding: 1em;
-        border-radius: 0.6em;
-      }
-
-      .code-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .delete-btn {
-        width: 100%;
-        margin-left: 0;
-        margin-top: 0.8em;
+      h1 {
+        font-size: 1.2em;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Manage Access Codes</h1>
+  <h1>Manage Access Codes</h1>
 
-    <input type="text" placeholder="Enter code" id="codeInput" />
-    <input type="number" placeholder="Duration (days)" id="durationInput" />
+  <!-- Create Code Section -->
+  <div class="section">
+    <label for="codeInput">Enter Code</label>
+    <input type="text" id="codeInput" placeholder="e.g. HONOR123" />
+
+    <label for="durationSelect">Select Duration (Days)</label>
+    <select id="durationSelect">
+      <option value="1">1 Day</option>
+      <option value="7">7 Days</option>
+      <option value="15">15 Days</option>
+      <option value="30">30 Days</option>
+    </select>
 
     <button onclick="createCode()">Create Code</button>
-    <div id="message" class="message"></div>
+    <div class="message" id="message"></div>
+  </div>
 
-    <div id="codeList" class="code-list"></div>
+  <!-- Code List Section -->
+  <div class="section code-list-section">
+    <h2>Existing Codes</h2>
+    <div class="code-list" id="codeList"></div>
   </div>
 
   <script>
-    const codeListDiv = document.getElementById('codeList');
-    const messageDiv = document.getElementById('message');
-
-    const codes = [];
+    const codeInput = document.getElementById("codeInput");
+    const durationSelect = document.getElementById("durationSelect");
+    const message = document.getElementById("message");
+    const codeList = document.getElementById("codeList");
 
     function createCode() {
-      const code = document.getElementById('codeInput').value.trim();
-      const duration = parseInt(document.getElementById('durationInput').value.trim());
+      const code = codeInput.value.trim();
+      const duration = parseInt(durationSelect.value);
 
-      if (!code || isNaN(duration) || duration <= 0) {
-        showMessage('Please enter a valid code and duration.', true);
+      if (!code) {
+        message.textContent = "Code cannot be empty.";
         return;
       }
 
-      const expiration = new Date();
-      expiration.setDate(expiration.getDate() + duration);
+      const expiration = Date.now() + duration * 24 * 60 * 60 * 1000;
 
-      codes.push({ code, expiration });
-      updateCodeList();
-      showMessage(`Code "${code}" created for ${duration} day(s).`);
+      const codeObj = { code, expiration };
+      let codes = JSON.parse(localStorage.getItem("codes") || "[]");
+      codes.push(codeObj);
+      localStorage.setItem("codes", JSON.stringify(codes));
 
-      document.getElementById('codeInput').value = '';
-      document.getElementById('durationInput').value = '';
+      codeInput.value = "";
+      message.textContent = `Code "${code}" created for ${duration} day(s).`;
+
+      renderCodes();
     }
 
-    function updateCodeList() {
-      codeListDiv.innerHTML = '';
+    function renderCodes() {
+      const codes = JSON.parse(localStorage.getItem("codes") || "[]");
+      codeList.innerHTML = "";
 
-      codes.forEach((item, index) => {
-        const codeItem = document.createElement('div');
-        codeItem.className = 'code-item';
+      codes.forEach((codeObj, index) => {
+        const now = Date.now();
+        const remaining = Math.max(0, codeObj.expiration - now);
+        const remainingDays = Math.floor(remaining / (24 * 60 * 60 * 1000));
+        const remainingHours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
 
-        const info = document.createElement('div');
-        info.className = 'code-info';
-        info.innerHTML = `Code: ${item.code}<br><span class="countdown" id="timer-${index}">Loading...</span>`;
+        const div = document.createElement("div");
+        div.className = "code-item";
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = () => {
-          codes.splice(index, 1);
-          updateCodeList();
+        const info = document.createElement("div");
+        info.className = "code-info";
+        info.innerHTML = `<strong>${codeObj.code}</strong><br>Expires in ${remainingDays} day(s), ${remainingHours} hour(s)`;
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = () => {
+          deleteCode(index);
         };
 
-        codeItem.appendChild(info);
-        codeItem.appendChild(deleteBtn);
-        codeListDiv.appendChild(codeItem);
-
-        updateCountdown(index, item.expiration);
+        div.appendChild(info);
+        div.appendChild(delBtn);
+        codeList.appendChild(div);
       });
     }
 
-    function updateCountdown(index, expirationDate) {
-      const timer = setInterval(() => {
-        const now = new Date().getTime();
-        const distance = new Date(expirationDate).getTime() - now;
-
-        const timerSpan = document.getElementById(`timer-${index}`);
-        if (!timerSpan) {
-          clearInterval(timer);
-          return;
-        }
-
-        if (distance <= 0) {
-          timerSpan.innerText = 'Expired';
-          clearInterval(timer);
-        } else {
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          timerSpan.innerText = `Expires in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }
-      }, 1000);
+    function deleteCode(index) {
+      let codes = JSON.parse(localStorage.getItem("codes") || "[]");
+      codes.splice(index, 1);
+      localStorage.setItem("codes", JSON.stringify(codes));
+      renderCodes();
     }
 
-    function showMessage(msg, isError = false) {
-      messageDiv.textContent = msg;
-      messageDiv.style.color = isError ? 'red' : '#0f0';
-
-      setTimeout(() => {
-        messageDiv.textContent = '';
-      }, 3000);
-    }
+    renderCodes();
   </script>
 </body>
 </html>
