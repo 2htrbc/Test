@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Enter Login Code</title>
+  <style>
+    body {
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(to right, #141e30, #243b55);
+      font-family: 'Segoe UI', sans-serif; color: white;
+      font-size: 1.2em; touch-action: manipulation;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2em;
+      border-radius: 1em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 1em;
+      font-size: 1.4em;
+    }
+    input[type="password"] {
+      width: 100%; padding: 0.8em;
+      font-size: 1em; border-radius: 0.5em;
+      border: none; outline: none;
+      margin-bottom: 1em;
+      background: #222; color: #0ff;
+      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
+    }
+    .toggle-password {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -2.2em;
+      margin-bottom: 1em;
+      padding-right: 0.5em;
+    }
+    .toggle-password button {
+      background: none;
+      border: none;
+      color: #0ff;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    button {
+      padding: 0.6em 1.5em;
+      font-size: 1em;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white; border: none;
+      border-radius: 0.5em;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover, button:focus {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      transform: scale(1.05);
+      outline: none;
+    }
+    .message {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ff0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Enter Access Code</h1>
+    <input type="password" id="codeInput" placeholder="Enter your code" tabindex="0" autofocus />
+    <div class="toggle-password">
+      <button onclick="togglePassword()" tabindex="0" id="toggleBtn">👁 Show</button>
+    </div>
+    <button onclick="checkCode()" tabindex="0" id="loginBtn">✔ Login</button>
+    <div class="message" id="messageBox"></div>
+  </div>
+
+  <!-- ✅ Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",
+      authDomain: "honor-tv.firebaseapp.com",
+      projectId: "honor-tv",
+      storageBucket: "honor-tv.appspot.com",  // ✅ Corrected
+      messagingSenderId: "558886563379",
+      appId: "1:558886563379:web:c4baa6df86210da2737d46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ✅ Check code logic with Firestore-based expiry
+    window.checkCode = async function () {
+      const input = document.getElementById("codeInput").value.trim();
+      const msg = document.getElementById("messageBox");
+      const loginBtn = document.getElementById("loginBtn");
+
+      if (!input) {
+        msg.style.color = "#f66";
+        msg.textContent = "❌ Please enter a code.";
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "⏳ Checking...";
+
+      try {
+        const codeRef = doc(db, "accessCodes", input);
+        const docSnap = await getDoc(codeRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const expiry = data.expiryTimestamp;
+
+          if (!expiry || Date.now() > expiry) {
+            msg.style.color = "#f66";
+            msg.textContent = "⛔ This code is expired.";
+            loginBtn.disabled = false;
+            loginBtn.textContent = "✔ Login";
+            return;
+          }
+
+          localStorage.setItem("isPremiumLoggedIn", "true");
+          localStorage.setItem("premiumExpiry", expiry.toString());
+
+          msg.style.color = "#0f0";
+          msg.textContent = "✅ Code accepted. Premium unlocked!";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        } else {
+          msg.style.color = "#f66";
+          msg.textContent = "❌ Invalid code. Try again.";
+        }
+      } catch (err) {
+        console.error("Firebase error:", err);
+        msg.style.color = "#f66";
+        msg.textContent = "⚠️ An error occurred. Try again.";
+      }
+
+      loginBtn.disabled = false;
+      loginBtn.textContent = "✔ Login";
+    }
+
+    // ✅ Toggle password visibility
+    window.togglePassword = function () {
+      const input = document.getElementById("codeInput");
+      const btn = document.getElementById("toggleBtn");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈 Hide";
+      } else {
+        input.type = "password";
+        btn.textContent = "👁 Show";
+      }
+    }
+
+    // ✅ Auto-redirect if already logged in and not expired
+    const expiry = parseInt(localStorage.getItem("premiumExpiry") || 0);
+    if (localStorage.getItem("isPremiumLoggedIn") === "true" && expiry > Date.now()) {
+      window.location.href = "index.html";
+    }
+
+    // ✅ Smart TV keyboard navigation
+    const focusable = Array.from(document.querySelectorAll('[tabindex]'));
+    let currentFocus = 0;
+    function setFocus(index) {
+      if (focusable[index]) {
+        focusable[index].focus();
+        currentFocus = index;
+      }
+    }
+    document.addEventListener("keydown", function (e) {
+      const total = focusable.length;
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          setFocus((currentFocus + 1) % total);
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          setFocus((currentFocus - 1 + total) % total);
+          break;
+        case "Enter":
+          if (document.activeElement && typeof document.activeElement.click === "function") {
+            document.activeElement.click();
+          }
+          break;
+      }
+    });
+    setFocus(0);
+  </script>
+</body>
+</html>
