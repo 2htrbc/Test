@@ -5,85 +5,126 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>Admin: Manage Access Codes</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
-      margin: 0; padding: 0; height: 100vh;
-      display: flex; justify-content: center; align-items: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      font-family: 'Segoe UI', sans-serif; color: white;
-      font-size: 1.1em; touch-action: manipulation;
-    }
-    .container {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 2em;
-      border-radius: 1em;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-      width: 95%; max-width: 600px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1em;
-      font-size: 1.3em;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%; padding: 0.7em;
-      font-size: 1em; border-radius: 0.5em;
-      border: none; outline: none;
-      margin-bottom: 1em;
-      background: #222; color: #0ff;
-      box-shadow: inset 0 0 5px rgba(0,255,255,0.3);
-    }
-    button {
-      padding: 0.6em 1em;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
       font-size: 1em;
+      touch-action: manipulation;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 1.5em;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 1em;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+    }
+
+    h1 {
+      font-size: 1.4em;
+      text-align: center;
+      margin-bottom: 1.2em;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.9em;
+      font-size: 1em;
+      margin-bottom: 1em;
+      border: none;
+      border-radius: 0.6em;
+      background: #222;
+      color: #0ff;
+      box-shadow: inset 0 0 6px rgba(0, 255, 255, 0.25);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9em;
+      font-size: 1em;
+      margin-bottom: 1em;
+      border: none;
+      border-radius: 0.6em;
       background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white; border: none;
-      border-radius: 0.5em;
+      color: white;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
+      transition: 0.2s ease;
     }
-    button:hover, button:focus {
+
+    button:hover {
+      transform: scale(1.03);
       background: linear-gradient(to right, #0072ff, #00c6ff);
-      transform: scale(1.05);
-      outline: none;
     }
+
     .message {
-      margin: 1em 0;
       font-size: 0.95em;
       color: #0f0;
+      text-align: center;
+      margin-bottom: 1em;
     }
+
     .code-list {
       margin-top: 1em;
     }
+
     .code-item {
       background: rgba(255, 255, 255, 0.05);
+      padding: 0.8em;
       border-radius: 0.5em;
-      padding: 0.6em 1em;
-      margin-bottom: 0.6em;
+      margin-bottom: 0.8em;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 0.4em;
     }
+
     .code-info {
-      font-size: 0.95em;
       color: #0ff;
+      font-weight: bold;
     }
+
     .countdown {
-      font-size: 0.9em;
       color: #fff;
-    }
-    .delete-btn {
-      background: #ff4444;
-      padding: 0.4em 0.7em;
       font-size: 0.9em;
+    }
+
+    .delete-btn {
+      padding: 0.6em;
+      font-size: 0.9em;
+      background: #ff4444;
+      color: #fff;
       border: none;
       border-radius: 0.4em;
       cursor: pointer;
-      color: white;
-      margin-left: 0.5em;
+      width: 100%;
     }
+
     .delete-btn:hover {
       background: #ff2222;
+    }
+
+    @media (max-width: 400px) {
+      body {
+        font-size: 0.95em;
+      }
+
+      h1 {
+        font-size: 1.2em;
+      }
+
+      .container {
+        padding: 1em;
+        border-radius: 0.5em;
+      }
     }
   </style>
 </head>
