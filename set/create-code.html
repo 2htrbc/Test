@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Create & Manage Login Codes</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #00ffd5;
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    input, select {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin: 5px;
+      width: 220px;
+      background: #1f1f1f;
+      color: white;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 16px;
+      margin: 5px;
+      background: #00ffd5;
+      color: black;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00c0a8;
+    }
+
+    #message {
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .code-list {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .code-item {
+      background: #1e1e1e;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .countdown {
+      font-size: 12px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>KONEK TV PANEL</h2>
+  <input type="text" id="code" placeholder="Enter new code" maxlength="30" />
+  <select id="duration">
+    <option value="60">60 Days</option>
+    <option value="30">30 Days</option>
+    <option value="15">15 Days</option>
+    <option value="7">7 Days</option>
+    <option value="1">1 Day</option>
+  </select>
+  <button id="createBtn">Add Code</button>
+  <div id="message"></div>
+
+  <div class="code-list" id="codeList"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      deleteDoc,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {  
+      apiKey: "AIzaSyBFTwwwFdPdWkMBLuPgp4X4eISjq1G_I5k",  
+      authDomain: "honor-tv.firebaseapp.com",  
+      projectId: "honor-tv",  
+      storageBucket: "honor-tv.firebasestorage.app",  
+      messagingSenderId: "558886563379",  
+      appId: "1:558886563379:web:c4baa6df86210da2737d46"  
+    };  
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const codeInput = document.getElementById("code");
+    const durationSelect = document.getElementById("duration");
+    const messageEl = document.getElementById("message");
+    const codeList = document.getElementById("codeList");
+
+    const showMessage = (msg, color = "#00ff99") => {
+      messageEl.textContent = msg;
+      messageEl.style.color = color;
+    };
+
+    async function createCode() {
+      const code = codeInput.value.trim();
+      const duration = parseInt(durationSelect.value);
+
+      if (code.length < 4) {
+        showMessage("⚠️ Code must be at least 4 characters", "#ff6666");
+        return;
+      }
+
+      try {
+        await setDoc(doc(db, "codes", code), {
+          duration,
+          createdAt: serverTimestamp()
+        });
+        showMessage(`✅ Code "${code}" created for ${duration} ${duration > 1 ? "days" : "day"}`);
+        codeInput.value = "";
+      } catch (e) {
+        console.error(e);
+        showMessage("❌ Failed to create code", "#ff4444");
+      }
+    }
+
+    async function deleteCode(code) {
+      try {
+        await deleteDoc(doc(db, "codes", code));
+        showMessage(`🗑️ Code "${code}" deleted`, "#ffcc00");
+      } catch (e) {
+        console.error(e);
+        showMessage("❌ Failed to delete code", "#ff4444");
+      }
+    }
+
+    function getRemainingTime(expiryDate) {
+      const now = new Date();
+      const diff = expiryDate - now;
+      if (diff <= 0) return null;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function startCountdown(code, expiryDate) {
+      const countdownEl = document.getElementById(`countdown-${code}`);
+      const interval = setInterval(() => {
+        const timeLeft = getRemainingTime(expiryDate);
+        if (!timeLeft) {
+          clearInterval(interval);
+          countdownEl.textContent = "⛔ Expired - Deleting...";
+          setTimeout(() => deleteCode(code), 2000);
+        } else {
+          countdownEl.textContent = `⏳ Expires in: ${timeLeft}`;
+        }
+      }, 1000);
+    }
+
+    document.getElementById("createBtn").addEventListener("click", createCode);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") createCode();
+    });
+
+    onSnapshot(collection(db, "codes"), (snapshot) => {
+      codeList.innerHTML = "";
+
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const code = docSnap.id;
+        if (!data.createdAt) return;
+
+        const createdAt = data.createdAt.toDate();
+        const expiry = new Date(createdAt);
+        expiry.setDate(expiry.getDate() + data.duration);
+
+        // Skip already expired (will auto-delete)
+        if (new Date() > expiry) {
+          deleteCode(code);
+          return;
+        }
+
+        const codeItem = document.createElement("div");
+        codeItem.className = "code-item";
+        codeItem.innerHTML = `
+          <div>
+            <div><strong>${code}</strong> (${data.duration} ${data.duration > 1 ? "days" : "day"})</div>
+            <div>Created: ${createdAt.toLocaleString()}</div>
+            <div class="countdown" id="countdown-${code}">⏳ Checking...</div>
+          </div>
+          <button onclick="deleteCode('${code}')">Delete</button>
+        `;
+        codeList.appendChild(codeItem);
+
+        startCountdown(code, expiry);
+      });
+    });
+
+    window.deleteCode = deleteCode;
+  </script>
+</body>
+</html>
