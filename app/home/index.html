@@ -2,197 +2,226 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
-  <title>HONOR TV IPTV Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>KONEK TV HOME</title>
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100vh; overflow: hidden;
-      background: #111; font-family: 'Segoe UI', sans-serif;
-      color: white; font-size: 1.5vw;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top left, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 300% 300%;
+      animation: bgShift 15s ease infinite;
+      color: white;
+      overflow-x: hidden;
+      position: relative;
     }
-    .hidden { display: none; }
 
-    /* Login Screen */
-    #login-screen {
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      height: 100vh; background: #000;
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-    #login-screen h2 { margin-bottom: 20px; }
-    #login-screen input {
-      padding: 10px; border-radius: 8px; border: none;
-      margin-bottom: 10px; width: 200px; text-align: center;
-    }
-    #login-screen button {
-      padding: 10px 20px; border: none; border-radius: 8px;
-      background: linear-gradient(to right, #2193b0, #6dd5ed);
-      font-size: 1em; cursor: pointer;
-    }
-    #login-message { margin-top: 10px; font-size: 0.9em; color: #f55; }
 
-    /* Main Menu */
-    .overlay { display: flex; flex-direction: column; height: 100vh; padding: 4px 6px; }
-    .movies-btn {
-      margin: 6px auto; padding: 0.5em 1.5em;
-      font-size: 0.85em; border-radius: 1.5em;
-      text-align: center; text-decoration: none;
-      background: linear-gradient(to right, #2193b0, #6dd5ed);
-      box-shadow: 0 0 5px rgba(255,255,255,0.3);
-      transition: filter 0.3s;
+    h1 {
+      text-align: center;
+      padding: 20px 0 15px;
+      font-size: 28px;
+      background: linear-gradient(90deg, #ff6a00, #ee0979, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .movies-btn:hover { filter: brightness(1.2); }
-    .logo { text-align: center; margin-bottom: 0.4em; }
-    .logo img { width: 3em; border-radius: 50%; }
-    h2 { font-size: 1em; margin: 0.3em 0; }
-    .menu-grid {
-      flex: 1; display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 0.6em; padding: 0.4em; overflow-y: auto;
-      justify-items: center; align-items: center;
-    }
-    .channel {
-      width: 3.5em; height: 3.5em; padding: 0.3em;
-      border-radius: 50%; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-    }
-    .channel img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .channel span { font-size: 0.65em; margin-top: 0.3em; text-align: center; }
-    .footer { text-align: center; font-size: 0.7em; color: #ccc; margin-top: 0.4em; }
 
-    /* Countdown */
     #countdown {
       text-align: center;
-      font-size: 0.9em;
-      color: #0f0;
-      margin: 0.5em 0;
+      font-size: 16px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #fffa;
     }
 
-    #logout-btn {
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 25px;
+      padding: 0 20px 40px;
+      justify-items: center;
+    }
+
+    /* 🎈 Bubble Category */
+    .box {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ff6a00, #ee0979, #00c6ff);
+      background-size: 300% 300%;
+      animation: bubbleFlow 6s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      display: inline-block;
-      margin: 5px auto;
-      padding: 6px 14px;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset -5px -5px 15px rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes bubbleFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .box:before {
+      content: "";
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      filter: blur(10px);
+    }
+
+    .box:hover {
+      transform: scale(1.15) translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset -8px -8px 20px rgba(255,255,255,0.25);
+    }
+
+    .box img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.6));
+    }
+
+    .box span {
+      font-size: 14px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    /* 🔐 Login Button */
+    .login-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 999;
+      background: linear-gradient(90deg, #00f260, #0575e6);
+      border-radius: 25px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
-      background: #ff4444;
       color: white;
       cursor: pointer;
-      font-size: 0.8em;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Locked state */
-    .locked {
-      pointer-events: none;
-      opacity: 0.4;
+    .login-button:hover,
+    .login-button:focus {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
     }
-    #locked-message {
-      text-align: center;
-      font-size: 0.9em;
-      color: #f55;
-      margin-top: 0.5em;
+
+    @media (max-width: 600px) {
+      .box {
+        width: 110px;
+        height: 110px;
+      }
+      .box img {
+        width: 40px;
+        height: 40px;
+      }
+      .login-button {
+        font-size: 12px;
+        padding: 8px 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen">
-    <h2>🔑 Enter Access Code</h2>
-    <input type="text" id="login-code" placeholder="Enter Code">
-    <button onclick="checkLogin()">Login</button>
-    <div id="login-message"></div>
-  </div>
+  <h1>KONEK TV HOME</h1>
 
-  <!-- MAIN MENU -->
-  <div id="main-menu" class="hidden">
-    <div class="overlay">
-      <div id="countdown">⏳ Subscription valid</div>
-      <button id="logout-btn" onclick="logout()">🚪 Logout</button>
-      <div id="locked-message" class="hidden">🔒 Subscription expired. Please re-login.</div>
-      <a href="movies.html" class="movies-btn category">🎬 MOVIES</a>
-      <div class="logo">
-        <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="Honor TV Logo" />
-        <h2>HONOR TV MENU</h2>
-      </div>
-      <div class="menu-grid">
-        <div class="channel category" onclick="openChannel('livetv')">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
-          <span>Live TV</span>
-        </div>
-        <div class="channel category" onclick="openChannel('kidsch')">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6UtiRfmlh3ta9--9gtuHjVvz5KG7yO_GLtw&usqp=CAU">
-          <span>KIDS CHANNEL</span>
-        </div>
-        <div class="channel category" onclick="openChannel('radio')">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2t8R4JouinFJJeQp1GpvRQM1lHp6JNP4HUClYItIbDYWxYZytj_68Vz8w&s=10">
-          <span>Radio PH</span>
-        </div>
-      </div>
-      <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+  <button class="login-button" id="loginBtn" onclick="window.location.href='login-code.html'">
+    🔐 Login Code
+  </button>
+
+  <div id="countdown">🔒 Please login to access channels.</div>
+
+  <div class="grid" id="channelGrid">
+    <div class="box" onclick="openChannel('phchannel')">
+      <img src="https://img.icons8.com/color/96/philippines.png" alt="PH" />
+      <span>Philippines</span>
+    </div>
+    <div class="box" onclick="openChannel('kidsch')">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMJiOHw8pnH7yPiHvaOkHTvt7a4lrWcazF3mMeI6pPvvItUb_g8poCKh4&s=10" alt="Kids" />
+      <span>Kids</span>
+    </div>
+    <div class="box" onclick="openChannel('astro')">
+      <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png" alt="Astro" />
+      <span>ASTRO</span>
+    </div>
+    <div class="box" onclick="openChannel('movies')">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTphsPHh7IC3_3o5UaJLLWWiJlY8MZDlglnaYlpSpNMNv52k1klo1FcJlA&s=10" alt="Movies" />
+      <span>Movies</span>
+    </div>
+    <div class="box" onclick="openChannel('primev')">
+      <img src="https://img.icons8.com/color/96/amazon-prime-video.png" alt="Prime" />
+      <span>Prime Video</span>
+    </div>
+    <div class="box" onclick="openChannel('radioph')">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2t8R4JouinFJJeQp1GpvRQM1lHp6JNP4HUClYItIbDYWxYZytj_68Vz8w&s=10" alt="Radio" />
+      <span>Radio</span>
     </div>
   </div>
 
   <script>
-    // Subscription codes and durations (in days)
-    const codes = {
-      "CODE60": 60,
-      "CODE30": 30,
-      "CODE15": 15,
-      "CODE7": 7,
-      "CODE1": 1
-    };
-
-    let countdownTimer;
-
-    function checkLogin() {
-      const input = document.getElementById("login-code").value.trim();
-      const message = document.getElementById("login-message");
-
-      if (codes[input]) {
-        const expireDate = Date.now() + codes[input] * 24 * 60 * 60 * 1000;
-        localStorage.setItem("honortv_expire", expireDate);
-        localStorage.setItem("honortv_code", input);
-        showMainMenu();
-      } else {
-        message.textContent = "❌ Invalid code!";
-      }
-    }
-
-    function showMainMenu() {
-      document.getElementById("login-screen").classList.add("hidden");
-      document.getElementById("main-menu").classList.remove("hidden");
-      startCountdown();
-    }
-
-    function checkStoredLogin() {
-      const expire = localStorage.getItem("honortv_expire");
-      if (expire && Date.now() < parseInt(expire)) {
-        showMainMenu();
-      } else {
-        localStorage.removeItem("honortv_expire");
-      }
-    }
+    let isLoggedIn = false;
+    let countdownReq;
 
     function openChannel(id) {
-      if (document.body.classList.contains("locked")) {
-        alert("🔒 Subscription expired. Please re-login.");
-        return;
+      if (isLoggedIn) {
+        window.location.href = "go:" + id;
+      } else {
+        alert("🔒 Please login to access this channel.");
       }
-      alert("Opening channel: " + id); 
     }
 
-    function startCountdown() {
-      clearInterval(countdownTimer);
-      const expire = parseInt(localStorage.getItem("honortv_expire"));
-      if (!expire) return;
+    function checkLogin() {
+      const expireAt = localStorage.getItem('expireAt');
+      const now = Date.now();
 
-      countdownTimer = setInterval(() => {
+      if (expireAt && now < parseInt(expireAt)) {
+        isLoggedIn = true;
+        document.getElementById("loginBtn").style.display = "none";
+        updateCountdown(parseInt(expireAt));
+      } else {
+        isLoggedIn = false;
+        document.getElementById("loginBtn").style.display = "inline-block";
+        document.getElementById("countdown").innerText = "🔒 Please login to access channels.";
+        cancelAnimationFrame(countdownReq);
+      }
+    }
+
+    function updateCountdown(expireAt) {
+      const countdownEl = document.getElementById("countdown");
+
+      function tick() {
         const now = Date.now();
-        const diff = expire - now;
+        const diff = expireAt - now;
 
         if (diff <= 0) {
-          clearInterval(countdownTimer);
-          lockCategories();
+          localStorage.removeItem("expireAt");
+          isLoggedIn = false;
+          countdownEl.innerText = "🔒 Session expired. Please login again.";
+          document.getElementById("loginBtn").style.display = "inline-block";
           return;
         }
 
@@ -201,31 +230,16 @@
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
 
-        document.getElementById("countdown").textContent =
-          `⏳ Expires in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-      }, 1000);
+        countdownEl.innerText = `🔓 Access valid for: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        countdownReq = requestAnimationFrame(tick);
+      }
+
+      tick();
     }
 
-    function lockCategories() {
-      document.body.classList.add("locked");
-      document.getElementById("countdown").textContent = "❌ Subscription expired";
-      document.getElementById("locked-message").classList.remove("hidden");
-
-      // Disable all categories
-      document.querySelectorAll(".category").forEach(el => {
-        el.classList.add("locked");
-      });
-    }
-
-    function logout() {
-      clearInterval(countdownTimer);
-      localStorage.removeItem("honortv_expire");
-      localStorage.removeItem("honortv_code");
-      location.reload();
-    }
-
-    // Run on page load
-    checkStoredLogin();
+    window.onload = () => {
+      checkLogin();
+    };
   </script>
 </body>
 </html>
