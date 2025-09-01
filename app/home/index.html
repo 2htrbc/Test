@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+  <title>HONOR TV IPTV Menu</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100vh; overflow: hidden;
+      background: #111; font-family: 'Segoe UI', sans-serif;
+      color: white; touch-action: manipulation;
+      font-size: 1.5vw; overscroll-behavior: none;
+    }
+    .overlay {
+      display: flex; flex-direction: column; height: 100vh;
+      padding: 4px 6px; position: relative; box-sizing: border-box;
+    }
+    .code-btn {
+      position: absolute; top: 6px; right: 10px;
+      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+      color: white; border-radius: 1.5em;
+      font-size: 0.8em; text-decoration: none; z-index: 1000;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
+      padding: 0.5em 1.2em;
+    }
+    .code-btn:hover { background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); }
+    .movies-btn {
+      display: inline-block; margin: 6px auto;
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white; padding: 0.5em 1.5em; border-radius: 1.5em;
+      font-size: 0.85em; text-align: center; text-decoration: none;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s;
+      width: fit-content;
+    }
+    .movies-btn:hover { background: linear-gradient(to right, #6dd5ed, #2193b0); }
+    .logo { text-align: center; margin-bottom: 0.4em; }
+    .logo img { width: 3em; border-radius: 50%; box-shadow: 0 0 4px rgba(255, 255, 255, 0.3); }
+    h2 { font-size: 1em; margin: 0.3em 0; }
+    .countdown-box {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #00ffcc; padding: 0.5em 1.2em; border-radius: 1em;
+      text-align: center; font-size: 0.8em; margin: 0.5em auto;
+      width: fit-content; max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 14px rgba(0, 255, 200, 0.7); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+    }
+    .menu-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 0.6em; justify-items: center; align-items: center;
+      overflow-y: auto; padding: 0.4em;
+    }
+    .channel {
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border-radius: 50%; padding: 0.3em;
+      width: 3.5em; height: 3.5em; cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: transform 0.3s, box-shadow 0.3s; outline: none;
+    }
+    .channel img {
+      width: 100%; height: 100%;
+      border-radius: 50%; object-fit: cover;
+    }
+    .channel span {
+      display: block; font-size: 0.65em;
+      color: #fff; margin-top: 0.3em; text-align: center;
+      line-height: 1.2; max-width: 60px; word-wrap: break-word;
+    }
+    .channel.locked { opacity: 0.4; pointer-events: none; }
+    .footer {
+      text-align: center;
+      font-size: 0.7em;
+      color: #ccc;
+      margin-top: 0.4em;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <a href="login-code.html" class="code-btn" id="loginBtn">🔐 LOGIN CODE</a>
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" />
+      <h2>HONOR TV MENU</h2>
+    </div>
+    <div id="countdown-display" class="countdown-box">🔒 Please login to access channels.</div>
+    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
+
+    <div class="menu-grid">
+      <div class="channel locked" onclick="openC('livetv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10"><span>Live TV</span></div>
+      <div class="channel locked" onclick="openC('kidsch')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6UtiRfmlh3ta9--9gtuHjVvz5KG7yO_GLtw&usqp=CAU"><span>KIDS</span></div>
+      <div class="channel locked" onclick="openC('astro')"><img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>ASTRO</span></div>
+      <div class="channel locked" onclick="openC('radioph')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2t8R4JouinFJJeQp1GpvRQM1lHp6JNP4HUClYItIbDYWxYZytj_68Vz8w&s=10"><span>Radio PH</span></div>
+    </div>
+    <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+  </div>
+
+  <script>
+    let isLoggedIn = false, req;
+
+    function openC(id) {
+      if (isLoggedIn) {
+        location.href = "go:" + id;
+      } else {
+        alert("🔒 Please login to access this channel.");
+      }
+    }
+
+    function checkLogin() {
+      const expiry = parseInt(localStorage.getItem("expireAt") || 0);
+      const now = Date.now();
+      const countdown = document.getElementById("countdown-display");
+
+      if (expiry && now < expiry) {
+        // ✅ Active session
+        isLoggedIn = true;
+        document.getElementById("loginBtn").style.display = "none";
+        document.querySelectorAll(".channel").forEach(c => c.classList.remove("locked"));
+        updateCountdown(expiry);
+      } else {
+        // ❌ Expired or never logged in
+        lockAll();
+        countdown.innerText = "🔒 Please login to access channels.";
+      }
+    }
+
+    function updateCountdown(expiry) {
+      function tick() {
+        const now = Date.now();
+        let diff = expiry - now;
+        const countdown = document.getElementById("countdown-display");
+
+        if (diff <= 0) {
+          // ✅ Expired → lock everything
+          localStorage.removeItem("expireAt");
+          lockAll();
+          countdown.innerText = "🔒 Session expired.";
+          return;
+        }
+
+        let d = Math.floor(diff / 86400000),
+            h = Math.floor((diff / 3600000) % 24),
+            m = Math.floor((diff / 60000) % 60),
+            s = Math.floor((diff / 1000) % 60);
+
+        countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
+        req = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    function lockAll() {
+      isLoggedIn = false;
+      document.getElementById("loginBtn").style.display = "inline-block";
+      document.querySelectorAll(".channel").forEach(c => c.classList.add("locked"));
+      cancelAnimationFrame(req);
+    }
+
+    onload = checkLogin;
+  </script>
+</body>
+</html>
