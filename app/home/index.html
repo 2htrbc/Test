@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>HONOR TV IPTV Menu</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100vh; overflow: hidden;
+      background: #111; font-family: 'Segoe UI', sans-serif;
+      color: white; touch-action: manipulation;
+      font-size: clamp(12px, 1.6vw, 20px);
+      overscroll-behavior: none;
+    }
+    .overlay {
+      display: flex; flex-direction: column; height: 100vh;
+      padding: 6px; position: relative; box-sizing: border-box;
+    }
+    .code-btn, .movies-btn, .contact-btn, .message-btn {
+      color: white; border-radius: 1.5em;
+      text-decoration: none; z-index: 1000;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+      padding: 0.6em 1.4em; font-size: 0.9em;
+      display: inline-block; text-align: center;
+    }
+    .code-btn {
+      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+      position: absolute; top: 6px; right: 10px;
+    }
+    .contact-btn {
+      background: linear-gradient(to right, #ff512f, #dd2476);
+      position: absolute; top: 6px; left: 10px;
+    }
+    .message-btn {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      position: absolute; top: 6px; left: 160px; /* right beside contact */
+    }
+    .movies-btn {
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      margin: 8px auto;
+    }
+    .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover {
+      background-position: right center; transform: scale(1.05);
+    }
+    .logo { text-align: center; margin-bottom: 0.5em; }
+    .logo img {
+      width: clamp(40px, 6vw, 80px);
+      border-radius: 50%; box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    }
+    h2 { font-size: 1.1em; margin: 0.4em 0; }
+    .countdown-box {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #00ffcc; padding: 0.6em 1.2em; border-radius: 1em;
+      text-align: center; font-size: 0.85em; margin: 0.6em auto;
+      width: fit-content; max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5),
+                  0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 16px rgba(0, 255, 200, 0.8); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+    }
+    .menu-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 0.8em; justify-items: center; align-items: center;
+      overflow-y: auto; padding: 0.5em;
+    }
+    .channel {
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border-radius: 50%; padding: 0.3em;
+      width: clamp(60px, 8vw, 90px); height: clamp(60px, 8vw, 90px);
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .channel img {
+      width: 100%; height: 100%;
+      border-radius: 50%; object-fit: cover;
+    }
+    .channel span {
+      display: block; font-size: 0.7em;
+      color: #fff; margin-top: 0.3em; text-align: center;
+      line-height: 1.2; max-width: 70px; word-wrap: break-word;
+    }
+    .channel.locked { opacity: 0.4; pointer-events: none; }
+    .footer {
+      text-align: center;
+      font-size: 0.75em; color: #ccc; margin-top: 0.5em;
+    }
+    /* ✅ Focus highlight for TV navigation */
+    .channel:focus,
+    .movies-btn:focus,
+    .code-btn:focus,
+    .contact-btn:focus,
+    .message-btn:focus {
+      outline: none;
+      box-shadow: 0 0 14px 5px #00ffcc;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <!-- ✅ Contact Button (Left) -->
+    <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
+
+    <!-- ✅ Message Button (Next to Contact) -->
+    <a href="message.html" class="message-btn" tabindex="0">💬 MESSAGE</a>
+
+    <!-- ✅ Login Button (Right) -->
+    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
+
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo"/>
+      <h2>HONOR TV MENU</h2>
+    </div>
+    <div id="countdown-display" class="countdown-box">🔒 Please login to access channels.</div>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+
+    <!-- ✅ Menu grid remains unchanged -->
+    <div class="menu-grid">
+      <!-- your channels here -->
+    </div>
+
+    <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+  </div>
+
+  <script>
+    let isLoggedIn = false, req;
+
+    function openC(id) {
+      if (isLoggedIn) {
+        location.href = "go:" + id;
+      } else {
+        alert("🔒 Please login to access this channel.");
+      }
+    }
+
+    function checkLogin() {
+      const expiry = parseInt(localStorage.getItem("expireAt") || 0);
+      const now = Date.now();
+      const countdown = document.getElementById("countdown-display");
+
+      if (expiry && now < expiry) {
+        isLoggedIn = true;
+        document.getElementById("loginBtn").style.display = "none";
+        document.querySelectorAll(".channel").forEach(c => {
+          c.classList.remove("locked");
+          c.setAttribute("tabindex", "0");
+        });
+        updateCountdown(expiry);
+        document.querySelector(".movies-btn").setAttribute("tabindex", "0");
+        document.querySelector(".movies-btn").focus();
+      } else {
+        lockAll();
+        countdown.innerText = "🔒 Please login to access channels.";
+      }
+    }
+
+    function updateCountdown(expiry) {
+      function tick() {
+        const now = Date.now();
+        let diff = expiry - now;
+        const countdown = document.getElementById("countdown-display");
+
+        if (diff <= 0) {
+          localStorage.removeItem("expireAt");
+          lockAll();
+          countdown.innerText = "🔒 Session expired.";
+          return;
+        }
+
+        let d = Math.floor(diff / 86400000),
+            h = Math.floor((diff / 3600000) % 24),
+            m = Math.floor((diff / 60000) % 60),
+            s = Math.floor((diff / 1000) % 60);
+
+        countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
+        req = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    function lockAll() {
+      isLoggedIn = false;
+      document.getElementById("loginBtn").style.display = "inline-block";
+      document.getElementById("loginBtn").setAttribute("tabindex", "0");
+      document.querySelectorAll(".channel").forEach(c => {
+        c.classList.add("locked");
+        c.removeAttribute("tabindex");
+      });
+      cancelAnimationFrame(req);
+      document.getElementById("loginBtn").focus();
+    }
+
+    onload = checkLogin;
+  </script>
+</body>
+</html>
