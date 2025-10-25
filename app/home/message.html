@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Group Chat with Username</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #username-section {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      background: #121212;
+    }
+    #username-form {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+    #username-input {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      width: 200px;
+      margin-bottom: 10px;
+    }
+    #set-username-btn {
+      padding: 10px 15px;
+      background: #06b6d4;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #chat-section {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    #messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .message {
+      margin: 8px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    .my-message {
+      background: #06b6d4;
+      align-self: flex-end;
+      color: white;
+    }
+    .other-message {
+      background: #333;
+      align-self: flex-start;
+    }
+    #send-form {
+      display: flex;
+      padding: 10px;
+      background: #1e1e1e;
+    }
+    #message-input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-right: 8px;
+    }
+    #send-btn {
+      padding: 10px 15px;
+      background: #06b6d4;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Username creation -->
+  <div id="username-section">
+    <div id="username-form">
+      <h2>Create Username</h2>
+      <input type="text" id="username-input" placeholder="Enter your username" />
+      <br />
+      <button id="set-username-btn">Save</button>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat-section">
+    <div id="messages"></div>
+    <form id="send-form">
+      <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCCAjWU_gpk9asJwz4HIjR30p7YIWc1FhI",
+      authDomain: "message-1bd65.firebaseapp.com",
+      projectId: "message-1bd65",
+      storageBucket: "message-1bd65.firebasestorage.app",
+      messagingSenderId: "471824608519",
+      appId: "1:471824608519:web:e09d566fc8a77eb05ba9a2",
+      measurementId: "G-NMD24CHE4S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Generate a persistent device ID
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem('deviceId', deviceId);
+    }
+
+    // Username handling
+    const usernameSection = document.getElementById('username-section');
+    const usernameInput = document.getElementById('username-input');
+    const setUsernameBtn = document.getElementById('set-username-btn');
+    const chatSection = document.getElementById('chat-section');
+
+    let username = localStorage.getItem('username');
+
+    if (!username) {
+      usernameSection.style.display = 'flex';
+    } else {
+      chatSection.style.display = 'flex';
+      loadChat();
+    }
+
+    setUsernameBtn.addEventListener('click', async () => {
+      const name = usernameInput.value.trim();
+      if (name) {
+        username = name;
+        localStorage.setItem('username', username);
+        usernameSection.style.display = 'none';
+        chatSection.style.display = 'flex';
+        loadChat();
+      } else {
+        alert('Please enter a username');
+      }
+    });
+
+    async function loadChat() {
+      const messagesDiv = document.getElementById('messages');
+      const sendForm = document.getElementById('send-form');
+      const messageInput = document.getElementById('message-input');
+
+      // Listen for messages
+      const q = query(collection(db, "messages"), orderBy("time"));
+      onSnapshot(q, (snapshot) => {
+        messagesDiv.innerHTML = '';
+        snapshot.forEach((doc) => {
+          const msg = doc.data();
+          const div = document.createElement('div');
+          div.classList.add('message');
+          if (msg.deviceId === deviceId) {
+            div.classList.add('my-message');
+          } else {
+            div.classList.add('other-message');
+          }
+          div.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
+          messagesDiv.appendChild(div);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Send a message
+      sendForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = messageInput.value.trim();
+        if (!text) return;
+        await addDoc(collection(db, "messages"), {
+          text,
+          user: username,
+          deviceId,
+          time: serverTimestamp()
+        });
+        messageInput.value = '';
+      });
+    }
+  </script>
+</body>
+</html>
