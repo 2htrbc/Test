@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>HONOR TV IPTV Menu</title>
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: #111;
+    font-family: "Segoe UI", sans-serif;
+    color: #fff;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+    font-size: clamp(12px, 1.4vw, 18px);
+  }
+
+  .announcement {
+    width: 100%;
+    background: linear-gradient(90deg, #ff512f, #dd2476, #12c2e9, #00c6ff, #0072ff);
+    background-size: 400% 100%;
+    animation: bgScroll 8s linear infinite;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: clamp(13px, 1.4vw, 18px);
+    padding: 0.6em 0;
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+  }
+  @keyframes bgScroll {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  .announcement span {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollText 15s linear infinite;
+    text-shadow: 0 0 8px #fff, 0 0 12px #00c6ff;
+  }
+  @keyframes scrollText {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .overlay {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+    padding: 0.4em;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .contact-btn, .message-btn, .code-btn, .movies-btn {
+    color: white;
+    border-radius: 2em;
+    text-decoration: none;
+    box-shadow: 0 0 6px rgba(255,255,255,0.3);
+    transition: 0.3s;
+    padding: 0.6em 1em;
+    font-size: clamp(11px, 3vw, 14px);
+    margin: 0.3em;
+    display: inline-block;
+  }
+  .contact-btn { background: linear-gradient(to right, #ff512f, #dd2476); }
+  .message-btn { background: linear-gradient(to right, #00c6ff, #0072ff); }
+  .code-btn { background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59); }
+  .movies-btn { background: linear-gradient(to right, #2193b0, #6dd5ed); margin: 0.8em auto; }
+
+  .contact-btn:hover, .message-btn:hover, .code-btn:hover, .movies-btn:hover,
+  .contact-btn:focus, .message-btn:focus, .code-btn:focus, .movies-btn:focus {
+    transform: scale(1.05);
+    outline: none;
+    box-shadow: 0 0 12px 4px #00ffcc;
+  }
+
+  .logo { margin-top: 0.8em; text-align: center; }
+  .logo img {
+    width: clamp(60px, 20vw, 90px);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255,255,255,0.3);
+  }
+  h2 {
+    font-size: clamp(14px, 4vw, 22px);
+    margin-top: 0.4em;
+  }
+
+  .countdown-box {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #00ffcc;
+    padding: 0.5em 1em;
+    border-radius: 1em;
+    text-align: center;
+    font-size: clamp(11px, 3vw, 14px);
+    margin: 0.5em auto;
+    width: fit-content;
+    box-shadow: 0 0 12px rgba(0,255,200,0.5);
+    animation: pulseGlow 2s infinite;
+  }
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
+    50% { box-shadow: 0 0 16px rgba(0,255,200,0.8); }
+    100% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: clamp(0.5em, 1vw, 1.2em);
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    margin-top: 1em;
+    padding: 1em;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .menu-grid::-webkit-scrollbar { display: none; }
+
+  .channel {
+    width: clamp(70px, 20vw, 110px);
+    height: clamp(70px, 20vw, 110px);
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .channel img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .channel span {
+    font-size: clamp(10px, 2.8vw, 14px);
+    margin-top: 0.3em;
+    text-align: center;
+  }
+  .channel.locked { opacity: 0.4; pointer-events: none; }
+  .channel:hover, .channel:focus {
+    transform: scale(1.1);
+    box-shadow: 0 0 12px 4px #00ffcc;
+    outline: none;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: clamp(10px, 2.8vw, 13px);
+    color: #ccc;
+    padding: 0.5em;
+  }
+</style>
+</head>
+<body>
+  <div class="announcement">
+    <span>🏀 NBA LIVE UPDATE ARE COMING SOON — ENJOY WATCHING...</span>
+  </div>
+
+  <div class="overlay">
+    <div>
+      <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
+      <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
+      <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
+    </div>
+
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo" />
+      <h2>HONOR TV MENU</h2>
+    </div>
+
+    <div id="countdown-display" class="countdown-box">
+      🔒 Please login to access channels.
+    </div>
+
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+
+    <div class="menu-grid" id="menuGrid">
+      <div class="channel locked" onclick="openC('livetv')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10"><span>Live TV</span>
+      </div>
+      <div class="channel locked" onclick="openC('kidsch')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6UtiRfmlh3ta9--9gtuHjVvz5KG7yO_GLtw&usqp=CAU"><span>KIDS</span>
+      </div>
+      <div class="channel locked" onclick="openC('radioph')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2t8R4JouinFJJeQp1GpvRQM1lHp6JNP4HUClYItIbDYWxYZytj_68Vz8w&s=10"><span>Radio PH</span>
+      </div>
+      <div class="channel locked" onclick="openC('premsports')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10"><span>Sports</span>
+      </div>
+      <div class="channel locked" onclick="openC('sportevent')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10"><span>Sports Event</span>
+      </div>
+      <div class="channel locked" onclick="openC('phchannel')">
+        <img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels</span>
+      </div>
+      <div class="channel locked" onclick="openC('astro')">
+        <img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>ASTRO</span>
+      </div>
+      <div class="channel locked" onclick="openC('phlive')">
+        <img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span>
+      </div>
+      <div class="channel locked" onclick="openC('nbaevent1')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD0z8kIq6p5Bh5QHF0uERrcnskhW0Tc5wUyg&usqp=CAU"><span>NBA LIVE</span>
+      </div>
+      <div class="channel locked" onclick="openC('uschannel')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10"><span>US Channel</span>
+      </div>
+      <div class="channel locked" onclick="openC('koreach')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZX4hn-iUqNOFpaTI4K0A2xaMWs4mKoV3hk7csGYa5kxVD49j8X9SJbf8&s=10"><span>Korea</span>
+      </div>
+      <div class="channel locked" onclick="openC('japanch')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaWTqBBlUjD-uScyOyJNWLsjEk3JFwSrMcQPZEhPEd9AGpJHF47itnFFz4&s=10"><span>Japan</span>
+      </div>
+      <div class="channel locked" onclick="openC('plextv')">
+        <img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>Plex TV</span>
+      </div>
+      <div class="channel locked" onclick="openC('distrotv')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>Distro TV</span>
+      </div>
+      <div class="channel locked" onclick="openC('tcl')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmn-5wV_-5K30v_-Ttagy7F03Sz5Pwc4LDgA&s"><span>TCL</span>
+      </div>
+      <div class="channel locked" onclick="openC('samsungtv')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Samsung_TV_Plus_logo.png"><span>Samsung TV</span>
+      </div>
+      <div class="channel locked" onclick="openC('tubi')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpYR2_itTvZfkhPsxZWEhFaUy9HuS2OyzF6A&usqp=CAU"><span>Tubi</span>
+      </div>
+      <div class="channel locked" onclick="openC('xumu')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTukbsDREIteFDaxiAUTIz3PmPvW_vFohrgGhvcnO__9z_HL-7KCweQXgKk&s=10"><span>Xumu</span>
+      </div>
+      <div class="channel locked" onclick="openC('skygo')">
+        <img src="https://banner2.cleanpng.com/20180618/xax/aa6kwgu4r.webp"><span>Sky Go</span>
+      </div>
+    </div>
+
+    <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+  </div>
+
+<script>
+  let isLoggedIn = false, req;
+
+  function openC(id) {
+    if (isLoggedIn) {
+      location.href = "go:" + id;
+    } else {
+      alert("🔒 Please login to access this channel.");
+    }
+  }
+
+  function checkLogin() {
+    const expiry = parseInt(localStorage.getItem("expireAt") || 0);
+    const now = Date.now();
+    const countdown = document.getElementById("countdown-display");
+
+    if (expiry && now < expiry) {
+      isLoggedIn = true;
+      document.getElementById("loginBtn").style.display = "none";
+      document.querySelectorAll(".channel").forEach(c => {
+        c.classList.remove("locked");
+        c.setAttribute("tabindex", "0");
+      });
+      updateCountdown(expiry);
+    } else {
+      lockAll();
+      countdown.innerText = "🔒 Please login to access channels.";
+    }
+  }
+
+  function updateCountdown(expiry) {
+    function tick() {
+      const now = Date.now();
+      let diff = expiry - now;
+      const countdown = document.getElementById("countdown-display");
+
+      if (diff <= 0) {
+        localStorage.removeItem("expireAt");
+        lockAll();
+        countdown.innerText = "🔒 Session expired.";
+        return;
+      }
+
+      let d = Math.floor(diff / 86400000),
+          h = Math.floor((diff / 3600000) % 24),
+          m = Math.floor((diff / 60000) % 60),
+          s = Math.floor((diff / 1000) % 60);
+
+      countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
+      req = requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  function lockAll() {
+    isLoggedIn = false;
+    document.getElementById("loginBtn").style.display = "inline-block";
+    document.querySelectorAll(".channel").forEach(c => {
+      c.classList.add("locked");
+      c.removeAttribute("tabindex");
+    });
+    cancelAnimationFrame(req);
+  }
+
+  document.addEventListener("keydown", e => {
+    const focusable = Array.from(document.querySelectorAll('[tabindex="0"]'));
+    const index = focusable.indexOf(document.activeElement);
+    const cols = Math.round(Math.sqrt(focusable.length));
+
+    switch(e.key) {
+      case "ArrowRight":
+        if (index + 1 < focusable.length) focusable[index + 1].focus();
+        e.preventDefault(); break;
+      case "ArrowLeft":
+        if (index > 0) focusable[index - 1].focus();
+        e.preventDefault(); break;
+      case "ArrowDown":
+        if (index + cols < focusable.length) focusable[index + cols].focus();
+        e.preventDefault(); break;
+      case "ArrowUp":
+        if (index - cols >= 0) focusable[index - cols].focus();
+        e.preventDefault(); break;
+      case "Enter":
+      case "OK":
+        document.activeElement.click();
+        e.preventDefault(); break;
+    }
+  });
+
+  onload = checkLogin;
+</script>
+</body>
+</html>
