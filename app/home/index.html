@@ -18,7 +18,6 @@
     font-size: clamp(12px, 1.6vw, 20px);
   }
 
-  /* 🏀 Announcement Bar */
   .announcement {
     width: 100%;
     background: linear-gradient(90deg, #ff512f, #dd2476, #12c2e9, #00c6ff, #0072ff);
@@ -46,7 +45,6 @@
     100% { transform: translateX(-100%); }
   }
 
-  /* Layout */
   .overlay {
     display: flex;
     flex-direction: column;
@@ -57,7 +55,6 @@
     position: relative;
   }
 
-  /* Buttons */
   .code-btn, .movies-btn, .contact-btn, .message-btn {
     color: white; border-radius: 2em;
     text-decoration: none;
@@ -83,11 +80,14 @@
     background: linear-gradient(to right, #2193b0, #6dd5ed);
     margin: 0.6em auto;
   }
-  .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover {
+
+  .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover,
+  .code-btn:focus, .movies-btn:focus, .contact-btn:focus, .message-btn:focus {
     transform: scale(1.05);
+    outline: none;
+    box-shadow: 0 0 12px 4px #00ffcc;
   }
 
-  /* Logo */
   .logo { text-align: center; margin-top: clamp(1em, 2vw, 2em); }
   .logo img {
     width: clamp(60px, 6vw, 100px);
@@ -100,7 +100,6 @@
     margin: 0.4em 0;
   }
 
-  /* Countdown */
   .countdown-box {
     background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
     color: #00ffcc;
@@ -119,7 +118,6 @@
     100% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
   }
 
-  /* ✅ Menu Grid */
   .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(clamp(80px, 10vw, 140px), 1fr));
@@ -162,24 +160,9 @@
   .channel:hover, .channel:focus {
     transform: scale(1.1);
     box-shadow: 0 0 12px 4px #00ffcc;
+    outline: none;
   }
 
-  /* 🖥 Smart TV full fit */
-  @media (min-width: 1024px) {
-    body { font-size: 1.2vw; }
-    .menu-grid { height: auto; place-content: center; }
-  }
-
-  /* 📱 Landscape mobile optimization */
-  @media screen and (orientation: landscape) and (max-width: 900px) {
-    .menu-grid {
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-      gap: 1em;
-      height: 70vh;
-    }
-  }
-
-  /* Footer */
   .footer {
     text-align: center;
     font-size: clamp(10px, 1vw, 14px);
@@ -194,9 +177,9 @@
   </div>
 
   <div class="overlay">
-    <a href="contact.html" class="contact-btn">📞 CONTACT</a>
-    <a href="message.html" class="message-btn">💬 GROUP CHAT</a>
-    <a href="login-code.html" class="code-btn" id="loginBtn">🔐 LOGIN CODE</a>
+    <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
+    <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
+    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo" />
@@ -207,11 +190,9 @@
       🔒 Please login to access channels.
     </div>
 
-    <a href="movies.html" class="movies-btn">🎬 MOVIES</a>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
-    <!-- ✅ Channel Grid -->
-    <div class="menu-grid">
-      <!-- Sample Channels -->
+    <div class="menu-grid" id="menuGrid">
       <div class="channel locked" onclick="openC('livetv')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Live TV</span>
@@ -375,6 +356,32 @@
     });
     cancelAnimationFrame(req);
   }
+
+  // ✅ Smart TV Remote / Keyboard Navigation
+  document.addEventListener("keydown", e => {
+    const focusable = Array.from(document.querySelectorAll('[tabindex="0"]'));
+    const index = focusable.indexOf(document.activeElement);
+    const cols = Math.round(Math.sqrt(focusable.length));
+
+    switch(e.key) {
+      case "ArrowRight":
+        if (index + 1 < focusable.length) focusable[index + 1].focus();
+        e.preventDefault(); break;
+      case "ArrowLeft":
+        if (index > 0) focusable[index - 1].focus();
+        e.preventDefault(); break;
+      case "ArrowDown":
+        if (index + cols < focusable.length) focusable[index + cols].focus();
+        e.preventDefault(); break;
+      case "ArrowUp":
+        if (index - cols >= 0) focusable[index - cols].focus();
+        e.preventDefault(); break;
+      case "Enter":
+      case "OK":
+        document.activeElement.click();
+        e.preventDefault(); break;
+    }
+  });
 
   onload = checkLogin;
 </script>
