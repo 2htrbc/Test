@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>HONOR TV IPTV Menu</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100vh; overflow: hidden;
+      background: #111; font-family: 'Segoe UI', sans-serif;
+      color: white; touch-action: manipulation;
+      font-size: clamp(12px, 1.6vw, 20px);
+      overscroll-behavior: none;
+    }
+
+    /* 🏀 Announcement Bar */
+    .announcement {
+      width: 100%;
+      background: linear-gradient(90deg, #ff512f, #dd2476, #12c2e9, #00c6ff, #0072ff);
+      background-size: 400% 100%;
+      animation: bgScroll 8s linear infinite;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      font-size: clamp(13px, 1.4vw, 18px);
+      padding: 8px 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    .announcement span {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scrollText 15s linear infinite;
+      text-shadow: 0 0 8px #fff, 0 0 12px #00c6ff;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    @keyframes bgScroll {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .overlay {
+      display: flex; flex-direction: column; height: 100vh;
+      padding: 6px; position: relative; box-sizing: border-box;
+    }
+    .code-btn, .movies-btn, .contact-btn, .message-btn {
+      color: white; border-radius: 1.5em;
+      text-decoration: none; z-index: 1000;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+      padding: 0.6em 1.4em; font-size: 0.9em;
+      display: inline-block; text-align: center;
+    }
+    .code-btn {
+      background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+      position: absolute; top: 6px; right: 10px;
+    }
+    .contact-btn {
+      background: linear-gradient(to right, #ff512f, #dd2476);
+      position: absolute; top: 6px; left: 10px;
+    }
+    .message-btn {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      position: absolute; top: 6px; left: 160px;
+    }
+    .movies-btn {
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      margin: 8px auto;
+    }
+    .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover {
+      background-position: right center; transform: scale(1.05);
+    }
+
+    .logo { text-align: center; margin-bottom: 0.5em; margin-top: 40px; }
+    .logo img {
+      width: clamp(40px, 6vw, 80px);
+      border-radius: 50%; box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    }
+    h2 { font-size: 1.1em; margin: 0.4em 0; }
+
+    .countdown-box {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #00ffcc; padding: 0.6em 1.2em; border-radius: 1em;
+      text-align: center; font-size: 0.85em; margin: 0.6em auto;
+      width: fit-content; max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.5),
+                  0 0 20px rgba(0, 255, 200, 0.2);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+      50% { box-shadow: 0 0 16px rgba(0, 255, 200, 0.8); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 200, 0.3); }
+    }
+
+    /* ✅ Super Compact Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(55px, 6vw, 80px), 1fr));
+      gap: clamp(0.3em, 0.6vw, 0.6em);
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      padding: clamp(0.4em, 0.8vw, 0.8em);
+      max-width: 95%;
+      margin: 0 auto;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .menu-grid::-webkit-scrollbar { display: none; }
+
+    .channel {
+      width: clamp(55px, 6vw, 80px);
+      height: clamp(55px, 6vw, 80px);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+    .channel img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .channel span {
+      font-size: clamp(8px, 0.8vw, 11px);
+      margin-top: 0.25em;
+      text-align: center;
+    }
+    .channel.locked { opacity: 0.4; pointer-events: none; }
+    .channel:hover, .channel:focus {
+      transform: scale(1.08);
+      box-shadow: 0 0 10px 3px #00ffcc;
+    }
+
+    @media (min-width: 1200px) {
+      .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 0.8em;
+      }
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.75em; color: #ccc; margin-top: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🏀 Announcement Bar -->
+  <div class="announcement">
+    <span>🏀 NBA LIVE UPDATE ARE COMING SOON , ENJOY WATCHING...</span>
+  </div>
+
+  <div class="overlay">
+    <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
+    <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
+    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
+
+    <div class="logo">
+      <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo"/>
+      <h2>HONOR TV MENU</h2>
+    </div>
+
+    <div id="countdown-display" class="countdown-box">🔒 Please login to access channels.</div>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+
+    <!-- ✅ Smaller Optimized Channel Grid -->
+    <div class="menu-grid">
+      <div class="channel locked" onclick="openC('livetv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10"><span>Live TV</span></div>
+      <div class="channel locked" onclick="openC('kidsch')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6UtiRfmlh3ta9--9gtuHjVvz5KG7yO_GLtw&usqp=CAU"><span>KIDS</span></div>
+      <div class="channel locked" onclick="openC('radioph')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2t8R4JouinFJJeQp1GpvRQM1lHp6JNP4HUClYItIbDYWxYZytj_68Vz8w&s=10"><span>Radio PH</span></div>
+      <div class="channel locked" onclick="openC('premsports')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg6pAEFTb_eZX57wSUsuivbvUgXrJA_owLryqUjwjIdWJu9_1bu2wHoz4&s=10"><span>Sports</span></div>
+      <div class="channel locked" onclick="openC('sportevent')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR57h5eYZ2lXqtUQAW6dpBgB6Q3D1r8eie7SkjEstX79j8IRIVRnkwVpOQ&s=10"><span>Sports Event</span></div>
+      <div class="channel locked" onclick="openC('phchannel')"><img src="https://i.imgur.com/hm8EUBt.jpeg"><span>PH Channels</span></div>
+      <div class="channel locked" onclick="openC('astro')"><img src="https://images.seeklogo.com/logo-png/40/2/astro-2012-logo-png_seeklogo-400104.png"><span>ASTRO</span></div>
+      <div class="channel locked" onclick="openC('phlive')"><img src="https://pilipinaslive.com/assets/images/logo/pilipinaslive-logo-wbg.png"><span>Pilipinas Live</span></div>
+      <div class="channel locked" onclick="openC('nbaevent1')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD0z8kIq6p5Bh5QHF0uERrcnskhW0Tc5wUyg&usqp=CAU"><span>NBA LIVE</span></div>
+      <div class="channel locked" onclick="openC('netflixch')"><img src="https://channels.roku.com/images/f5e60d25f2c94469b0f7a777918ca319-hd.jpg"><span>Netflix</span></div>
+      <div class="channel locked" onclick="openC('uschannel')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRev-3BGRpuevDqdaxtL0gvjGE-8uAhuZxumzepZeCbYQm00m1rlDKvk0oX&s=10"><span>US Channel</span></div>
+      <div class="channel locked" onclick="openC('koreach')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZX4hn-iUqNOFpaTI4K0A2xaMWs4mKoV3hk7csGYa5kxVD49j8X9SJbf8&s=10"><span>Korea</span></div>
+      <div class="channel locked" onclick="openC('japanch')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaWTqBBlUjD-uScyOyJNWLsjEk3JFwSrMcQPZEhPEd9AGpJHF47itnFFz4&s=10"><span>Japan</span></div>
+      <div class="channel locked" onclick="openC('skychannel')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdGyKHSOja9RGWZP1E32moBC3Vrsb8GXCeBA&s"><span>Sky</span></div>
+      <div class="channel locked" onclick="openC('plextv')"><img src="https://iconlogovector.com/uploads/images/2024/03/lg-65e4e7b1e7202-Plex.webp"><span>Plex TV</span></div>
+      <div class="channel locked" onclick="openC('distrotv')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnK8hoFbN_MwvKRFPMJwF2L8gcLvbZqrc3iTFfLuPLEr-73E9lzLiUyPc&s=10"><span>Distro TV</span></div>
+      <div class="channel locked" onclick="openC('tcl')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmn-5wV_-5K30v_-Ttagy7F03Sz5Pwc4LDgA&s"><span>TCL</span></div>
+      <div class="channel locked" onclick="openC('samsungtv')"><img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Samsung_TV_Plus_logo.png"><span>Samsung TV</span></div>
+      <div class="channel locked" onclick="openC('tubi')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpYR2_itTvZfkhPsxZWEhFaUy9HuS2OyzF6A&usqp=CAU"><span>Tubi</span></div>
+      <div class="channel locked" onclick="openC('xumu')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTukbsDREIteFDaxiAUTIz3PmPvW_vFohrgGhvcnO__9z_HL-7KCweQXgKk&s=10"><span>Xumu</span></div>
+      <div class="channel locked" onclick="openC('skygo')"><img src="https://banner2.cleanpng.com/20180618/xax/aa6kwgu4r.webp"><span>Sky Go</span></div>
+    </div>
+
+    <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
+  </div>
+
+  <script>
+    let isLoggedIn = false, req;
+
+    function openC(id) {
+      if (isLoggedIn) {
+        location.href = "go:" + id;
+      } else {
+        alert("🔒 Please login to access this channel.");
+      }
+    }
+
+    function checkLogin() {
+      const expiry = parseInt(localStorage.getItem("expireAt") || 0);
+      const now = Date.now();
+      const countdown = document.getElementById("countdown-display");
+
+      if (expiry && now < expiry) {
+        isLoggedIn = true;
+        document.getElementById("loginBtn").style.display = "none";
+        document.querySelectorAll(".channel").forEach(c => {
+          c.classList.remove("locked");
+          c.setAttribute("tabindex", "0");
+        });
+        updateCountdown(expiry);
+      } else {
+        lockAll();
+        countdown.innerText = "🔒 Please login to access channels.";
+      }
+    }
+
+    function updateCountdown(expiry) {
+      function tick() {
+        const now = Date.now();
+        let diff = expiry - now;
+        const countdown = document.getElementById("countdown-display");
+
+        if (diff <= 0) {
+          localStorage.removeItem("expireAt");
+          lockAll();
+          countdown.innerText = "🔒 Session expired.";
+          return;
+        }
+
+        let d = Math.floor(diff / 86400000),
+            h = Math.floor((diff / 3600000) % 24),
+            m = Math.floor((diff / 60000) % 60),
+            s = Math.floor((diff / 1000) % 60);
+
+        countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
+        req = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    function lockAll() {
+      isLoggedIn = false;
+      document.getElementById("loginBtn").style.display = "inline-block";
+      document.querySelectorAll(".channel").forEach(c => {
+        c.classList.add("locked");
+        c.removeAttribute("tabindex");
+      });
+      cancelAnimationFrame(req);
+    }
+
+    onload = checkLogin;
+  </script>
+</body>
+</html>
