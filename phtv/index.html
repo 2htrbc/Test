@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>HONOR TV | Fast IPTV Player</title>
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Preload Logo Example -->
+  <link rel="preload" as="image" href="https://i.imgur.com/Ddyfzrn.webp" />
+
+  <!-- Lightweight Player -->
+  <script defer src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>📺 HONOR TV</h1>
+    <button id="refreshBtn">⟳ Refresh</button>
+  </header>
+
+  <main>
+    <section id="playerSection">
+      <video id="videoPlayer" controls autoplay muted playsinline></video>
+    </section>
+
+    <section id="channelList"></section>
+  </main>
+
+  <footer>
+    <p>⚡ Optimized IPTV Player — HONOR TV 2025</p>
+  </footer>
+</body>
+</html>
