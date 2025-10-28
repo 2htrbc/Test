@@ -1,0 +1,84 @@
+:root {
+  --bg: #0e0e10;
+  --card: #1a1a1d;
+  --text: #fff;
+  --accent: #00bfff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--card);
+  border-bottom: 2px solid var(--accent);
+}
+
+h1 { font-size: 1.3em; }
+
+#refreshBtn {
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#playerSection {
+  display: flex;
+  justify-content: center;
+  background: black;
+}
+
+video {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border: none;
+  outline: none;
+  background: #000;
+}
+
+#channelList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  padding: 12px;
+}
+
+.channel {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.channel:hover { background: #252529; }
+
+.channel img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.8em;
+  color: #aaa;
+}
