@@ -1,6 +1,4 @@
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const video = document.getElementById("videoPlayer");
@@ -27,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       channelList.appendChild(div);
     });
   }
-
   function playChannel(ch) {
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -38,4 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     video.play();
   }
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
 });
