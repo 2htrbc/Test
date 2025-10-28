@@ -1,4 +1,4 @@
-const channels = [
+[
   {
     name: "TV5",
     logo: "https://i.imgur.com/Ddyfzrn.png",
@@ -63,4 +63,4 @@ const channels = [
     category: "PHILIPINES CHANNEL"
   }
   // … Continue the rest using same pattern …
-];
+]
