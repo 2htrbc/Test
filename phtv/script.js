@@ -3,10 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const channelList = document.getElementById("channelList");
   const refreshBtn = document.getElementById("refreshBtn");
 
-  // 🔁 Refresh Button (Soft Reload)
   refreshBtn.addEventListener("click", () => {
     channelList.innerHTML = "";
-    loadChannels(); // re-fetch instead of full reload
+    loadChannels();
   });
 
   // 🚀 Lazy Fetch + Render Channels
@@ -36,23 +35,75 @@ document.addEventListener("DOMContentLoaded", () => {
     channelList.appendChild(fragment);
   }
 
-  // ▶️ Play Channel
+  // ▶️ Universal Player (HLS or DASH)
   function playChannel(ch) {
+    const src = ch.url || ch.manifestUri;
+    if (!src) return alert("⚠️ Invalid stream URL for " + ch.name);
+
+    // Stop current playback
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+
+    // MPEG-DASH (.mpd) + ClearKey DRM
+    if (ch.type === "mpegdash") {
+      loadDash(ch);
+    }
+    // HLS (.m3u8)
+    else {
+      loadHls(src);
+    }
+  }
+
+  // 🧩 HLS Loader
+  function loadHls(src) {
     if (Hls.isSupported()) {
       const hls = new Hls({
-        maxBufferLength: 10, // keeps memory small
+        maxBufferLength: 10,
         liveSyncDuration: 5
       });
-      hls.loadSource(ch.url);
+      hls.loadSource(src);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = ch.url;
+      video.src = src;
       video.play();
     }
   }
 
-  // 💾 Register Service Worker for caching
+  // 🎬 DASH Loader (ClearKey Supported)
+  function loadDash(ch) {
+    if (typeof shaka === "undefined") {
+      // Dynamically load Shaka Player only when needed
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js";
+      script.onload = () => initShaka(ch);
+      document.head.appendChild(script);
+    } else {
+      initShaka(ch);
+    }
+  }
+
+  async function initShaka(ch) {
+    try {
+      const player = new shaka.Player(video);
+      window.player = player; // Debugging access
+      if (ch.clearKey) {
+        player.configure({
+          drm: {
+            clearKeys: ch.clearKey
+          }
+        });
+      }
+      await player.load(ch.manifestUri);
+      video.play();
+    } catch (err) {
+      console.error("❌ DASH load error:", err);
+      alert("Failed to play " + ch.name);
+    }
+  }
+
+  // 💾 Service Worker registration
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/sw.js")
@@ -60,6 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(err => console.warn("SW registration failed:", err));
   }
 
-  // ⏳ Load Channels after small delay for faster first paint
+  // ⏳ Delay for faster first paint
   setTimeout(loadChannels, 150);
 });
