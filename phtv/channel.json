@@ -1,66 +1,87 @@
 [
   {
-    name: "TV5",
-    logo: "https://i.imgur.com/Ddyfzrn.png",
-    type: "mpegdash",
-    manifestUri: "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/tv5_hd/default1/index.mpd",
-    clearKey: { "2615129ef2c846a9bbd43a641c7303ef": "07c7f996b1734ea288641a68e1cfdc4d" },
-    category: "PHILIPINES CHANNEL"
+    "name": "TV5",
+    "logo": "https://i.imgur.com/Ddyfzrn.webp",
+    "manifestUri": "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/tv5_hd/default1/index.mpd",
+        "clearKey": {
+      "f703e4c8ec9041eeb5028ab4248fa094": "c22f2162e176eee6273a5d0b68d19530"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "A2Z",
-    logo: "https://i.imgur.com/43nZ2rv.png",
-    type: "mpegdash",
-    manifestUri: "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/cg_a2z/default/index.mpd",
-    clearKey: { "f703e4c8ec9041eeb5028ab4248fa094": "c22f2162e176eee6273a5d0b68d19530" },
-    category: "PHILIPINES CHANNEL"
+    "name": "A2Z",
+    "logo": "https://i.imgur.com/43nZ2rv.png",
+    "type": "mpegdash",
+    "manifestUri": "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/cg_a2z/default/index.mpd",
+    "clearKey": {
+      "f703e4c8ec9041eeb5028ab4248fa094": "c22f2162e176eee6273a5d0b68d19530"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "GMA Pinoy TV",
-    logo: "https://i.imgur.com/Eo0f51v.png",
-    type: "mpegdash",
-    manifestUri: "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-abscbn-gma-x7-dash-abscbnono/7c693236-e0c1-40a3-8bd0-bb25e43f5bfc/index/default/index.mpd",
-    clearKey: { "c95ed4c44b0b4f7fa1c6ebbbbaab21a1": "47635b8e885e19f2ccbdff078c207058" },
-    category: "PHILIPINES CHANNEL"
+    "name": "GMA Pinoy TV",
+    "logo": "https://i.imgur.com/Eo0f51v.png",
+    "type": "mpegdash",
+    "manifestUri": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-abscbn-gma-x7-dash-abscbnono/7c693236-e0c1-40a3-8bd0-bb25e43f5bfc/index/default/index.mpd",
+    "clearKey": {
+      "c95ed4c44b0b4f7fa1c6ebbbbaab21a1": "47635b8e885e19f2ccbdff078c207058"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "GMA 7",
-    logo: "https://i.imgur.com/n0OqjYW.webp",
-    type: "hls",
-    manifestUri: "https://example.com/stream/gma7/playlist.m3u8",
-    category: "PHILIPINES CHANNEL"
+    "name": "GMA 7",
+    "logo": "https://i.imgur.com/n0OqjYW.webp",
+    "url": "https://example.com/stream/gma7/playlist.m3u8",
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "PBO",
-    logo: "https://i.imgur.com/buOVATz.png",
-    type: "mpegdash",
-    manifestUri: "https://qp-pldt-live-bpk-01-prod.akamaized.net/bpk-tv/pbo_sd/default/index.mpd",
-    clearKey: { "dcbdaaa6662d4188bdf97f9f0ca5e830": "31e752b441bd2972f2b98a4b1bc1c7a1" },
-    category: "PHILIPINES CHANNEL"
+    "name": "PBO",
+    "logo": "https://i.imgur.com/buOVATz.png",
+    "type": "mpegdash",
+    "manifestUri": "https://qp-pldt-live-bpk-01-prod.akamaized.net/bpk-tv/pbo_sd/default/index.mpd",
+    "clearKey": {
+      "dcbdaaa6662d4188bdf97f9f0ca5e830": "31e752b441bd2972f2b98a4b1bc1c7a1"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "Sari-Sari",
-    logo: "https://i.imgur.com/MXxN1UO.png",
-    type: "mpegdash",
-    manifestUri: "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/cg_sarisari/default/index.mpd",
-    clearKey: { "0a7ab3612f434335aa6e895016d8cd2d": "b21654621230ae21714a5cab52daeb9d" },
-    category: "PHILIPINES CHANNEL"
+    "name": "Sari-Sari",
+    "logo": "https://i.imgur.com/MXxN1UO.png",
+    "type": "mpegdash",
+    "manifestUri": "https://qp-pldt-live-bpk-02-prod.akamaized.net/bpk-tv/cg_sarisari/default/index.mpd",
+    "clearKey": {
+      "0a7ab3612f434335aa6e895016d8cd2d": "b21654621230ae21714a5cab52daeb9d"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "Viva Cinema",
-    logo: "https://i.imgur.com/51RWtvd.png",
-    type: "mpegdash",
-    manifestUri: "https://qp-pldt-live-bpk-01-prod.akamaized.net/bpk-tv/viva_sd/default/index.mpd",
-    clearKey: { "07aa813bf2c147748046edd930f7736e": "3bd6688b8b44e96201e753224adfc8fb" },
-    category: "PHILIPINES CHANNEL"
+    "name": "Viva Cinema",
+    "logo": "https://i.imgur.com/51RWtvd.png",
+    "type": "mpegdash",
+    "manifestUri": "https://qp-pldt-live-bpk-01-prod.akamaized.net/bpk-tv/viva_sd/default/index.mpd",
+    "clearKey": {
+      "07aa813bf2c147748046edd930f7736e": "3bd6688b8b44e96201e753224adfc8fb"
+    },
+    "category": "PHILIPPINES CHANNEL"
   },
   {
-    name: "Cinemo",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfSAX3s9pZ_vF-BYCNl2YauNfH__T2bzKq1Q&s",
-    type: "mpegdash",
-    manifestUri: "https://d1bail49udbz1k.cloudfront.net/out/v1/3a895f368f4a467c9bca0962559efc19/index.mpd",
-    clearKey: { "aa8aebe35ccc4541b7ce6292efcb1bfb": "aab1df109d22fc5d7e3ec121ddf24e5f" },
-    category: "PHILIPINES CHANNEL"
+    "name": "Cinemo",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfSAX3s9pZ_vF-BYCNl2YauNfH__T2bzKq1Q&s",
+    "type": "mpegdash",
+    "manifestUri": "https://d1bail49udbz1k.cloudfront.net/out/v1/3a895f368f4a467c9bca0962559efc19/index.mpd",
+    "clearKey": {
+      "aa8aebe35ccc4541b7ce6292efcb1bfb": "aab1df109d22fc5d7e3ec121ddf24e5f"
+    },
+    "category": "PHILIPPINES CHANNEL"
+  },
+  {
+    "name": "MYX PHILIPPINES",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROaLL-eOAbnogBL-jX6LO-RujkrmoloYT141mQYDMivq_onbeBteex5eAy&s=10",
+    "type": "mpegdash",
+    "manifestUri": "https://d24xfhmhdb6r0q.cloudfront.net/out/v1/e897a7b6414a46019818ee9f2c081c4f/index/default/index.mpd",
+    "clearKey": {
+      "f40a52a3ac9b4702bdd5b735d910fd2f": "5ce1bc7f06b494c276252b4d13c90e51"
+    },
+    "category": "PHILIPPINES CHANNEL"
   }
-  // … Continue the rest using same pattern …
 ]
