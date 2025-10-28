@@ -1,0 +1,17 @@
+[
+  {
+    "name": "TV5",
+    "logo": "https://i.imgur.com/Ddyfzrn.webp",
+    "url": "https://example.com/stream/tv5/playlist.m3u8"
+  },
+  {
+    "name": "GMA 7",
+    "logo": "https://i.imgur.com/n0OqjYW.webp",
+    "url": "https://example.com/stream/gma7/playlist.m3u8"
+  },
+  {
+    "name": "CNN Philippines",
+    "logo": "https://i.imgur.com/abEwZ3W.webp",
+    "url": "https://example.com/stream/cnnph/playlist.m3u8"
+  }
+]
