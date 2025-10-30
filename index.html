@@ -58,7 +58,7 @@
         clearTimeout(timeout);
 
         if (response || navigator.onLine) {
-          status.textContent = "Connected! Redirecting...";
+          status.textContent = "Connected! Loading...";
           setTimeout(() => {
             window.location.href = "go:homepaid";
           }, 1500);
@@ -67,9 +67,9 @@
         }
       } catch (error) {
         img.style.animation = "none";
-        status.textContent = "No Internet Connection. Redirecting to Google...";
+        status.textContent = "No Internet Connection.";
         setTimeout(() => {
-          window.location.href = "https://www.google.com";
+          window.location.href = "https://t.me/+tCQsVCfDVt44ZjFl";
         }, 2000);
       }
     }
