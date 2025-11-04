@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colorful Group Chat</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ff6b6b, #f8cdda, #1dd1a1, #48dbfb);
+      background-size: 400% 400%;
+      animation: bgmove 15s ease infinite;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    @keyframes bgmove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Username Screen */
+    #username-section {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    #username-form {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease;
+    }
+    #username-input {
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      width: 220px;
+      margin-bottom: 15px;
+      outline: none;
+      text-align: center;
+    }
+    #set-username-btn {
+      padding: 10px 20px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    #set-username-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+    }
+
+    /* Chat Section */
+    #chat-section {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      backdrop-filter: blur(6px);
+    }
+    #messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 10px 15px;
+      border-radius: 20px;
+      max-width: 75%;
+      word-wrap: break-word;
+      animation: fadeInUp 0.3s ease;
+      line-height: 1.4;
+    }
+    .my-message {
+      background: linear-gradient(135deg, #1dd1a1, #10ac84);
+      align-self: flex-end;
+      color: #fff;
+    }
+    .other-message {
+      background: rgba(0,0,0,0.3);
+      align-self: flex-start;
+      color: #fff;
+    }
+
+    .msg-header {
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+    .msg-time {
+      font-size: 0.75em;
+      color: rgba(255,255,255,0.7);
+      margin-left: 5px;
+    }
+
+    #send-form {
+      display: flex;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border-top: 2px solid rgba(255,255,255,0.1);
+    }
+    #message-input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 15px;
+      margin-right: 8px;
+      outline: none;
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    #message-input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    #send-btn {
+      padding: 12px 18px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57);
+      border: none;
+      border-radius: 15px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    #send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Username creation -->
+  <div id="username-section">
+    <div id="username-form">
+      <h2>🎨 Create Username</h2>
+      <input type="text" id="username-input" placeholder="Enter your username" />
+      <br />
+      <button id="set-username-btn">Enter Chat</button>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat-section">
+    <div id="messages"></div>
+    <form id="send-form">
+      <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCCAjWU_gpk9asJwz4HIjR30p7YIWc1FhI",
+      authDomain: "message-1bd65.firebaseapp.com",
+      projectId: "message-1bd65",
+      storageBucket: "message-1bd65.firebasestorage.app",
+      messagingSenderId: "471824608519",
+      appId: "1:471824608519:web:e09d566fc8a77eb05ba9a2",
+      measurementId: "G-NMD24CHE4S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem('deviceId', deviceId);
+    }
+
+    const usernameSection = document.getElementById('username-section');
+    const usernameInput = document.getElementById('username-input');
+    const setUsernameBtn = document.getElementById('set-username-btn');
+    const chatSection = document.getElementById('chat-section');
+
+    let username = localStorage.getItem('username');
+
+    if (!username) {
+      usernameSection.style.display = 'flex';
+    } else {
+      chatSection.style.display = 'flex';
+      loadChat();
+    }
+
+    setUsernameBtn.addEventListener('click', async () => {
+      const name = usernameInput.value.trim();
+      if (name) {
+        username = name;
+        localStorage.setItem('username', username);
+        usernameSection.style.display = 'none';
+        chatSection.style.display = 'flex';
+        loadChat();
+      } else {
+        alert('Please enter a username');
+      }
+    });
+
+    async function loadChat() {
+      const messagesDiv = document.getElementById('messages');
+      const sendForm = document.getElementById('send-form');
+      const messageInput = document.getElementById('message-input');
+
+      const q = query(collection(db, "messages"), orderBy("time"));
+      onSnapshot(q, (snapshot) => {
+        messagesDiv.innerHTML = '';
+        snapshot.forEach((doc) => {
+          const msg = doc.data();
+          const div = document.createElement('div');
+          div.classList.add('message');
+          if (msg.deviceId === deviceId) {
+            div.classList.add('my-message');
+          } else {
+            div.classList.add('other-message');
+          }
+
+          const timestamp = msg.time?.toDate
+            ? msg.time.toDate()
+            : new Date();
+
+          const timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const dateStr = timestamp.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+
+          div.innerHTML = `
+            <div class="msg-header">
+              ${msg.user}
+              <span class="msg-time">${timeStr} | ${dateStr}</span>
+            </div>
+            ${msg.text}
+          `;
+          messagesDiv.appendChild(div);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      sendForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = messageInput.value.trim();
+        if (!text) return;
+        await addDoc(collection(db, "messages"), {
+          text,
+          user: username,
+          deviceId,
+          time: serverTimestamp()
+        });
+        messageInput.value = '';
+      });
+    }
+  </script>
+</body>
+</html>
