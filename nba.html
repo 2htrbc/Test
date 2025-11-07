@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="screen-orientation" content="landscape" />
+  <title>Premium Sports</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin: 20px 0 10px;
+    }
+
+    .search-container {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .search-input {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #1e1e1e;
+      color: white;
+      font-size: 16px;
+    }
+
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+      padding: 10px;
+      justify-items: center;
+    }
+
+    .channel {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 12px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      outline: none;
+      width: 100%;
+    }
+
+    .channel:focus {
+      background: #2a2a2a;
+      transform: scale(1.05);
+      outline: 2px solid #00ffff;
+    }
+
+    .channel img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 6px;
+      border: 2px solid #444;
+      box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+    }
+
+    .channel span {
+      display: block;
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .countdown-timer {
+      font-size: 12px;
+      color: #00ffff;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 1024px) {
+      .channel-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+
+    @media screen and (orientation: portrait) {
+      body {
+        display: none;
+      }
+
+      body::before {
+        content: "Please rotate your device to landscape.";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+        font-size: 20px;
+        background: black;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>NBA EVENT</h1>
+
+  <div class="search-container">
+    <input type="text" id="search" class="search-input" placeholder="Search channels..." oninput="filterChannels()" />
+  </div>
+
+  <div class="channel-grid" id="channelGrid">
+<div class="channel" tabindex="0" onclick="openChannel('nba1')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Boston Celtics vs. Orlando Magic – 8:00am</span>
+  <div class="countdown-timer" id="timer-nba1"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba2')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Cleveland Cavaliers vs. Washington Wizards – 8:00am</span>
+  <div class="countdown-timer" id="timer-nba2"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba3')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Toronto Raptors vs. Atlanta Hawks – 8:30am</span>
+  <div class="countdown-timer" id="timer-nba3"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba4')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Detroit Pistons vs. Brooklyn Nets – 8:30am</span>
+  <div class="countdown-timer" id="timer-nba4"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba5')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Houston Rockets vs. San Antonio Spurs – 8:30am</span>
+  <div class="countdown-timer" id="timer-nba5"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba6')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Charlotte Hornets vs. Miami Heat – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba6"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba7')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Dallas Mavericks vs. Memphis Grizzlies – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba7"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba8')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Chicago Bulls vs. Milwaukee Bucks – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba8"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba9')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Utah Jazz vs. Minnesota Timberwolves – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba9"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba11')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Golden State Warriors vs. Denver Nuggets – 11:00am</span>
+  <div class="countdown-timer" id="timer-nba11"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba12')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>Oklahoma City Thunder vs. Sacramento Kings – 11:00am</span>
+  <div class="countdown-timer" id="timer-nba12"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba12')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="nba">
+  <span>NBA 12</span>
+  <div class="countdown-timer" id="timer-nba12"></div>
+</div>
+
+  </div>
+
+  <script>
+    function openChannel(channelId) {
+      window.location.href = "go:" + channelId;
+    }
+
+    function filterChannels() {
+      const input = document.getElementById("search").value.toLowerCase();
+      const channels = document.querySelectorAll(".channel");
+      channels.forEach(channel => {
+        const name = channel.innerText.toLowerCase();
+        channel.style.display = name.includes(input) ? "" : "none";
+      });
+    }
+
+const countdownEvents = {
+  "timer-nba1": "2025-10-23T23:30:00Z", 
+  "timer-nba2": "2025-10-24T02:00:00Z"  
+};
+   
+
+    function startCountdowns() {
+      for (const [id, utcTime] of Object.entries(countdownEvents)) {
+        const el = document.getElementById(id);
+        const targetTime = new Date(utcTime).getTime();
+
+        function updateTimer() {
+          const now = new Date().getTime();
+          const diff = targetTime - now;
+
+          if (diff <= 0) {
+            el.innerHTML = `🟢 Live Now!`;
+            return;
+          }
+
+          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const m = Math.floor((diff / (1000 * 60)) % 60);
+          const s = Math.floor((diff / 1000) % 60);
+
+          const countdownText = `⏳ ${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+          el.innerHTML = countdownText;
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+      }
+    }
+
+    startCountdowns();
+  </script>
