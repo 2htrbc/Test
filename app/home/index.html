@@ -5,14 +5,12 @@
 <meta name="viewport"
   content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>HONOR TV IPTV Menu</title>
-<meta name="description" content="HONOR TV IPTV Menu — Watch Live TV, Movies, Radio, and more." />
-
 <style>
   html, body {
     margin: 0; padding: 0;
     width: 100vw; height: 100vh;
     overflow: hidden;
-    background: #000;
+    background: #111;
     font-family: "Segoe UI", sans-serif;
     color: #fff;
     touch-action: manipulation;
@@ -24,13 +22,13 @@
     width: 100%;
     background: linear-gradient(90deg, #ff512f, #dd2476, #12c2e9, #00c6ff, #0072ff);
     background-size: 400% 100%;
-    animation: bgScroll 25s linear infinite;
+    animation: bgScroll 8s linear infinite;
     color: #fff;
     text-align: center;
     font-weight: bold;
     font-size: clamp(13px, 1.4vw, 18px);
     padding: 0.6em 0;
-    box-shadow: 0 0 8px rgba(255,255,255,0.25);
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
   }
   @keyframes bgScroll {
     0% { background-position: 0% 50%; }
@@ -39,7 +37,7 @@
   .announcement span {
     display: inline-block;
     white-space: nowrap;
-    animation: scrollText 40s linear infinite;
+    animation: scrollText 15s linear infinite;
     text-shadow: 0 0 8px #fff, 0 0 12px #00c6ff;
   }
   @keyframes scrollText {
@@ -57,17 +55,19 @@
     position: relative;
   }
 
-  .btn {
-    color: white;
-    border-radius: 2em;
+  .code-btn, .movies-btn, .contact-btn, .message-btn {
+    color: white; border-radius: 2em;
     text-decoration: none;
     box-shadow: 0 0 6px rgba(255,255,255,0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: 0.3s;
     padding: 0.6em 1.4em;
     font-size: clamp(10px, 1.2vw, 16px);
     display: inline-block;
   }
-
+  .code-btn {
+    background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+    position: absolute; top: 8px; right: 10px;
+  }
   .contact-btn {
     background: linear-gradient(to right, #ff512f, #dd2476);
     position: absolute; top: 8px; left: 10px;
@@ -76,16 +76,13 @@
     background: linear-gradient(to right, #00c6ff, #0072ff);
     position: absolute; top: 8px; left: 150px;
   }
-  .code-btn {
-    background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-    position: absolute; top: 8px; right: 10px;
-  }
   .movies-btn {
     background: linear-gradient(to right, #2193b0, #6dd5ed);
     margin: 0.6em auto;
   }
 
-  .btn:hover, .btn:focus {
+  .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover,
+  .code-btn:focus, .movies-btn:focus, .contact-btn:focus, .message-btn:focus {
     transform: scale(1.05);
     outline: none;
     box-shadow: 0 0 12px 4px #00ffcc;
@@ -112,12 +109,13 @@
     font-size: clamp(11px, 1.2vw, 16px);
     margin: 0.8em auto;
     width: fit-content;
-    box-shadow: 0 0 10px rgba(0,255,200,0.4);
-    animation: pulse 2s infinite;
+    box-shadow: 0 0 12px rgba(0,255,200,0.5);
+    animation: pulseGlow 2s infinite;
   }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
-    50% { box-shadow: 0 0 16px rgba(0,255,200,0.7); }
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
+    50% { box-shadow: 0 0 16px rgba(0,255,200,0.8); }
+    100% { box-shadow: 0 0 8px rgba(0,255,200,0.3); }
   }
 
   .menu-grid {
@@ -125,6 +123,7 @@
     grid-template-columns: repeat(auto-fit, minmax(clamp(80px, 10vw, 140px), 1fr));
     gap: clamp(0.8em, 1.6vw, 2em);
     justify-content: center;
+    justify-items: center;
     align-items: center;
     padding: clamp(0.8em, 2vw, 2em);
     margin: auto;
@@ -170,25 +169,17 @@
     color: #ccc;
     padding: 0.6em;
   }
-
-  @media (max-width: 600px) {
-    .message-btn { left: 120px; font-size: 12px; padding: 0.5em 1em; }
-    .contact-btn, .code-btn { font-size: 12px; padding: 0.5em 1em; }
-  }
 </style>
 </head>
 <body>
   <div class="announcement">
-    <span>Login code is in Group Chat. (Note: Ads appear once, then removed permanently. First load may be slow — caching makes it fast after.) Follow my Facebook for updates @2025</span>
+    <span>📢 ANNOUNCEMENT: Welcome to HONOR TV! Enjoy Watching Live TV - Movies, NBA Live, other sports event, and more! Stay tuned for updates.</span>
   </div>
 
   <div class="overlay">
-    <!-- Auto Redirect Contact -->
-    <a href="https://www.facebook.com/share/1AGMmvn189/" target="_blank" class="btn contact-btn" id="contactBtn" tabindex="0">
-      📞 Contact
-    </a>
-    <a href="message.html" class="btn message-btn" tabindex="0">💬 Group Chat</a>
-    <a href="login-code.html" class="btn code-btn" id="loginBtn" tabindex="0">🔐 Login Code</a>
+    <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
+    <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
+    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo" />
@@ -199,7 +190,7 @@
       🔒 Please login to access channels.
     </div>
 
-    <a href="movies.html" class="btn movies-btn" tabindex="0">🎬 MOVIES</a>
+    <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid" id="menuGrid">
       <div class="channel locked" onclick="openC('phchannel')">
@@ -295,43 +286,6 @@
 <script>
   let isLoggedIn = false, req;
 
-  // ✅ Facebook Page Info
-  const fbPageID = "100089299781982"; // replace with your real FB page ID
-  const fbPageURL = "https://www.facebook.com/share/1AGMmvn189/"; // fallback URL
-
-  // ✅ Function: open Facebook app (or browser fallback)
-  function openFacebookApp() {
-    const appLink = `fb://page/${fbPageID}`;
-    const webLink = fbPageURL;
-
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appLink;
-    document.body.appendChild(iframe);
-
-    const start = Date.now();
-    setTimeout(() => {
-      if (Date.now() - start < 1500) {
-        window.location.href = webLink;
-      }
-      document.body.removeChild(iframe);
-    }, 1200);
-  }
-
-  // ✅ Auto redirect to Facebook app on page load
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      openFacebookApp();
-    }, 1500);
-    checkLogin();
-  });
-
-  // ✅ Contact button opens FB app
-  document.getElementById("contactBtn").addEventListener("click", e => {
-    e.preventDefault();
-    openFacebookApp();
-  });
-
   function openC(id) {
     if (isLoggedIn) {
       location.href = "go:" + id;
@@ -360,10 +314,9 @@
   }
 
   function updateCountdown(expiry) {
-    cancelAnimationFrame(req);
     function tick() {
       const now = Date.now();
-      const diff = expiry - now;
+      let diff = expiry - now;
       const countdown = document.getElementById("countdown-display");
 
       if (diff <= 0) {
@@ -373,10 +326,10 @@
         return;
       }
 
-      const d = Math.floor(diff / 86400000),
-            h = Math.floor((diff / 3600000) % 24),
-            m = Math.floor((diff / 60000) % 60),
-            s = Math.floor((diff / 1000) % 60);
+      let d = Math.floor(diff / 86400000),
+          h = Math.floor((diff / 3600000) % 24),
+          m = Math.floor((diff / 60000) % 60),
+          s = Math.floor((diff / 1000) % 60);
 
       countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
       req = requestAnimationFrame(tick);
@@ -394,13 +347,13 @@
     cancelAnimationFrame(req);
   }
 
-  // ✅ Smart TV / Keyboard Navigation
+  // ✅ Smart TV Remote / Keyboard Navigation
   document.addEventListener("keydown", e => {
     const focusable = Array.from(document.querySelectorAll('[tabindex="0"]'));
     const index = focusable.indexOf(document.activeElement);
-    const cols = Math.ceil(focusable.length / 3);
+    const cols = Math.round(Math.sqrt(focusable.length));
 
-    switch (e.key) {
+    switch(e.key) {
       case "ArrowRight":
         if (index + 1 < focusable.length) focusable[index + 1].focus();
         e.preventDefault(); break;
@@ -419,6 +372,8 @@
         e.preventDefault(); break;
     }
   });
+
+  onload = checkLogin;
 </script>
 </body>
 </html>
