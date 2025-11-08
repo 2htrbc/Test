@@ -55,8 +55,9 @@
     position: relative;
   }
 
-  .code-btn, .movies-btn, .contact-btn, .message-btn {
-    color: white; border-radius: 2em;
+  .contact-btn, .message-btn, .code-btn, .movies-btn {
+    color: white;
+    border-radius: 2em;
     text-decoration: none;
     box-shadow: 0 0 6px rgba(255,255,255,0.3);
     transition: 0.3s;
@@ -64,10 +65,7 @@
     font-size: clamp(10px, 1.2vw, 16px);
     display: inline-block;
   }
-  .code-btn {
-    background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-    position: absolute; top: 8px; right: 10px;
-  }
+
   .contact-btn {
     background: linear-gradient(to right, #ff512f, #dd2476);
     position: absolute; top: 8px; left: 10px;
@@ -76,13 +74,16 @@
     background: linear-gradient(to right, #00c6ff, #0072ff);
     position: absolute; top: 8px; left: 150px;
   }
+  .code-btn {
+    background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+    position: absolute; top: 8px; right: 10px;
+  }
   .movies-btn {
     background: linear-gradient(to right, #2193b0, #6dd5ed);
     margin: 0.6em auto;
   }
 
-  .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover,
-  .code-btn:focus, .movies-btn:focus, .contact-btn:focus, .message-btn:focus {
+  .contact-btn:hover, .message-btn:hover, .code-btn:hover, .movies-btn:hover {
     transform: scale(1.05);
     outline: none;
     box-shadow: 0 0 12px 4px #00ffcc;
@@ -169,19 +170,23 @@
     color: #ccc;
     padding: 0.6em;
   }
+
+  @media (max-width: 600px) {
+    .message-btn { left: 120px; font-size: 12px; padding: 0.5em 1em; }
+    .contact-btn { font-size: 12px; padding: 0.5em 1em; }
+    .code-btn { font-size: 12px; padding: 0.5em 1em; }
+  }
 </style>
 </head>
 <body>
   <div class="announcement">
-    <span>Login code nasa Group Chat, (Noted: have ads appears for the first time open after that ads remove permanently) Sa una lang mabagal magloading pagnaload niyo na lahat ng content OK na.  follow my Facebook account for more Update____________@2025</span>
+    <span>Login code is in Group Chat. (Note: Ads appear only the first time; after that, they're removed.) First load may be slow — after caching, everything runs smoothly. Follow my Facebook for updates @2025</span>
   </div>
 
   <div class="overlay">
-     <button class="btn" id="contactBtn" onclick="window.open('https://www.facebook.com/share/1AGMmvn189/', '_blank')">  
-    📞 Contact
-</button>
-    <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
-    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
+    <a href="https://www.facebook.com/share/1AGMmvn189/" target="_blank" class="contact-btn" tabindex="0">📞 Contact</a>
+    <a href="message.html" class="message-btn" tabindex="0">💬 Group Chat</a>
+    <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 Login Code</a>
 
     <div class="logo">
       <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo" />
@@ -316,9 +321,10 @@
   }
 
   function updateCountdown(expiry) {
+    cancelAnimationFrame(req);
     function tick() {
       const now = Date.now();
-      let diff = expiry - now;
+      const diff = expiry - now;
       const countdown = document.getElementById("countdown-display");
 
       if (diff <= 0) {
@@ -328,10 +334,10 @@
         return;
       }
 
-      let d = Math.floor(diff / 86400000),
-          h = Math.floor((diff / 3600000) % 24),
-          m = Math.floor((diff / 60000) % 60),
-          s = Math.floor((diff / 1000) % 60);
+      const d = Math.floor(diff / 86400000),
+            h = Math.floor((diff / 3600000) % 24),
+            m = Math.floor((diff / 60000) % 60),
+            s = Math.floor((diff / 1000) % 60);
 
       countdown.innerText = `🔓 Access: ${d}d ${h}h ${m}m ${s}s`;
       req = requestAnimationFrame(tick);
@@ -349,13 +355,13 @@
     cancelAnimationFrame(req);
   }
 
-  // ✅ Smart TV Remote / Keyboard Navigation
+  // Smart TV / Keyboard Navigation
   document.addEventListener("keydown", e => {
     const focusable = Array.from(document.querySelectorAll('[tabindex="0"]'));
     const index = focusable.indexOf(document.activeElement);
     const cols = Math.round(Math.sqrt(focusable.length));
 
-    switch(e.key) {
+    switch (e.key) {
       case "ArrowRight":
         if (index + 1 < focusable.length) focusable[index + 1].focus();
         e.preventDefault(); break;
@@ -375,7 +381,7 @@
     }
   });
 
-  onload = checkLogin;
+  window.onload = checkLogin;
 </script>
 </body>
 </html>
