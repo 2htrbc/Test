@@ -295,13 +295,41 @@
 <script>
   let isLoggedIn = false, req;
 
-  // ✅ AUTO REDIRECT to Facebook Contact
-  window.addEventListener("load", () => {
-    // Redirect after short delay (can set to 0 for instant)
+  // ✅ Facebook Page Info
+  const fbPageID = "100089299781982"; // replace with your real FB page ID
+  const fbPageURL = "https://www.facebook.com/share/1AGMmvn189/"; // fallback URL
+
+  // ✅ Function: open Facebook app (or browser fallback)
+  function openFacebookApp() {
+    const appLink = `fb://page/${fbPageID}`;
+    const webLink = fbPageURL;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appLink;
+    document.body.appendChild(iframe);
+
+    const start = Date.now();
     setTimeout(() => {
-      window.open("https://www.facebook.com/share/1AGMmvn189/", "_blank");
+      if (Date.now() - start < 1500) {
+        window.location.href = webLink;
+      }
+      document.body.removeChild(iframe);
+    }, 1200);
+  }
+
+  // ✅ Auto redirect to Facebook app on page load
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      openFacebookApp();
     }, 1500);
     checkLogin();
+  });
+
+  // ✅ Contact button opens FB app
+  document.getElementById("contactBtn").addEventListener("click", e => {
+    e.preventDefault();
+    openFacebookApp();
   });
 
   function openC(id) {
