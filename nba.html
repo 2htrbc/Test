@@ -182,14 +182,13 @@
       <div class="countdown-timer" id="timer-nba9"></div>
     </div>
 
-
-    <div class="channel" tabindex="0" onclick="openChannel('nba11')">
+    <div class="channel" tabindex="0" onclick="openChannel('nba10')">
       <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
       <span>Golden State Warriors vs. Denver Nuggets – 11:00am</span>
       <div class="countdown-timer" id="timer-nba10"></div>
     </div>
 
-    <div class="channel" tabindex="0" onclick="openChannel('nba12')">
+    <div class="channel" tabindex="0" onclick="openChannel('nba11')">
       <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
       <span>Oklahoma City Thunder vs. Sacramento Kings – 11:00am</span>
       <div class="countdown-timer" id="timer-nba11"></div>
@@ -236,7 +235,8 @@
 
         const update = () => {
           const diff = target - Date.now();
-          if (diff <= -3600000) return el.textContent = "⚫ Ended";
+          // ⏰ Ends after 6 hours of live
+          if (diff <= -21600000) return el.textContent = "⚫ Ended";
           if (diff <= 0) return el.textContent = "🟢 Live Now!";
           const d = Math.floor(diff / 86400000);
           const h = Math.floor((diff / 3600000) % 24);
