@@ -1,0 +1,90 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #333;
+    }.container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  text-decoration: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.facebook {
+  background: #1877f2;
+}
+
+.facebook:hover {
+  background: #145db2;
+}
+
+.telegram {
+  background: #0088cc;
+}
+
+.telegram:hover {
+  background: #0070a8;
+}
+
+p {
+  font-size: 14px;
+  color: #555;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contact</h1>
+    <p>Follow My Facebook and join our Telegram group.</p><a class="btn facebook" href="fb://facewebmodal/f?href=https://www.facebook.com/profile.php?id=61582901038562&mibextid=ZbWKwL" target="_blank" onclick="fallbackFB(event)">Open Facebook Page</a>
+
+<a class="btn telegram" href="tg://join?invite=CeW6bOjbYTVlYWI1" target="_blank" onclick="fallbackTG(event)">Join Telegram Group</a>
+
+  </div>  <script>
+    function fallbackFB(e) {
+      setTimeout(() => {
+        window.open('https://www.facebook.com/profile.php?id=61582901038562&mibextid=ZbWKwL', '_blank');
+      }, 1000);
+    }
+
+    function fallbackTG(e) {
+      setTimeout(() => {
+        window.open('https://t.me/+CeW6bOjbYTVlYWI1', '_blank');
+      }, 1000);
+    }
+  </script></body>
+</html>
