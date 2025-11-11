@@ -1,215 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Donate</title>
-  <style>
-    :root {
-      --bg1: #ffecd2;
-      --bg2: #fcb69f;
-      --accent: #ff5f6d;
-      --accent-2: #ffc371;
-      --glass: rgba(255,255,255,0.12);
-    }
-    * { box-sizing: border-box; outline: none; }
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      background-attachment: fixed;
-      -webkit-font-smoothing: antialiased;
-      position: relative;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Donate</title>
+<style>
+:root {
+  --bg1: #ffecd2;
+  --bg2: #fcb69f;
+  --accent: #ff5f6d;
+  --accent-2: #ffc371;
+  --glass: rgba(255,255,255,0.12);
+}
+* { box-sizing: border-box; outline: none; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
 
-    /* Upper Back Button */
-    .top-bar {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 1000;
-    }
-    .back-btn {
-      background: var(--accent-2);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .back-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
+/* Top Back Button */
+.top-bar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+}
+.back-btn {
+  background: var(--accent-2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.back-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-    .container {
-      width: 96%;
-      max-width: 920px;
-      margin: 80px auto 40px;
-      padding: 28px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
-      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-      backdrop-filter: blur(6px) saturate(120%);
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 22px;
-      align-items: center;
-    }
-    @media (max-width: 830px) {
-      .container { grid-template-columns: 1fr; }
-    }
+.container {
+  width: 96%;
+  max-width: 920px;
+  margin: 80px auto 40px;
+  padding: 28px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px) saturate(120%);
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 22px;
+  align-items: center;
+}
+@media (max-width: 830px) { .container { grid-template-columns: 1fr; } }
 
-    h1 { margin: 0 0 8px; font-size: 28px; color: #3a2b2b; }
-    p.lead { margin: 0 0 18px; color: #5b4b4b; }
+h1 { margin: 0 0 8px; font-size: 28px; color: #3a2b2b; }
+p.lead { margin: 0 0 18px; color: #5b4b4b; }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 18px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-    }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-    .btn:focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 3px;
-    }
+.paypal { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: white; }
 
-    .paypal {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: white;
-    }
+.pill { background: var(--glass); padding: 8px 12px; border-radius: 999px; font-weight: 600; color: #3e3333; }
 
-    .pill {
-      background: var(--glass);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 600;
-      color: #3e3333;
-    }
+.right {
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+}
 
-    .right {
-      text-align: center;
-      padding: 12px;
-      border-radius: 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));
-      border: 1px solid rgba(255,255,255,0.4);
-    }
+.qr-wrap { display: inline-block; padding: 8px; background: #fff; border-radius: 12px; }
+.qr { width: 280px; height: 280px; border-radius: 6px; }
 
-    .qr-wrap { display: inline-block; padding: 12px; background: rgba(255,255,255,0.9); border-radius: 12px; }
-    .qr { width: 220px; height: 220px; border-radius: 6px; }
-    .method { margin-top: 12px; font-weight: 700; }
-    .note { font-size: 13px; margin-top: 8px; color: #4a3f3f; }
-    footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
+.method { margin-top: 12px; font-weight: 700; }
+.note { font-size: 13px; margin-top: 8px; color: #4a3f3f; }
+footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
 
-    .float { animation: floaty 6s ease-in-out infinite; }
-    @keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
+.float { animation: floaty 6s ease-in-out infinite; }
+@keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
 
-    /* popup modal */
-    #qrModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    #qrModal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
-    }
-  </style>
+/* popup modal */
+#qrModal {
+  display: none;
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.8);
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+#qrModal img {
+  max-width: 95%;
+  max-height: 95%;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+</style>
 </head>
 <body>
 
-  <!-- Fixed top back button -->
-  <div class="top-bar">
-    <button class="back-btn" onclick="goHome()" tabindex="1">← Back to Home</button>
-  </div>
-
-  <main class="container float">
-    <section class="left">
-      <h1>Support the Project ♥️</h1>
-      <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
-
-      <a class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" tabindex="2">
-        <span>Donate with PayPal</span>
-      </a>
-      <div class="pill">Fast — Secure — Global</div>
-
-      <footer>
-        <div class="small">Contact: <strong>https://www.facebook.com/share/17DerDwx3s/</strong></div>
-      </footer>
-    </section>
-
-    <aside class="right">
-      <div class="qr-wrap">
-        <img id="qrImage" class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code">
-      </div>
-      <div class="method">Scan to pay — GCash</div>
-      <div class="note">Open GCash → Tap “Scan QR” → Point at this code.</div>
-
-      <div style="margin-top:12px; display:flex; justify-content:center;">
-        <button class="btn small" id="openQR" tabindex="3">View QR</button>
-      </div>
-    </aside>
-  </main>
-
-  <!-- QR popup modal -->
-  <div id="qrModal">
-    <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Preview">
-  </div>
-
-  <script>
-    function goHome() {
-      window.location.href = "index.html";
-    }
-
-    const modal = document.getElementById('qrModal');
-    const openBtn = document.getElementById('openQR');
-
-    // View QR modal
-    openBtn.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
-    modal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-
-    // ✅ TV Remote & Keyboard Navigation
-    const focusable = Array.from(document.querySelectorAll('a, button'));
-    let index = 0;
-    focusable[index].focus();
-
-    document.addEventListener('keydown', e => {
-      if (['ArrowDown', 'ArrowRight'].includes(e.key)) {
-        index = (index + 1) % focusable.length;
-        focusable[index].focus();
-      } else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) {
-        index = (index - 1 + focusable.length) % focusable.length;
-        focusable[index].focus();
-      } else if (e.key === 'Enter') {
-        focusable[index].click();
-      } else if (e.key === 'Backspace') {
-        goHome();
-      }
-    });
-  </script>
-</body>
-</html>
+<div class="top-bar">
+  <button class="back-btn" onclick="go
