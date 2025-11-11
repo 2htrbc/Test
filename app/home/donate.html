@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Donate</title>
+<style>
+  :root{
+    --bg1:#ffecd2; --bg2:#fcb69f;
+    --accent:#ff5f6d; --accent-2:#ffc371;
+    --glass:rgba(255,255,255,0.12);
+  }
+  *{box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Roboto,Arial;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    background-attachment:fixed;
+  }
+  .container{
+    width:96%;max-width:920px;margin:40px auto;padding:28px;
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.65),rgba(255,255,255,0.45));
+    box-shadow:0 12px 40px rgba(0,0,0,0.12);
+    backdrop-filter:blur(8px) saturate(120%);
+    display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:center;
+  }
+  @media(max-width:830px){.container{grid-template-columns:1fr;}}
+  h1{margin:0 0 8px;font-size:28px;color:#3a2b2b;}
+  p.lead{margin:0 0 18px;color:#5b4b4b;font-size:16px;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    gap:10px;padding:14px 20px;border-radius:12px;
+    font-weight:700;text-decoration:none;cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease;
+    user-select:none;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
+  .paypal{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;}
+  .paypal .logo{
+    width:22px;height:22px;
+    background:url('https://www.paypalobjects.com/webstatic/icon/pp258.png') center/contain no-repeat;
+  }
+  .pill{
+    background:var(--glass);padding:8px 14px;
+    border-radius:999px;font-weight:600;color:#3e3333;font-size:13px;
+  }
+  .right{
+    text-align:center;padding:12px;border-radius:12px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.35));
+    border:1px solid rgba(255,255,255,0.4);
+  }
+  .qr-wrap{
+    display:inline-block;padding:12px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.75));
+    border-radius:12px;
+  }
+  .qr{width:220px;height:220px;object-fit:cover;border-radius:6px;display:block;margin:auto;}
+  .method{margin-top:12px;font-weight:700;font-size:15px;}
+  .note{font-size:13px;margin-top:8px;color:#4a3f3f;line-height:1.4;}
+  footer{margin-top:18px;font-size:13px;color:#3e3333;text-align:center;}
+  .float{animation:floaty 6s ease-in-out infinite;}
+  @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  .back-btn{
+    position:fixed;top:20px;left:20px;
+    padding:10px 18px;border-radius:10px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:#fff;font-weight:600;text-decoration:none;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+    transition:transform .2s ease;z-index:1000;
+  }
+  .back-btn:hover{transform:scale(1.05);}
+  .back-btn:focus-visible{outline:3px solid white;outline-offset:3px;}
+  /* Mobile optimization */
+  @media(max-width:600px){
+    h1{font-size:22px;text-align:center;}
+    p.lead{text-align:center;}
+    .btn{width:100%;justify-content:center;}
+    .back-btn{top:12px;left:12px;font-size:14px;padding:8px 14px;}
+    .qr{width:180px;height:180px;}
+  }
+  /* Fullscreen QR viewer */
+  .qr-viewer{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;align-items:center;justify-content:center;
+    z-index:2000;
+  }
+  .qr-viewer img{
+    max-width:90%;max-height:90%;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(255,255,255,0.2);
+  }
+  .qr-viewer.show{display:flex;}
+</style>
+</head>
+<body>
+  <!-- Back button -->
+  <a href="index.html" class="back-btn" id="backBtn" tabindex="0">← Home</a>
+
+  <main class="container float">
+    <section class="left">
+      <h1>Support the Project ♥️</h1>
+      <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you for your support!</p>
+
+      <div class="donate-cta">
+        <a class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" rel="noopener noreferrer" tabindex="0">
+          <span class="logo" aria-hidden="true"></span>
+          <span>Donate with PayPal</span>
+        </a>
+        <div class="pill" tabindex="0">Fast — Secure — Global</div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <button class="btn" tabindex="0">☕ Donate for Coffee</button>
+      </div>
+
+      <footer>
+        <div>Questions? Contact us at <strong>https://www.facebook.com/share/17DerDwx3s/</strong></div>
+      </footer>
+    </section>
+
+    <aside class="right">
+      <div class="qr-wrap" tabindex="0">
+        <img class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code" id="qrMain">
+      </div>
+      <div class="method" tabindex="0">Scan to pay — GCash</div>
+      <div class="note" tabindex="0">Open your GCash app, tap "Scan QR" and point at this code. If it doesn't work, save the image and upload it inside the app.</div>
+      <div style="margin-top:12px">
+        <button class="btn" id="openQR" tabindex="0">Open QR Image</button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Fullscreen QR Viewer -->
+  <div class="qr-viewer" id="qrViewer">
+    <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Fullscreen" id="qrFullscreen">
+  </div>
+
+<script>
+  // TV Remote & Keyboard Navigation
+  const focusable = Array.from(document.querySelectorAll('[tabindex="0"], a.btn, .btn'));
+  let current = 0;
+  focusable[current].focus();
+
+  document.addEventListener('keydown', e => {
+    switch(e.key){
+      case 'ArrowDown':
+      case 'ArrowRight':
+        e.preventDefault();
+        current = (current + 1) % focusable.length;
+        focusable[current].focus();
+        break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        e.preventDefault();
+        current = (current - 1 + focusable.length) % focusable.length;
+        focusable[current].focus();
+        break;
+      case 'Enter':
+        e.preventDefault();
+        focusable[current].click();
+        break;
+      case 'Backspace':
+      case 'Escape':
+        if(document.getElementById('qrViewer').classList.contains('show')){
+          document.getElementById('qrViewer').classList.remove('show');
+        }else{
+          window.location.href='index.html';
+        }
+        break;
+    }
+  });
+
+  // QR fullscreen open/close
+  const qrViewer = document.getElementById('qrViewer');
+  document.getElementById('openQR').onclick = ()=> qrViewer.classList.add('show');
+  qrViewer.onclick = ()=> qrViewer.classList.remove('show');
+</script>
+</body>
+</html>
