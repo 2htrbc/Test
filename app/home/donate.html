@@ -1,184 +1,204 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Donate</title>
-<style>
-  :root{
-    --bg1:#ffecd2; --bg2:#fcb69f;
-    --accent:#ff5f6d; --accent-2:#ffc371;
-    --glass:rgba(255,255,255,0.12);
-  }
-  *{box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,-apple-system,Roboto,Arial;
-    min-height:100vh;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2));
-    background-attachment:fixed;
-  }
-  .container{
-    width:96%;max-width:920px;margin:40px auto;padding:28px;
-    border-radius:18px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.65),rgba(255,255,255,0.45));
-    box-shadow:0 12px 40px rgba(0,0,0,0.12);
-    backdrop-filter:blur(8px) saturate(120%);
-    display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:center;
-  }
-  @media(max-width:830px){.container{grid-template-columns:1fr;}}
-  h1{margin:0 0 8px;font-size:28px;color:#3a2b2b;}
-  p.lead{margin:0 0 18px;color:#5b4b4b;font-size:16px;}
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;
-    gap:10px;padding:14px 20px;border-radius:12px;
-    font-weight:700;text-decoration:none;cursor:pointer;
-    transition:transform .18s ease, box-shadow .18s ease;
-    user-select:none;
-  }
-  .btn:active{transform:scale(0.98);}
-  .btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
-  .paypal{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;}
-  .paypal .logo{
-    width:22px;height:22px;
-    background:url('https://www.paypalobjects.com/webstatic/icon/pp258.png') center/contain no-repeat;
-  }
-  .pill{
-    background:var(--glass);padding:8px 14px;
-    border-radius:999px;font-weight:600;color:#3e3333;font-size:13px;
-  }
-  .right{
-    text-align:center;padding:12px;border-radius:12px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.35));
-    border:1px solid rgba(255,255,255,0.4);
-  }
-  .qr-wrap{
-    display:inline-block;padding:12px;
-    background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.75));
-    border-radius:12px;
-  }
-  .qr{width:220px;height:220px;object-fit:cover;border-radius:6px;display:block;margin:auto;}
-  .method{margin-top:12px;font-weight:700;font-size:15px;}
-  .note{font-size:13px;margin-top:8px;color:#4a3f3f;line-height:1.4;}
-  footer{margin-top:18px;font-size:13px;color:#3e3333;text-align:center;}
-  .float{animation:floaty 6s ease-in-out infinite;}
-  @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-  .back-btn{
-    position:fixed;top:20px;left:20px;
-    padding:10px 18px;border-radius:10px;
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    color:#fff;font-weight:600;text-decoration:none;
-    box-shadow:0 4px 12px rgba(0,0,0,0.2);
-    transition:transform .2s ease;z-index:1000;
-  }
-  .back-btn:hover{transform:scale(1.05);}
-  .back-btn:focus-visible{outline:3px solid white;outline-offset:3px;}
-  /* Mobile optimization */
-  @media(max-width:600px){
-    h1{font-size:22px;text-align:center;}
-    p.lead{text-align:center;}
-    .btn{width:100%;justify-content:center;}
-    .back-btn{top:12px;left:12px;font-size:14px;padding:8px 14px;}
-    .qr{width:180px;height:180px;}
-  }
-  /* Fullscreen QR viewer */
-  .qr-viewer{
-    position:fixed;inset:0;
-    background:rgba(0,0,0,0.85);
-    display:none;align-items:center;justify-content:center;
-    z-index:2000;
-  }
-  .qr-viewer img{
-    max-width:90%;max-height:90%;
-    border-radius:10px;
-    box-shadow:0 0 20px rgba(255,255,255,0.2);
-  }
-  .qr-viewer.show{display:flex;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Donate</title>
+  <style>
+    :root {
+      --bg1: #ffecd2;
+      --bg2: #fcb69f;
+      --accent: #ff5f6d;
+      --accent-2: #ffc371;
+      --glass: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; outline: none; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      width: 96%;
+      max-width: 920px;
+      margin: 40px auto;
+      padding: 28px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      backdrop-filter: blur(6px) saturate(120%);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 22px;
+      align-items: center;
+    }
+    @media (max-width: 830px) {
+      .container { grid-template-columns: 1fr; }
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; color: #3a2b2b; }
+    p.lead { margin: 0 0 18px; color: #5b4b4b; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .paypal {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+    .back-btn {
+      background: var(--accent-2);
+      color: #fff;
+    }
+    .pill { background: var(--glass); padding: 8px 12px; border-radius: 999px; font-weight: 600; color: #3e3333; }
+    .right {
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .qr-wrap { display: inline-block; padding: 12px; background: rgba(255,255,255,0.9); border-radius: 12px; }
+    .qr { width: 220px; height: 220px; border-radius: 6px; }
+    .method { margin-top: 12px; font-weight: 700; }
+    .note { font-size: 13px; margin-top: 8px; color: #4a3f3f; }
+    footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
+    .float { animation: floaty 6s ease-in-out infinite; }
+    @keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
+
+    /* popup modal */
+    #qrModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    #qrModal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+  </style>
 </head>
 <body>
-  <!-- Back button -->
-  <a href="index.html" class="back-btn" id="backBtn" tabindex="0">← Home</a>
-
   <main class="container float">
     <section class="left">
+      <button class="btn back-btn" onclick="goHome()" tabindex="1">← Back to Home</button>
       <h1>Support the Project ♥️</h1>
-      <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you for your support!</p>
+      <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
 
-      <div class="donate-cta">
-        <a class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" rel="noopener noreferrer" tabindex="0">
-          <span class="logo" aria-hidden="true"></span>
-          <span>Donate with PayPal</span>
-        </a>
-        <div class="pill" tabindex="0">Fast — Secure — Global</div>
-      </div>
-
-      <div style="margin-top:16px;">
-        <button class="btn" tabindex="0">☕ Donate for Coffee</button>
-      </div>
+      <a class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" tabindex="2">
+        <span>Donate with PayPal</span>
+      </a>
+      <div class="pill">Fast — Secure — Global</div>
 
       <footer>
-        <div>Questions? Contact us at <strong>https://www.facebook.com/share/17DerDwx3s/</strong></div>
+        <div class="small">Contact: <strong>https://www.facebook.com/share/17DerDwx3s/</strong></div>
       </footer>
     </section>
 
     <aside class="right">
-      <div class="qr-wrap" tabindex="0">
-        <img class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code" id="qrMain">
+      <div class="qr-wrap">
+        <img id="qrImage" class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code">
       </div>
-      <div class="method" tabindex="0">Scan to pay — GCash</div>
-      <div class="note" tabindex="0">Open your GCash app, tap "Scan QR" and point at this code. If it doesn't work, save the image and upload it inside the app.</div>
-      <div style="margin-top:12px">
-        <button class="btn" id="openQR" tabindex="0">Open QR Image</button>
+      <div class="method">Scan to pay — GCash</div>
+      <div class="note">Open GCash → Tap “Scan QR” → Point at this code. You can also download it below.</div>
+
+      <div style="margin-top:12px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+        <button class="btn small" id="openQR" tabindex="3">View QR</button>
+        <button class="btn small paypal" id="downloadQR" tabindex="4">Download QR</button>
       </div>
     </aside>
   </main>
 
-  <!-- Fullscreen QR Viewer -->
-  <div class="qr-viewer" id="qrViewer">
-    <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Fullscreen" id="qrFullscreen">
+  <!-- QR popup modal -->
+  <div id="qrModal">
+    <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Preview">
   </div>
 
-<script>
-  // TV Remote & Keyboard Navigation
-  const focusable = Array.from(document.querySelectorAll('[tabindex="0"], a.btn, .btn'));
-  let current = 0;
-  focusable[current].focus();
-
-  document.addEventListener('keydown', e => {
-    switch(e.key){
-      case 'ArrowDown':
-      case 'ArrowRight':
-        e.preventDefault();
-        current = (current + 1) % focusable.length;
-        focusable[current].focus();
-        break;
-      case 'ArrowUp':
-      case 'ArrowLeft':
-        e.preventDefault();
-        current = (current - 1 + focusable.length) % focusable.length;
-        focusable[current].focus();
-        break;
-      case 'Enter':
-        e.preventDefault();
-        focusable[current].click();
-        break;
-      case 'Backspace':
-      case 'Escape':
-        if(document.getElementById('qrViewer').classList.contains('show')){
-          document.getElementById('qrViewer').classList.remove('show');
-        }else{
-          window.location.href='index.html';
-        }
-        break;
+  <script>
+    function goHome() {
+      window.location.href = "index.html";
     }
-  });
 
-  // QR fullscreen open/close
-  const qrViewer = document.getElementById('qrViewer');
-  document.getElementById('openQR').onclick = ()=> qrViewer.classList.add('show');
-  qrViewer.onclick = ()=> qrViewer.classList.remove('show');
-</script>
+    const qrImg = document.getElementById('qrImage');
+    const modal = document.getElementById('qrModal');
+    const openBtn = document.getElementById('openQR');
+    const downloadBtn = document.getElementById('downloadQR');
+
+    // View QR modal
+    openBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+    modal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // 🔽 Automatically download QR image (no new tab)
+    downloadBtn.addEventListener('click', async () => {
+      const imageURL = qrImg.src;
+      const fileName = 'GCash_QR_Code.jpg';
+
+      try {
+        const response = await fetch(imageURL);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up memory
+        URL.revokeObjectURL(blobUrl);
+      } catch (err) {
+        alert('Failed to download QR code. Please try again.');
+        console.error(err);
+      }
+    });
+
+    // ✅ TV Remote & Keyboard Navigation
+    const focusable = Array.from(document.querySelectorAll('a, button'));
+    let index = 0;
+    focusable[index].focus();
+
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown', 'ArrowRight'].includes(e.key)) {
+        index = (index + 1) % focusable.length;
+        focusable[index].focus();
+      } else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) {
+        index = (index - 1 + focusable.length) % focusable.length;
+        focusable[index].focus();
+      } else if (e.key === 'Enter') {
+        focusable[index].click();
+      } else if (e.key === 'Backspace') {
+        goHome();
+      }
+    });
+  </script>
 </body>
 </html>
