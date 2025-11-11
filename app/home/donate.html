@@ -23,11 +23,35 @@
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       background-attachment: fixed;
       -webkit-font-smoothing: antialiased;
+      position: relative;
     }
+
+    /* Upper Back Button */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+    }
+    .back-btn {
+      background: var(--accent-2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
     .container {
       width: 96%;
       max-width: 920px;
-      margin: 40px auto;
+      margin: 80px auto 40px;
       padding: 28px;
       border-radius: 18px;
       background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
@@ -41,8 +65,10 @@
     @media (max-width: 830px) {
       .container { grid-template-columns: 1fr; }
     }
+
     h1 { margin: 0 0 8px; font-size: 28px; color: #3a2b2b; }
     p.lead { margin: 0 0 18px; color: #5b4b4b; }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -56,19 +82,25 @@
       cursor: pointer;
       transition: transform .2s, box-shadow .2s;
     }
+
     .btn:focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 3px;
     }
+
     .paypal {
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       color: white;
     }
-    .back-btn {
-      background: var(--accent-2);
-      color: #fff;
+
+    .pill {
+      background: var(--glass);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: #3e3333;
     }
-    .pill { background: var(--glass); padding: 8px 12px; border-radius: 999px; font-weight: 600; color: #3e3333; }
+
     .right {
       text-align: center;
       padding: 12px;
@@ -76,11 +108,13 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));
       border: 1px solid rgba(255,255,255,0.4);
     }
+
     .qr-wrap { display: inline-block; padding: 12px; background: rgba(255,255,255,0.9); border-radius: 12px; }
     .qr { width: 220px; height: 220px; border-radius: 6px; }
     .method { margin-top: 12px; font-weight: 700; }
     .note { font-size: 13px; margin-top: 8px; color: #4a3f3f; }
     footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
+
     .float { animation: floaty 6s ease-in-out infinite; }
     @keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
 
@@ -103,9 +137,14 @@
   </style>
 </head>
 <body>
+
+  <!-- Fixed top back button -->
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()" tabindex="1">← Back to Home</button>
+  </div>
+
   <main class="container float">
     <section class="left">
-      <button class="btn back-btn" onclick="goHome()" tabindex="1">← Back to Home</button>
       <h1>Support the Project ♥️</h1>
       <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
 
