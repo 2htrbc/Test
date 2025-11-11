@@ -137,12 +137,12 @@ footer { margin-top: 20px; font-size: 14px; color: #3e3333; }
     <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
 
     <!-- ✅ Updated PayPal Button -->
-    <a class="btn paypal" 
-       href="paypal://send?recipient=mikeangelo9"
-       onclick="openPayPal(event)" 
-       tabindex="2">
-       Donate with PayPal
-    </a>
+<a class="btn paypal" 
+   href="paypal://send?recipient=mikeangelo9"
+   onclick="openPayPal(event)" 
+   tabindex="2">
+   Donate with PayPal
+</a>
 
     <div class="pill">Fast — Secure — Global</div>
 
@@ -191,25 +191,42 @@ function downloadQR() {
 }
 
 // ✅ PayPal deep link logic
+
 function openPayPal(event) {
   event.preventDefault();
+
+  // Deep link for app
   const appLink = "paypal://send?recipient=mikeangelo9";
+  // Fallback for browser
   const webLink = "https://www.paypal.me/mikeangelo9";
 
-  const start = Date.now();
+  // Create an invisible iframe for Android browsers
   const iframe = document.createElement("iframe");
   iframe.style.display = "none";
   iframe.src = appLink;
   document.body.appendChild(iframe);
 
+  // Try open app first
+  const now = Date.now();
+
+  // After 1.5 seconds, if no app opened, go to browser
   setTimeout(() => {
-    const elapsed = Date.now() - start;
-    if (elapsed < 1500) {
-      window.open(webLink, "_blank");
+    const elapsed = Date.now() - now;
+    if (elapsed < 1600) {
+      window.location.href = webLink;
     }
     document.body.removeChild(iframe);
   }, 1500);
+
+  // iOS Safari special handling (use direct window open)
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    setTimeout(() => {
+      window.location = appLink;
+      setTimeout(() => { window.location = webLink; }, 1500);
+    }, 100);
+  }
 }
+
 
 // TV/Keyboard navigation
 const focusable = Array.from(document.querySelectorAll('a, button'));
