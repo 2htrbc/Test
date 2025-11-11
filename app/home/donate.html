@@ -136,11 +136,7 @@ footer { margin-top: 20px; font-size: 14px; color: #3e3333; }
     <h1>Support the Project ♥️</h1>
     <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
 
-    <!-- PayPal deep link (auto opens app or browser) -->
-    <a id="paypalBtn" class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" tabindex="2">
-      Donate with PayPal
-    </a>
-
+    <a class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" tabindex="2">Donate with PayPal</a>
     <div class="pill">Fast — Secure — Global</div>
 
     <footer>
@@ -150,7 +146,7 @@ footer { margin-top: 20px; font-size: 14px; color: #3e3333; }
 
   <aside class="right">
     <div class="qr-wrap">
-      <img id="qrImage" class="qr" src="https://i.imgur.com/oWAwjO6.jpeg" alt="GCash QR code">
+      <img id="qrImage" class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code">
     </div>
     <div class="method">Scan to pay — GCash</div>
     <div class="note">Open GCash → Tap “Scan QR” → Point at this code.</div>
@@ -163,13 +159,11 @@ footer { margin-top: 20px; font-size: 14px; color: #3e3333; }
 </main>
 
 <div id="qrModal">
-  <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Preview">
+  <img src="https://i.imgur.com/oWAwjO6.jpeg" alt="QR Preview">
 </div>
 
 <script>
-function goHome() {
-  window.location.href = "index.html";
-}
+function goHome() { window.location.href = "index.html"; }
 
 const modal = document.getElementById('qrModal');
 const openBtn = document.getElementById('openQR');
@@ -188,21 +182,6 @@ function downloadQR() {
   link.download = 'GCashQR.png';
   link.click();
 }
-
-// Detect PayPal app (Android) and open directly if possible
-document.getElementById('paypalBtn').addEventListener('click', function(e) {
-  e.preventDefault();
-  const isAndroid = /android/i.test(navigator.userAgent);
-  const paypalLink = "https://www.paypal.me/mikeangelo9";
-
-  if (isAndroid) {
-    // Try opening PayPal app via intent
-    window.location.href = "intent://www.paypal.me/mikeangelo9#Intent;scheme=https;package=com.paypal.android.p2pmobile;S.browser_fallback_url=" + encodeURIComponent(paypalLink) + ";end;";
-  } else {
-    // For iOS or others, open directly
-    window.open(paypalLink, "_blank");
-  }
-});
 
 // TV/Keyboard navigation
 const focusable = Array.from(document.querySelectorAll('a, button'));
