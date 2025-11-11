@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Donate</title>
 <style>
 :root {
@@ -36,9 +36,10 @@ body {
   background: var(--accent-2);
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
+  border-radius: 12px;
+  padding: 14px 20px;
   font-weight: 700;
+  font-size: 18px;
   cursor: pointer;
   transition: transform .2s, box-shadow .2s;
 }
@@ -46,32 +47,33 @@ body {
 
 .container {
   width: 96%;
-  max-width: 920px;
-  margin: 80px auto 40px;
+  max-width: 1000px;
+  margin: 100px auto 40px;
   padding: 28px;
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
   box-shadow: 0 12px 40px rgba(0,0,0,0.12);
   backdrop-filter: blur(6px) saturate(120%);
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 22px;
+  grid-template-columns: 1fr 400px;
+  gap: 30px;
   align-items: center;
 }
-@media (max-width: 830px) { .container { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; margin-top: 80px; } }
 
-h1 { margin: 0 0 8px; font-size: 28px; color: #3a2b2b; }
-p.lead { margin: 0 0 18px; color: #5b4b4b; }
+h1 { margin: 0 0 12px; font-size: 32px; color: #3a2b2b; }
+p.lead { margin: 0 0 20px; font-size: 18px; color: #5b4b4b; }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px 18px;
-  border-radius: 12px;
+  padding: 14px 22px;
+  border-radius: 14px;
   text-decoration: none;
   font-weight: 700;
+  font-size: 18px;
   border: none;
   cursor: pointer;
   transition: transform .2s, box-shadow .2s;
@@ -80,22 +82,22 @@ p.lead { margin: 0 0 18px; color: #5b4b4b; }
 
 .paypal { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: white; }
 
-.pill { background: var(--glass); padding: 8px 12px; border-radius: 999px; font-weight: 600; color: #3e3333; }
+.pill { background: var(--glass); padding: 10px 16px; border-radius: 999px; font-weight: 600; color: #3e3333; font-size: 16px; }
 
 .right {
   text-align: center;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
   background: #fff;
   border: 1px solid rgba(0,0,0,0.08);
 }
 
-.qr-wrap { display: inline-block; padding: 8px; background: #fff; border-radius: 12px; }
-.qr { width: 280px; height: 280px; border-radius: 6px; }
+.qr-wrap { display: inline-block; padding: 12px; background: #fff; border-radius: 16px; }
+.qr { width: 320px; height: 320px; border-radius: 6px; }
 
-.method { margin-top: 12px; font-weight: 700; }
-.note { font-size: 13px; margin-top: 8px; color: #4a3f3f; }
-footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
+.method { margin-top: 14px; font-weight: 700; font-size: 18px; }
+.note { font-size: 14px; margin-top: 8px; color: #4a3f3f; }
+footer { margin-top: 20px; font-size: 14px; color: #3e3333; }
 
 .float { animation: floaty 6s ease-in-out infinite; }
 @keyframes floaty { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
@@ -105,7 +107,7 @@ footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
   display: none;
   position: fixed;
   top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.85);
   align-items: center;
   justify-content: center;
   z-index: 999;
@@ -114,13 +116,105 @@ footer { margin-top: 18px; font-size: 13px; color: #3e3333; }
   max-width: 95%;
   max-height: 95%;
   background: #fff;
-  padding: 12px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  padding: 14px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.4);
 }
+
+/* Buttons container */
+.qr-buttons { margin-top:16px; display:flex; justify-content:center; gap:12px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 
 <div class="top-bar">
-  <button class="back-btn" onclick="go
+  <button class="back-btn" onclick="goHome()" tabindex="1">← Back to Home</button>
+</div>
+
+<main class="container float">
+  <section class="left">
+    <h1>Support the Project ♥️</h1>
+    <p class="lead">If you like this work and want to help keep it online, you can donate — any amount helps. Thank you!</p>
+
+    <!-- PayPal deep link (auto opens app or browser) -->
+    <a id="paypalBtn" class="btn paypal" href="https://www.paypal.me/mikeangelo9" target="_blank" tabindex="2">
+      Donate with PayPal
+    </a>
+
+    <div class="pill">Fast — Secure — Global</div>
+
+    <footer>
+      <div class="small">Contact: <strong>https://www.facebook.com/share/17DerDwx3s/</strong></div>
+    </footer>
+  </section>
+
+  <aside class="right">
+    <div class="qr-wrap">
+      <img id="qrImage" class="qr" src="https://i.imgur.com/lsK84hX.jpeg" alt="GCash QR code">
+    </div>
+    <div class="method">Scan to pay — GCash</div>
+    <div class="note">Open GCash → Tap “Scan QR” → Point at this code.</div>
+
+    <div class="qr-buttons">
+      <button class="btn small" id="openQR" tabindex="3">View QR</button>
+      <button class="btn small" onclick="downloadQR()" tabindex="4">Download QR</button>
+    </div>
+  </aside>
+</main>
+
+<div id="qrModal">
+  <img src="https://i.imgur.com/lsK84hX.jpeg" alt="QR Preview">
+</div>
+
+<script>
+function goHome() {
+  window.location.href = "index.html";
+}
+
+const modal = document.getElementById('qrModal');
+const openBtn = document.getElementById('openQR');
+
+// Show modal
+openBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+// Hide modal on click
+modal.addEventListener('click', () => { modal.style.display = 'none'; });
+
+// Auto-show modal on mobile/tablet
+if(window.innerWidth <= 900){ modal.style.display='flex'; }
+
+function downloadQR() {
+  const link = document.createElement('a');
+  link.href = document.getElementById('qrImage').src;
+  link.download = 'GCashQR.png';
+  link.click();
+}
+
+// Detect PayPal app (Android) and open directly if possible
+document.getElementById('paypalBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const isAndroid = /android/i.test(navigator.userAgent);
+  const paypalLink = "https://www.paypal.me/mikeangelo9";
+
+  if (isAndroid) {
+    // Try opening PayPal app via intent
+    window.location.href = "intent://www.paypal.me/mikeangelo9#Intent;scheme=https;package=com.paypal.android.p2pmobile;S.browser_fallback_url=" + encodeURIComponent(paypalLink) + ";end;";
+  } else {
+    // For iOS or others, open directly
+    window.open(paypalLink, "_blank");
+  }
+});
+
+// TV/Keyboard navigation
+const focusable = Array.from(document.querySelectorAll('a, button'));
+let index = 0;
+focusable[index].focus();
+document.addEventListener('keydown', e => {
+  if(['ArrowDown','ArrowRight'].includes(e.key)) { index=(index+1)%focusable.length; focusable[index].focus(); }
+  else if(['ArrowUp','ArrowLeft'].includes(e.key)) { index=(index-1+focusable.length)%focusable.length; focusable[index].focus(); }
+  else if(e.key==='Enter'){ focusable[index].click(); }
+  else if(e.key==='Backspace'){ goHome(); }
+});
+</script>
+
+</body>
+</html>
