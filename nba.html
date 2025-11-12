@@ -130,38 +130,74 @@
     <!-- Channels -->
 <div class="channel" tabindex="0" onclick="openChannel('nba1')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Toronto Raptors vs. Brooklyn Nets – 8:30am</span>
+  <span>Milwaukee Bucks vs. Charlotte Hornets – 8:00am</span>
   <div class="countdown-timer" id="timer-nba1"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba2')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Memphis Grizzlies vs. New York Knicks – 8:30am</span>
+  <span>Chicago Bulls vs. Detroit Pistons – 8:00am</span>
   <div class="countdown-timer" id="timer-nba2"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba3')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Boston Celtics vs. Philadelphia 76ers – 9:00am</span>
+  <span>Orlando Magic vs. New York Knicks – 8:00am</span>
   <div class="countdown-timer" id="timer-nba3"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba4')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Golden State Warriors vs. Oklahoma City Thunder – 9:00am</span>
+  <span>Memphis Grizzlies vs. Boston Celtics – 8:30am</span>
   <div class="countdown-timer" id="timer-nba4"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba5')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Indiana Pacers vs. Utah Jazz – 10:00am</span>
+  <span>Cleveland Cavaliers vs. Miami Heat – 8:30am</span>
   <div class="countdown-timer" id="timer-nba5"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba6')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Denver Nuggets vs. Sacramento Kings – 12:00am</span>
+  <span>Washington Wizards vs. Houston Rockets – 9:00am</span>
   <div class="countdown-timer" id="timer-nba6"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba7')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Portland Trail Blazers vs. New Orleans Pelicans – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba7"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba8')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Golden State Warriors vs. San Antonio Spurs – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba8"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba9')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Phoenix Suns vs. Dallas Mavericks – 9:30am</span>
+  <div class="countdown-timer" id="timer-nba9"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba10')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Los Angeles Lakers vs. Oklahoma City Thunder – 10:30am</span>
+  <div class="countdown-timer" id="timer-nba10"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba11')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Atlanta Hawks vs. Sacramento Kings – 11:00am</span>
+  <div class="countdown-timer" id="timer-nba11"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba12')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Denver Nuggets vs. LA Clippers – 11:30am</span>
+  <div class="countdown-timer" id="timer-nba12"></div>
 </div>
 
 
@@ -187,12 +223,18 @@
 
     // ⏱ Countdown timers
 const countdownEvents = {
-  "timer-nba1": "2025-11-12T00:30:00Z", // Toronto Raptors vs. Brooklyn Nets – 8:30am PHT
-  "timer-nba2": "2025-11-12T00:30:00Z", // Memphis Grizzlies vs. New York Knicks – 8:30am PHT
-  "timer-nba3": "2025-11-12T01:00:00Z", // Boston Celtics vs. Philadelphia 76ers – 9:00am PHT
-  "timer-nba4": "2025-11-12T01:00:00Z", // Golden State Warriors vs. Oklahoma City Thunder – 9:00am PHT
-  "timer-nba5": "2025-11-12T02:00:00Z", // Indiana Pacers vs. Utah Jazz – 10:00am PHT
-  "timer-nba6": "2025-11-12T04:00:00Z"  // Denver Nuggets vs. Sacramento Kings – 10:00am PHT
+  "timer-nba1": "2025-11-13T00:00:00Z", // Milwaukee Bucks vs. Charlotte Hornets – 8:00am PHT
+  "timer-nba2": "2025-11-13T00:00:00Z", // Chicago Bulls vs. Detroit Pistons – 8:00am PHT
+  "timer-nba3": "2025-11-13T00:00:00Z", // Orlando Magic vs. New York Knicks – 8:00am PHT
+  "timer-nba4": "2025-11-13T00:30:00Z", // Memphis Grizzlies vs. Boston Celtics – 8:30am PHT
+  "timer-nba5": "2025-11-13T00:30:00Z", // Cleveland Cavaliers vs. Miami Heat – 8:30am PHT
+  "timer-nba6": "2025-11-13T01:00:00Z", // Washington Wizards vs. Houston Rockets – 9:00am PHT
+  "timer-nba7": "2025-11-13T01:00:00Z", // Portland Trail Blazers vs. New Orleans Pelicans – 9:00am PHT
+  "timer-nba8": "2025-11-13T01:00:00Z", // Golden State Warriors vs. San Antonio Spurs – 9:00am PHT
+  "timer-nba9": "2025-11-13T01:30:00Z", // Phoenix Suns vs. Dallas Mavericks – 9:30am PHT
+  "timer-nba10": "2025-11-13T02:30:00Z", // Los Angeles Lakers vs. Oklahoma City Thunder – 10:30am PHT
+  "timer-nba11": "2025-11-13T03:00:00Z", // Atlanta Hawks vs. Sacramento Kings – 11:00am PHT
+  "timer-nba12": "2025-11-13T03:30:00Z"  // Denver Nuggets vs. LA Clippers – 11:30am PHT
 };
 
     function startCountdowns() {
