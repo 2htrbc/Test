@@ -131,20 +131,56 @@
     
 <div class="channel" tabindex="0" onclick="openChannel('nba1')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Toronto Raptors vs. Cleveland Cavaliers – 8:00am</span>
+  <span>Miami Heat vs. New York Knicks – 8:00am</span>
   <div class="countdown-timer" id="timer-nba1"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba2')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Indiana Pacers vs. Phoenix Suns – 10:00am</span>
+  <span>Brooklyn Nets vs. Orlando Magic – 8:00am</span>
   <div class="countdown-timer" id="timer-nba2"></div>
 </div>
 
 <div class="channel" tabindex="0" onclick="openChannel('nba3')">
   <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
-  <span>Atlanta Hawks vs. Utah Jazz – 10:00am</span>
+  <span>Philadelphia 76ers vs. Detroit Pistons – 8:30am</span>
   <div class="countdown-timer" id="timer-nba3"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba4')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Portland Trail Blazers vs. Houston Rockets – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba4"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba5')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Charlotte Hornets vs. Milwaukee Bucks – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba5"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba6')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Sacramento Kings vs. Minnesota Timberwolves – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba6"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba7')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Los Angeles Lakers vs. New Orleans Pelicans – 9:00am</span>
+  <div class="countdown-timer" id="timer-nba7"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba8')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>LA Clippers vs. Dallas Mavericks – 9:30am</span>
+  <div class="countdown-timer" id="timer-nba8"></div>
+</div>
+
+<div class="channel" tabindex="0" onclick="openChannel('nba9')">
+  <img src="https://my.dish.com/cms-files/ppvsports/basketball/logo/nbaleaguepass2024.png" alt="NBA League Pass">
+  <span>Golden State Warriors vs. San Antonio Spurs – 10:30am</span>
+  <div class="countdown-timer" id="timer-nba9"></div>
 </div>
 
   </div>
@@ -169,9 +205,15 @@
 
     // ⏱ Countdown timers
 const countdownEvents = {
-  "timer-nba1": "2025-11-14T00:00:00Z", // Milwaukee Bucks vs. Charlotte Hornets – 8:00am PHT
-  "timer-nba2": "2025-11-14T02:00:00Z", // Chicago Bulls vs. Detroit Pistons – 10:00am PHT
-  "timer-nba3": "2025-11-14T02:00:00Z" // Orlando Magic vs. New York Knicks – 10:00am PHT
+  "timer-nba1": "2025-11-14T00:00:00Z", // Miami Heat vs. New York Knicks – 8:00am PHT
+  "timer-nba2": "2025-11-14T00:00:00Z", // Brooklyn Nets vs. Orlando Magic – 8:00am PHT
+  "timer-nba3": "2025-11-14T00:30:00Z", // Philadelphia 76ers vs. Detroit Pistons – 8:30am PHT
+  "timer-nba4": "2025-11-14T01:00:00Z", // Portland Trail Blazers vs. Houston Rockets – 9:00am PHT
+  "timer-nba5": "2025-11-14T01:00:00Z", // Charlotte Hornets vs. Milwaukee Bucks – 9:00am PHT
+  "timer-nba6": "2025-11-14T01:00:00Z", // Sacramento Kings vs. Minnesota Timberwolves – 9:00am PHT
+  "timer-nba7": "2025-11-14T01:00:00Z", // Los Angeles Lakers vs. New Orleans Pelicans – 9:00am PHT
+  "timer-nba8": "2025-11-14T01:30:00Z", // LA Clippers vs. Dallas Mavericks – 9:30am PHT
+  "timer-nba9": "2025-11-14T02:30:00Z"  // Golden State Warriors vs. San Antonio Spurs – 10:30am PHT
 };
 
     function startCountdowns() {
