@@ -216,7 +216,7 @@ const countdownEvents = {
         const update = () => {
           const diff = target - Date.now();
           // ⏰ Ends after 6 hours of live
-          if (diff <= -21600000) return el.textContent = "⚫ Ended";
+          if (diff <= -14400000) return el.textContent = "⚫ Ended";
           if (diff <= 0) return el.textContent = "🟢 Live Now!";
           const d = Math.floor(diff / 86400000);
           const h = Math.floor((diff / 3600000) % 24);
