@@ -70,7 +70,6 @@
     position: absolute; top: 8px; right: 10px;
   }
 
-  /* 💰 DONATE BUTTON STYLE */
   .donate-btn {
     background: linear-gradient(to right, #ffb347, #ffcc33);
     position: absolute; top: 8px; right: 170px;
@@ -187,6 +186,7 @@
     color: #ccc;
     padding: 0.6em;
   }
+
 </style>
 </head>
 <body>
@@ -216,7 +216,7 @@
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid" id="menuGrid">
-      <div class="channel locked" onclick="openC('phchannel')">
+      <div class="channel" tabindex="0" onclick="openC('phchannel')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Live TV</span>
       </div>
@@ -313,6 +313,13 @@
   let isLoggedIn = false, req;
 
   function openC(id) {
+    // ✅ FREE CHANNEL
+    if (id === "phchannel") {
+      location.href = "go:" + id;
+      return;
+    }
+
+    // 🔒 PAID CHANNELS
     if (isLoggedIn) {
       location.href = "go:" + id;
     } else {
