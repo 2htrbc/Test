@@ -180,6 +180,10 @@
     box-shadow: 0 0 12px 4px #00ffcc;
     outline: none;
   }
+  .channel.free {
+  opacity: 1;
+  box-shadow: 0 0 12px #00ffcc;
+}
 
   .footer {
     text-align: center;
@@ -216,7 +220,7 @@
     <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
 
     <div class="menu-grid" id="menuGrid">
-      <div class="channel locked" onclick="openC('phchannel')">
+<div class="channel free" onclick="openC('phchannel')" tabindex="0">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
         <span>Live TV</span>
       </div>
@@ -312,13 +316,16 @@
 <script>
   let isLoggedIn = false, req;
 
-  function openC(id) {
-    if (isLoggedIn) {
-      location.href = "go:" + id;
-    } else {
-      alert("🔒 Please login to access this channel.");
-    }
+function openC(id) {
+  const el = event.currentTarget;
+
+  // Allow FREE Live TV without login
+  if (isLoggedIn || el.classList.contains("free")) {
+    location.href = "go:" + id;
+  } else {
+    alert("🔒 Please login to access this channel.");
   }
+}
 
   function checkLogin() {
     const expiry = parseInt(localStorage.getItem("expireAt") || 0);
