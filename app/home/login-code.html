@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Secure Login</title>
+
+<style>
+body {
+  background: #121212;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
+
+h2 {
+  color: #00ffd5;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+input {
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-bottom: 15px;
+  width: 260px;
+  text-align: center;
+  background: #1f1f1f;
+  color: white;
+}
+
+input:focus {
+  border: 2px solid #00ffd5;
+}
+
+button {
+  padding: 12px 24px;
+  background: #00ffd5;
+  color: black;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #00c0a8;
+}
+
+#message {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Enter Login Code</h2>
+<input type="text" id="codeInput" maxlength="25" placeholder="Enter code" autofocus />
+<button id="submitBtn">Login</button>
+<div id="message"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCR1uCuyGSoVcPlmocqPAyZsQeNbiZoZWQ",
+  authDomain: "appcode-a1290.firebaseapp.com",
+  projectId: "appcode-a1290",
+  storageBucket: "appcode-a1290.firebasestorage.app",
+  messagingSenderId: "538238847885",
+  appId: "1:538238847885:web:b62567a298a9ac91cc8bc4",
+  measurementId: "G-2H7L7SF1X6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const input = document.getElementById("codeInput");
+const messageEl = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn");
+
+submitBtn.addEventListener("click", validateCode);
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") validateCode();
+});
+
+async function validateCode() {
+  const code = input.value.trim();
+  if (code.length < 4) {
+    showMessage("⚠️ Enter valid code", "#ff6666");
+    return;
+  }
+
+  try {
+    const ref = doc(db, "codes", code);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      showMessage("❌ Invalid code", "#ff6666");
+      return;
+    }
+
+    const data = snap.data();
+    const duration = data.duration;
+    const createdAt = data.createdAt?.toDate?.() || new Date();
+
+    const allowed = [1,7,15,30,60,180,365,730,"lifetime"];
+    if (!allowed.includes(duration)) {
+      showMessage("⚠️ Invalid duration", "#ffcc00");
+      return;
+    }
+
+    let expireAt;
+    if (duration === "lifetime") {
+      expireAt = "lifetime";
+    } else {
+      expireAt = createdAt.getTime() + (duration * 86400000);
+    }
+
+    const now = Date.now();
+
+    if (expireAt !== "lifetime" && now > expireAt) {
+      showMessage("⏰ Code expired", "#ff6666");
+      return;
+    }
+
+    localStorage.setItem("loginCode", code);
+    localStorage.setItem("expireAt", expireAt);
+
+    window.location.href = "index.html";
+
+  } catch (e) {
+    console.error(e);
+    showMessage("❌ Server error", "#ff4444");
+  }
+}
+
+function showMessage(msg, color) {
+  messageEl.textContent = msg;
+  messageEl.style.color = color;
+}
+</script>
+
+</body>
+</html>
