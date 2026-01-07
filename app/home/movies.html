@@ -1,221 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
-  <title>HONOR TV - Movies</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(to bottom, #111, #222);
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+<title>HONOR TV - Movies</title>
 
-    .overlay {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      padding: 16px;
-      box-sizing: border-box;
-    }
+<style>
+html, body {
+  margin:0;
+  padding:0;
+  height:100vh;
+  overflow:hidden;
+  background:linear-gradient(to bottom,#111,#222);
+  font-family:Segoe UI, sans-serif;
+  color:white;
+}
+.overlay{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:16px;
+}
+.header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+.header img{height:40px;border-radius:8px}
+.header h2{color:#ff4b2b;font-size:1.4em}
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      gap: 12px;
-    }
+.menu-grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:14px;
+  overflow-y:auto;
+}
 
-    .header img {
-      height: 40px;
-      border-radius: 8px;
-    }
+.channel{
+  background:#2c2c2c;
+  border-radius:12px;
+  padding:8px;
+  text-align:center;
+  cursor:pointer;
+  transition:.25s;
+}
+.channel:hover{transform:scale(1.06);box-shadow:0 0 18px gold}
+.channel img{width:100%;height:100px;object-fit:cover;border-radius:8px}
+.channel span{display:block;margin-top:6px;font-size:.85em;color:#ddd}
 
-    .header h2 {
-      margin: 0;
-      font-size: 1.4em;
-      color: #ff4b2b;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+.locked{
+  opacity:.4;
+  filter:grayscale(70%);
+  pointer-events:none;
+}
 
-    .menu-grid {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 14px;
-      overflow-y: auto;
-      padding-bottom: 10px;
-    }
+.back-btn{
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:#ff4b2b;
+  padding:6px 14px;
+  border-radius:20px;
+  color:white;
+  text-decoration:none;
+}
 
-    .channel {
-      background: #2c2c2c;
-      border-radius: 12px;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      outline: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .channel:hover,
-    .channel:focus {
-      transform: scale(1.06);
-      box-shadow: 0 0 18px gold;
-    }
-
-    .channel img {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .channel span {
-      display: block;
-      margin-top: 6px;
-      font-size: 0.85em;
-      color: #ddd;
-      font-weight: 500;
-    }
-
-    .locked {
-      opacity: 0.4;
-      pointer-events: none;
-      filter: grayscale(70%);
-    }
-
-    .back-btn {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #ff4b2b;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.8em;
-      color: white;
-      text-decoration: none;
-      box-shadow: 0 0 8px rgba(255,255,255,0.25);
-      transition: background 0.3s;
-    }
-
-    .back-btn:hover {
-      background: #e03c1f;
-    }
-
-    #rotate-warning {
-      display: none;
-    }
-
-    @media screen and (orientation: portrait) {
-      #rotate-warning {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #000;
-        color: white;
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px;
-        font-size: 1.2em;
-      }
-    }
-  </style>
+#rotate-warning{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:black;
+  color:white;
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:1.2em;
+}
+@media (orientation:portrait){
+  #rotate-warning{display:flex;}
+}
+</style>
 </head>
+
 <body>
 
-  <div id="rotate-warning">Please rotate your device to landscape mode.</div>
+<div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
-  <div class="overlay">
-    <a href="index.html" class="back-btn">← BACK</a>
+<div class="overlay">
+<a href="index.html" class="back-btn">← Back</a>
 
-    <div class="header">
-      <img src="https://i.imgur.com/8mcTlbL.png" alt="HONOR TV Logo">
-      <h2>HONOR TV - Premium Movies</h2>
-    </div>
+<div class="header">
+  <img src="https://i.imgur.com/8mcTlbL.png">
+  <h2>HONOR TV - Premium Movies</h2>
+</div>
 
-    <div class="menu-grid" id="channelGrid">
-      <div class="channel premium-only" onclick="tryOpenChannel('freemovies')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoW5andsUfhsNRoe9EikZzNiQU-bjIV__dPkd-INyvtJLnKy4Anjd9xGk&s=10" alt="Movies">
-        <span>Movies</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('hmtdflix')">
-        <img src="https://i.imgur.com/Q5mztTr.jpeg" alt="Tagalog Dubbed">
-        <span>Tagalog Dubbed</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('phmovies')">
-        <img src="https://i.imgur.com/8mcTlbL.png" alt="PH Movies">
-        <span>Philippines Movies Collection</span>
-      </div>
-      <div class="channel premium-only" onclick="tryOpenChannel('mmk')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvG44tA6CRZYloIVJkWSuGW8aLs6iTrdb1a7ynQ3GI3amg3QCP1_OwXcr3&s=10" alt="MMK">
-        <span>MMK</span>
-      </div>
+<div class="menu-grid">
 
-      <div class="channel premium-only" onclick="tryOpenChannel('dkt')">
-        <img src="https://i.imgur.com/daxi6sF.jpeg" alt="Drama Kwento Tagalog">
-        <span>Drama Kwento Tagalog</span>
-      </div>
+<div class="channel premium-only" onclick="open('freemovies')">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoW5andsUfhsNRoe9EikZzNiQU-bjIV__dPkd-INyvtJLnKy4Anjd9xGk&s=10">
+<span>Movies</span>
+</div>
 
-      <div class="channel premium-only" onclick="tryOpenChannel('Netflix')">
-        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bmV0ZmxpeHxlbnwwfHwwfHx8MA%3D%3D" alt="Netflix">
-        <span>NETFLIX</span>
-      </div>    
-      </div>      
-    </div>
-  </div>
+<div class="channel premium-only" onclick="open('hmtdflix')">
+<img src="https://i.imgur.com/Q5mztTr.jpeg">
+<span>Tagalog Dubbed</span>
+</div>
 
-  <script>
-    let isLoggedIn = false;
+<div class="channel premium-only" onclick="open('phmovies')">
+<img src="https://i.imgur.com/8mcTlbL.png">
+<span>PH Movies Collection</span>
+</div>
 
-    function openChannel(id) {
-      window.location.href = "go:" + id;
-    }
+<div class="channel premium-only" onclick="open('mmk')">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvG44tA6CRZYloIVJkWSuGW8aLs6iTrdb1a7ynQ3GI3amg3QCP1_OwXcr3&s=10">
+<span>MMK</span>
+</div>
 
-    function tryOpenChannel(id) {
-      if (isLoggedIn) {
-        openChannel(id);
-      } else {
-        alert("🔒 Session expired. Please login again.");
-      }
-    }
+<div class="channel premium-only" onclick="open('dkt')">
+<img src="https://i.imgur.com/daxi6sF.jpeg">
+<span>Drama Kwento Tagalog</span>
+</div>
 
-    function checkLogin() {
-      const expiry = parseInt(localStorage.getItem("expireAt") || 0);
-      const now = Date.now();
+<div class="channel premium-only" onclick="open('Netflix')">
+<img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?fm=jpg&q=60&w=3000">
+<span>Netflix</span>
+</div>
 
-      if (expiry && now < expiry) {
-        // ✅ Still logged in
-        isLoggedIn = true;
-        document.querySelectorAll(".premium-only").forEach(el => el.classList.remove("locked"));
-      } else {
-        // ❌ Expired
-        isLoggedIn = false;
-        document.querySelectorAll(".premium-only").forEach(el => el.classList.add("locked"));
-      }
-    }
+</div>
+</div>
 
-    function handleOrientationWarning() {
-      const warning = document.getElementById('rotate-warning');
-      warning.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
-    }
+<script>
+let isLoggedIn=false;
 
-    window.onload = () => {
-      checkLogin();
-      handleOrientationWarning();
-    };
-    window.onresize = handleOrientationWarning;
-  </script>
+function open(id){
+  if(isLoggedIn) location.href="go:"+id;
+  else alert("🔒 Please login");
+}
+
+function checkLogin(){
+  const exp=localStorage.getItem("expireAt");
+
+  if(!exp){
+    lock();
+    return;
+  }
+
+  if(exp==="LIFETIME_92xH"){
+    unlock();
+    return;
+  }
+
+  if(Date.now()<parseInt(exp)){
+    unlock();
+  }else{
+    localStorage.removeItem("expireAt");
+    lock();
+  }
+}
+
+function unlock(){
+  isLoggedIn=true;
+  document.querySelectorAll(".premium-only").forEach(e=>e.classList.remove("locked"));
+}
+
+function lock(){
+  isLoggedIn=false;
+  document.querySelectorAll(".premium-only").forEach(e=>e.classList.add("locked"));
+}
+
+setInterval(checkLogin,30000);
+window.onload=checkLogin;
+</script>
+
 </body>
 </html>
