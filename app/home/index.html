@@ -5,114 +5,124 @@
 <meta name="viewport"
   content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>HONOR TV IPTV Menu</title>
+
 <style>
-  html, body {
-    margin: 0; padding: 0;
-    width: 100vw; height: 100vh;
-    overflow: hidden;
-    background: #111;
-    font-family: "Segoe UI", sans-serif;
-    color: #fff;
-    touch-action: manipulation;
-    overscroll-behavior: none;
-    font-size: clamp(12px, 1.6vw, 20px);
-  }
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:#111;
+  color:#fff;
+  font-family:Segoe UI, sans-serif;
+  overflow:hidden;
+}
 
-  .announcement {
-    width: 100%;
-    background: linear-gradient(90deg, #ff512f, #dd2476, #12c2e9, #00c6ff, #0072ff);
-    background-size: 400% 100%;
-    animation: bgScroll 8s linear infinite;
-    color: #fff;
-    text-align: center;
-    font-weight: bold;
-    font-size: clamp(13px, 1.4vw, 18px);
-    padding: 0.6em 0;
-    box-shadow: 0 0 10px rgba(255,255,255,0.3);
-  }
-  @keyframes bgScroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-  .announcement span { display: inline-block; white-space: nowrap; animation: scrollText 15s linear infinite;
-    text-shadow: 0 0 8px #fff, 0 0 12px #00c6ff; }
-  @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+/* TOP ANNOUNCEMENT */
+.announcement {
+  width:100%;
+  background:linear-gradient(90deg,#ff512f,#dd2476,#12c2e9,#00c6ff,#0072ff);
+  background-size:400% 100%;
+  animation:bgScroll 8s linear infinite;
+  text-align:center;
+  font-weight:bold;
+  padding:8px;
+}
+@keyframes bgScroll {0%{background-position:0%}100%{background-position:100%}}
 
-  .overlay { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; padding: 8px; position: relative; }
+.announcement span{
+  display:inline-block;
+  white-space:nowrap;
+  animation:scrollText 15s linear infinite;
+}
+@keyframes scrollText{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
 
-  .code-btn, .movies-btn, .contact-btn, .message-btn, .donate-btn {
-    color: white; border-radius: 2em;
-    text-decoration: none;
-    box-shadow: 0 0 6px rgba(255,255,255,0.3);
-    transition: 0.3s;
-    padding: 0.6em 1.4em;
-    font-size: clamp(10px, 1.2vw, 16px);
-    display: inline-block;
-  }
+/* BUTTONS */
+.code-btn,.contact-btn,.message-btn,.donate-btn,.movies-btn{
+  padding:8px 18px;
+  border-radius:30px;
+  text-decoration:none;
+  font-size:14px;
+  color:white;
+  position:absolute;
+}
 
-  .code-btn { background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59); position: absolute; top: 8px; right: 10px; }
-  .donate-btn { background: linear-gradient(to right, #ffb347, #ffcc33); position: absolute; top: 8px; right: 170px; font-weight: bold; color: #222; }
-  .contact-btn { background: linear-gradient(to right, #ff512f, #dd2476); position: absolute; top: 8px; left: 10px; }
-  .message-btn { background: linear-gradient(to right, #00c6ff, #0072ff); position: absolute; top: 8px; left: 150px; }
-  .movies-btn { background: linear-gradient(to right, #2193b0, #6dd5ed); margin: 0.6em auto; }
+.code-btn{right:10px;top:10px;background:linear-gradient(to right,#12c2e9,#c471ed,#f64f59)}
+.contact-btn{left:10px;top:10px;background:linear-gradient(to right,#ff512f,#dd2476)}
+.message-btn{left:150px;top:10px;background:linear-gradient(to right,#00c6ff,#0072ff)}
+.donate-btn{right:150px;top:10px;background:linear-gradient(to right,#ffb347,#ffcc33);color:#222;font-weight:bold}
+.movies-btn{display:block;margin:10px auto;background:linear-gradient(to right,#2193b0,#6dd5ed);position:relative}
 
-  .code-btn:hover, .movies-btn:hover, .contact-btn:hover, .message-btn:hover, .donate-btn:hover,
-  .code-btn:focus, .movies-btn:focus, .contact-btn:focus, .message-btn:focus, .donate-btn:focus {
-    transform: scale(1.05); outline: none; box-shadow: 0 0 12px 4px #00ffcc;
-  }
+/* LOGO */
+.logo{text-align:center;margin-top:60px}
+.logo img{width:80px;border-radius:50%}
 
-  .logo { text-align: center; margin-top: clamp(1em, 2vw, 2em); }
-  .logo img { width: clamp(60px, 6vw, 100px); border-radius: 50%; box-shadow: 0 0 6px rgba(255,255,255,0.3); }
-  h2 { font-size: clamp(14px, 1.6vw, 24px); margin: 0.4em 0; }
+/* COUNTDOWN */
+.countdown-box{
+  background:#022;
+  padding:10px 20px;
+  border-radius:20px;
+  margin:10px auto;
+  width:fit-content;
+  color:#0ff;
+  font-weight:bold;
+}
 
-  .countdown-box {
-    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-    color: #00ffcc; padding: 0.6em 1.2em;
-    border-radius: 1em; text-align: center; font-size: clamp(11px, 1.2vw, 16px);
-    margin: 0.8em auto; width: fit-content;
-    box-shadow: 0 0 12px rgba(0,255,200,0.5);
-    animation: pulseGlow 2s infinite;
-  }
-  @keyframes pulseGlow { 0% { box-shadow: 0 0 8px rgba(0,255,200,0.3); } 50% { box-shadow: 0 0 16px rgba(0,255,200,0.8); } 100% { box-shadow: 0 0 8px rgba(0,255,200,0.3); } }
+/* CHANNEL GRID */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
+  gap:20px;
+  padding:20px;
+  overflow-y:auto;
+}
 
-  .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(clamp(80px, 10vw, 140px), 1fr));
-    gap: clamp(0.8em, 1.6vw, 2em); justify-content: center; justify-items: center; align-items: center;
-    padding: clamp(0.8em, 2vw, 2em); margin: auto; width: 95%; height: 100%; overflow-y: auto; scrollbar-width: none; }
-  .menu-grid::-webkit-scrollbar { display: none; }
+.channel{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  overflow:hidden;
+  cursor:pointer;
+  transition:0.3s;
+}
 
-  .channel { width: clamp(80px, 9vw, 120px); height: clamp(80px, 9vw, 120px);
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-    border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: transform 0.25s, box-shadow 0.25s; cursor: pointer; }
-  .channel img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-  .channel span { font-size: clamp(10px, 1vw, 14px); margin-top: 0.4em; text-align: center; }
-  .channel.locked { opacity: 0.4; pointer-events: none; }
-  .channel:hover, .channel:focus { transform: scale(1.1); box-shadow: 0 0 12px 4px #00ffcc; outline: none; }
+.channel img{width:100%;height:100%;object-fit:cover}
+.channel:hover{transform:scale(1.1);box-shadow:0 0 15px #0ff}
 
-  .footer { text-align: center; font-size: clamp(10px, 1vw, 14px); color: #ccc; padding: 0.6em; }
+/* LOCKED */
+.channel.locked{
+  pointer-events:none;
+  filter:grayscale(100%) blur(1px);
+  opacity:0.4;
+}
+
+/* FOOTER */
+.footer{text-align:center;color:#aaa;padding:10px}
 </style>
 </head>
+
 <body>
+
 <div class="announcement">
-  <span>📢 ANNOUNCEMENT: Welcome to HONOR TV! Enjoy Watching Live TV, Movies, NBA Live — Subscribe to unlock more features!</span>
+<span>📢 Welcome to HONOR TV — Subscribe to unlock all channels!</span>
 </div>
 
-<div class="overlay">
-  <a href="contact.html" class="contact-btn" tabindex="0">📞 CONTACT</a>
-  <a href="message.html" class="message-btn" tabindex="0">💬 GROUP CHAT</a>
-  <a href="subscribe.html" target="_blank" class="donate-btn" tabindex="0">💥 Subscribe</a>
-  <a href="login-code.html" class="code-btn" id="loginBtn" tabindex="0">🔐 LOGIN CODE</a>
+<a href="contact.html" class="contact-btn">📞 Contact</a>
+<a href="message.html" class="message-btn">💬 Group</a>
+<a href="subscribe.html" class="donate-btn">💥 Subscribe</a>
+<a href="login-code.html" class="code-btn" id="loginBtn">🔐 Login</a>
 
-  <div class="logo">
-    <img src="https://i.imgur.com/9jkWhU0.jpeg" alt="HONOR TV Logo" />
-    <h2>HONOR TV MENU</h2>
-  </div>
+<div class="logo">
+  <img src="https://i.imgur.com/9jkWhU0.jpeg">
+  <h2>HONOR TV</h2>
+</div>
 
-  <div id="countdown-display" class="countdown-box">
-    🔒 Please login to access channels.
-  </div>
+<div id="countdown-display" class="countdown-box">🔒 Please login</div>
 
-  <a href="movies.html" class="movies-btn" tabindex="0">🎬 MOVIES</a>
+<a href="movies.html" class="movies-btn">🎬 Movies</a>
 
-  <div class="menu-grid" id="menuGrid">
-    <!-- Channels -->
+<div class="menu-grid">
+
       <!-- ✅ Live TV is FREE -->
       <div class="channel" tabindex="0" onclick="openC('phchannel')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2TQS842esSWjINmAex8CKS6VRRGLn9KrFNrzBVYzntuYst5MVUID3ebw&s=10">
@@ -184,106 +194,80 @@
         <img src="https://banner2.cleanpng.com/20180618/xax/aa6kwgu4r.webp">
         <span>Sky Go</span>
       </div>
-  </div>
 
-  <div class="footer">Welcome to HONOR TV — Enjoy Watching</div>
 </div>
 
-<script>
-let isLoggedIn = false;
-let countdownFrame;
+<div class="footer">HONOR TV © 2026</div>
 
-function openC(id) {
-  if (id === "phchannel") { location.href = "go:" + id; return; }
-  if (isLoggedIn) { location.href = "go:" + id; }
-  else { alert("🔒 Please login to access this channel."); }
+<script>
+let isLoggedIn=false;
+let timer=null;
+
+/* CHANNEL OPEN */
+function openC(id){
+  if(id==="phchannel"){location.href="go:"+id;return;}
+  if(isLoggedIn) location.href="go:"+id;
+  else alert("🔒 Please login");
 }
 
-function checkLogin() {
-  const expiry = localStorage.getItem("expireAt");
-  const countdown = document.getElementById("countdown-display");
+/* LOGIN CHECK */
+function checkLogin(){
+  const expiry=localStorage.getItem("expireAt");
+  const box=document.getElementById("countdown-display");
 
-  if (!expiry) { lockAll(); return; }
+  if(!expiry){lockAll();return;}
 
-  if (expiry === "lifetime") {
+  if(expiry==="LIFETIME_92xH"){
     unlockAll();
-    countdown.innerText = "🔓 Lifetime Access";
+    box.innerText="🔓 Lifetime Access";
     return;
   }
 
-  const expireTime = parseInt(expiry);
-  const now = Date.now();
-
-  if (expireTime && now < expireTime) { unlockAll(); startCountdown(expireTime); }
-  else { lockAll(); countdown.innerText = "🔒 Please login to access channels."; }
-}
-
-function startCountdown(expireTime) {
-  function tick() {
-    const now = Date.now();
-    let diff = expireTime - now;
-    const box = document.getElementById("countdown-display");
-
-    if (diff <= 0) {
-      localStorage.removeItem("expireAt");
-      lockAll();
-      box.innerText = "🔒 Session expired";
-      return;
-    }
-
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours   = Math.floor(minutes / 60);
-    const days    = Math.floor(hours / 24);
-
-    const rHours  = hours % 24;
-    const rMins   = minutes % 60;
-    const rSecs   = seconds % 60;
-
-    box.innerText = `🔓 ${days}d ${rHours}h ${rMins}m ${rSecs}s`;
-
-    countdownFrame = requestAnimationFrame(tick);
+  const exp=parseInt(expiry);
+  if(Date.now()<exp){
+    unlockAll();
+    startCountdown(exp);
+  }else{
+    lockAll();
+    box.innerText="🔒 Session expired";
+    localStorage.removeItem("expireAt");
   }
-  tick();
 }
 
-function unlockAll() {
-  isLoggedIn = true;
-  document.getElementById("loginBtn").style.display = "none";
-  document.querySelectorAll(".channel.locked").forEach(c => {
-    c.classList.remove("locked");
-    c.setAttribute("tabindex", "0");
+/* COUNTDOWN */
+function startCountdown(exp){
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    let d=exp-Date.now();
+    if(d<=0){checkLogin();return;}
+    let s=Math.floor(d/1000);
+    let m=Math.floor(s/60);
+    let h=Math.floor(m/60);
+    let days=Math.floor(h/24);
+    document.getElementById("countdown-display").innerText=
+      `🔓 ${days}d ${h%24}h ${m%60}m ${s%60}s`;
+  },1000);
+}
+
+/* LOCK / UNLOCK */
+function unlockAll(){
+  isLoggedIn=true;
+  document.getElementById("loginBtn").style.display="none";
+  document.querySelectorAll(".channel.locked").forEach(c=>c.classList.remove("locked"));
+}
+
+function lockAll(){
+  isLoggedIn=false;
+  document.getElementById("loginBtn").style.display="block";
+  document.querySelectorAll(".menu-grid .channel").forEach((c,i)=>{
+    if(i!==0) c.classList.add("locked");
   });
 }
 
-function lockAll() {
-  isLoggedIn = false;
-  document.getElementById("loginBtn").style.display = "inline-block";
-  document.querySelectorAll(".channel").forEach(c => {
-    if (c.querySelector("span").innerText !== "Live TV") {
-      c.classList.add("locked");
-      c.removeAttribute("tabindex");
-    }
-  });
-  cancelAnimationFrame(countdownFrame);
-}
-
-// TV remote navigation
-document.addEventListener("keydown", e => {
-  const focusable = Array.from(document.querySelectorAll('[tabindex="0"]'));
-  const index = focusable.indexOf(document.activeElement);
-  const cols = Math.round(Math.sqrt(focusable.length));
-
-  switch(e.key) {
-    case "ArrowRight": if (index+1<focusable.length) focusable[index+1].focus(); break;
-    case "ArrowLeft": if (index>0) focusable[index-1].focus(); break;
-    case "ArrowDown": if (index+cols<focusable.length) focusable[index+cols].focus(); break;
-    case "ArrowUp": if (index-cols>=0) focusable[index-cols].focus(); break;
-    case "Enter": case "OK": document.activeElement.click(); break;
-  }
-});
-
-window.onload = checkLogin;
+/* AUTO CHECK */
+setInterval(checkLogin,30000);
+window.onload=checkLogin;
 </script>
+
 </body>
 </html>
