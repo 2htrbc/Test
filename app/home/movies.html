@@ -1,209 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 <title>HONOR TV - Movies</title>
-
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  height:100%;
-  background:linear-gradient(to bottom,#000,#222);
-  font-family:Segoe UI, sans-serif;
-  color:white;
-  overflow:hidden;
+html, body {
+  margin: 0; padding: 0; height: 100%; background: linear-gradient(to bottom,#111,#222);
+  font-family: "Segoe UI", sans-serif; color: white; overflow: hidden;
 }
-.overlay{
-  display:flex;
-  flex-direction:column;
-  height:100%;
-  padding:12px;
+.overlay { display: flex; flex-direction: column; height: 100%; padding: 12px; }
+.header { display: flex; align-items: center; justify-content: center; gap:12px; padding-bottom:10px; }
+.header img { height: 40px; border-radius: 8px; }
+.header h2 { margin:0; color:#ff4b2b; font-size:1.4em; }
+.back-btn {
+  position:absolute; left:12px; top:12px; background:#ff4b2b; padding:6px 14px;
+  border-radius:20px; color:white; text-decoration:none; box-shadow:0 0 8px rgba(255,255,255,0.25);
+  transition:0.3s;
 }
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-  padding-bottom:10px;
+.back-btn:hover { background:#e03c1f; }
+.grid {
+  flex:1; display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:14px; overflow-y:auto;
 }
-.header img{height:40px;border-radius:8px}
-.header h2{margin:0;color:#ff4b2b;font-size:1.4em}
-
-.back-btn{
-  position:absolute;
-  left:12px;
-  top:12px;
-  background:#ff4b2b;
-  padding:6px 14px;
-  border-radius:20px;
-  color:white;
-  text-decoration:none;
+.channel {
+  background:#1c1c1c; border-radius:12px; cursor:pointer; transition:0.25s; outline:none;
 }
-
-.grid{
-  flex:1;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-  gap:14px;
-  overflow-y:auto;
+.channel img { width:100%; height:120px; object-fit:cover; border-radius:8px; }
+.channel span { display:block; padding:8px; text-align:center; font-size:0.9em; }
+.channel:hover, .channel:focus { transform:scale(1.08); box-shadow:0 0 18px gold; }
+.locked { opacity:0.4; pointer-events:none; filter:grayscale(100%); }
+#rotate-warning {
+  position:fixed; inset:0; background:black; color:white; display:none; align-items:center; justify-content:center;
+  text-align:center; z-index:9999;
 }
-
-.card{
-  background:#1c1c1c;
-  border-radius:12px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:.25s;
-}
-.card img{
-  width:100%;
-  height:120px;
-  object-fit:cover;
-}
-.card span{
-  display:block;
-  padding:8px;
-  text-align:center;
-  font-size:.9em;
-}
-.card:hover,.card:focus{
-  transform:scale(1.08);
-  box-shadow:0 0 18px gold;
-  outline:none;
-}
-
-.locked{
-  opacity:.4;
-  filter:grayscale(100%);
-  pointer-events:none;
-}
-
-#rotate{
-  position:fixed;
-  inset:0;
-  background:black;
-  color:white;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  z-index:9999;
-}
-@media (orientation:portrait){
-  #rotate{display:flex;}
-}
+@media (orientation:portrait) { #rotate-warning { display:flex; } }
+#countdown-display { text-align:center; font-size:1em; padding:6px; margin-bottom:8px; color:#00ffcc; }
 </style>
 </head>
-
 <body>
 
-<div id="rotate">Rotate your device to landscape mode</div>
+<div id="rotate-warning">Please rotate your device to landscape mode.</div>
 
 <div class="overlay">
-<a href="index.html" class="back-btn">← Back</a>
+  <a href="index.html" class="back-btn">← Back</a>
+  <div class="header">
+    <img src="https://i.imgur.com/8mcTlbL.png" alt="HONOR TV Logo">
+    <h2>HONOR TV - Movies</h2>
+  </div>
 
-<div class="header">
-<img src="https://i.imgur.com/8mcTlbL.png">
-<h2>HONOR TV - Movies</h2>
-</div>
+  <div id="countdown-display">🔒 Please login to access movies</div>
 
-<div class="grid">
-
-<div class="card premium" tabindex="0" onclick="play('freemovies')">
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoW5andsUfhsNRoe9EikZzNiQU-bjIV__dPkd-INyvtJLnKy4Anjd9xGk&s=10">
-<span>Movies</span>
-</div>
-
-<div class="card premium" tabindex="0" onclick="play('hmtdflix')">
-<img src="https://i.imgur.com/Q5mztTr.jpeg">
-<span>Tagalog Dubbed</span>
-</div>
-
-<div class="card premium" tabindex="0" onclick="play('phmovies')">
-<img src="https://i.imgur.com/8mcTlbL.png">
-<span>PH Movies</span>
-</div>
-
-<div class="card premium" tabindex="0" onclick="play('mmk')">
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvG44tA6CRZYloIVJkWSuGW8aLs6iTrdb1a7ynQ3GI3amg3QCP1_OwXcr3&s=10">
-<span>MMK</span>
-</div>
-
-<div class="card premium" tabindex="0" onclick="play('dkt')">
-<img src="https://i.imgur.com/daxi6sF.jpeg">
-<span>Drama Kwento Tagalog</span>
-</div>
-
-<div class="card premium" tabindex="0" onclick="play('netflix')">
-<img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?fm=jpg&q=60&w=3000">
-<span>Netflix</span>
-</div>
-
-</div>
+  <div class="grid" id="channelGrid">
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('freemovies')">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoW5andsUfhsNRoe9EikZzNiQU-bjIV__dPkd-INyvtJLnKy4Anjd9xGk&s=10" alt="Movies">
+      <span>Movies</span>
+    </div>
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('hmtdflix')">
+      <img src="https://i.imgur.com/Q5mztTr.jpeg" alt="Tagalog Dubbed">
+      <span>Tagalog Dubbed</span>
+    </div>
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('phmovies')">
+      <img src="https://i.imgur.com/8mcTlbL.png" alt="PH Movies">
+      <span>PH Movies</span>
+    </div>
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('mmk')">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvG44tA6CRZYloIVJkWSuGW8aLs6iTrdb1a7ynQ3GI3amg3QCP1_OwXcr3&s=10" alt="MMK">
+      <span>MMK</span>
+    </div>
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('dkt')">
+      <img src="https://i.imgur.com/daxi6sF.jpeg" alt="Drama Kwento Tagalog">
+      <span>Drama Kwento Tagalog</span>
+    </div>
+    <div class="channel premium-only" tabindex="0" onclick="tryOpenChannel('Netflix')">
+      <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?fm=jpg&q=60&w=3000" alt="Netflix">
+      <span>NETFLIX</span>
+    </div>
+  </div>
 </div>
 
 <script>
-let logged=false;
+let isLoggedIn = false;
+let countdownFrame;
 
-/* 🔗 REAL IPTV STREAM IDS */
-const STREAMS={
-  freemovies:"movies1",
-  hmtdflix:"tagalog1",
-  phmovies:"phmovies1",
-  mmk:"mmk1",
-  dkt:"dkt1",
-  netflix:"netflix1"
-};
+function openChannel(id) {
+  location.href = "go:" + id;
+}
 
-/* PLAY */
-function play(key){
-  if(!logged){
-    alert("🔒 Please login first");
+function tryOpenChannel(id) {
+  if (!isLoggedIn) {
+    alert("🔒 Premium access expired. Please login.");
     return;
   }
-  const id=STREAMS[key];
-  if(!id){
-    alert("Stream not found");
+  openChannel(id);
+}
+
+function unlockAll() {
+  isLoggedIn = true;
+  document.querySelectorAll(".premium-only").forEach(c => c.classList.remove("locked"));
+}
+
+function lockAll() {
+  isLoggedIn = false;
+  document.querySelectorAll(".premium-only").forEach(c => c.classList.add("locked"));
+  cancelAnimationFrame(countdownFrame);
+  const box = document.getElementById("countdown-display");
+  if (box) box.innerText = "🔒 Please login to access movies";
+}
+
+function startCountdown(expireTime) {
+  function tick() {
+    const now = Date.now();
+    let diff = expireTime - now;
+    const box = document.getElementById("countdown-display");
+    if (diff <= 0) {
+      localStorage.removeItem("expireAt");
+      lockAll();
+      if (box) box.innerText = "🔒 Session expired";
+      return;
+    }
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours   = Math.floor(minutes / 60);
+    const days    = Math.floor(hours / 24);
+    const rHours  = hours % 24;
+    const rMins   = minutes % 60;
+    const rSecs   = seconds % 60;
+    if (box) box.innerText = `🔓 ${days}d ${rHours}h ${rMins}m ${rSecs}s`;
+    countdownFrame = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function checkLogin() {
+  const expire = localStorage.getItem("expireAt");
+  if (!expire) { lockAll(); return; }
+  if (expire === "lifetime") { unlockAll(); 
+    const box = document.getElementById("countdown-display");
+    if(box) box.innerText = "🔓 Lifetime Access";
     return;
   }
-  location.href="go:"+id;
+  const expireTime = parseInt(expire);
+  const now = Date.now();
+  if (expireTime && now < expireTime) { unlockAll(); startCountdown(expireTime); }
+  else { lockAll(); }
 }
 
-/* LOGIN CHECK */
-function check(){
-  const e=localStorage.getItem("expireAt");
-  if(!e){lock();return;}
-  if(e==="LIFETIME_92xH"){unlock();return;}
-  if(Date.now()<parseInt(e)){unlock();}
-  else{
-    localStorage.removeItem("expireAt");
-    lock();
-  }
+function handleOrientationWarning() {
+  const warning = document.getElementById("rotate-warning");
+  warning.style.display = (window.innerHeight > window.innerWidth) ? "flex" : "none";
 }
-function unlock(){
-  logged=true;
-  document.querySelectorAll(".premium").forEach(c=>c.classList.remove("locked"));
-}
-function lock(){
-  logged=false;
-  document.querySelectorAll(".premium").forEach(c=>c.classList.add("locked"));
-}
-setInterval(check,30000);
-window.onload=check;
 
-/* TV REMOTE */
-document.addEventListener("keydown",e=>{
-  const items=[...document.querySelectorAll(".card")];
-  let i=items.indexOf(document.activeElement);
-  const cols=Math.round(Math.sqrt(items.length));
-  if(e.key==="ArrowRight"&&i+1<items.length)items[i+1].focus();
-  if(e.key==="ArrowLeft"&&i>0)items[i-1].focus();
-  if(e.key==="ArrowDown"&&i+cols<items.length)items[i+cols].focus();
-  if(e.key==="ArrowUp"&&i-cols>=0)items[i-cols].focus();
-  if(e.key==="Enter")document.activeElement.click();
+// TV Remote navigation
+document.addEventListener("keydown", e => {
+  const items = Array.from(document.querySelectorAll('[tabindex="0"]'));
+  const index = items.indexOf(document.activeElement);
+  const cols = Math.round(Math.sqrt(items.length));
+  if(e.key==="ArrowRight" && index+1<items.length) items[index+1].focus();
+  if(e.key==="ArrowLeft"  && index>0) items[index-1].focus();
+  if(e.key==="ArrowDown"  && index+cols<items.length) items[index+cols].focus();
+  if(e.key==="ArrowUp"    && index-cols>=0) items[index-cols].focus();
+  if(e.key==="Enter"||e.key==="OK") document.activeElement.click();
 });
+
+window.onload = () => { checkLogin(); handleOrientationWarning(); };
+window.onresize = handleOrientationWarning;
+window.onorientationchange = handleOrientationWarning;
 </script>
 
 </body>
