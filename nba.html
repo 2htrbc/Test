@@ -119,71 +119,46 @@
   <div class="channel-grid" id="channelGrid">
     <!-- Channels -->
 <!-- HTML Channel Blocks -->
-<div class="channel" tabindex="0" onclick="openChannel('nba1')">
+<div class="channel" tabindex="0" onclick="openChannel('nba12')">
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Toronto Raptors vs. Boston Celtics</span>
+  <span>New York Knicks vs. Atlanta Hawks</span>
   <div class="countdown-timer" id="timer-nba1"></div>
 </div>
 
-<div class="channel" tabindex="0" onclick="openChannel('nba2')">
+<div class="channel" tabindex="0" onclick="openChannel('nba13')">
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Washington Wizards vs. Brooklyn Nets</span>
+  <span>Detroit Pistons vs. Orlando Magic</span>
   <div class="countdown-timer" id="timer-nba2"></div>
 </div>
 
-<div class="channel" tabindex="0" onclick="openChannel('nba3')">
+<div class="channel" tabindex="0" onclick="openChannel('nba14')">
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Phoenix Suns vs. Chicago Bulls</span>
+  <span>Cleveland Cavaliers vs. Memphis Grizzlies</span>
   <div class="countdown-timer" id="timer-nba3"></div>
 </div>
 
-<div class="channel" tabindex="0" onclick="openChannel('nba4')">
+<div class="channel" tabindex="0" onclick="openChannel('nba15')">
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Memphis Grizzlies vs. Milwaukee Bucks</span>
+  <span>Philadelphia 76ers vs. San Antonio Spurs</span>
   <div class="countdown-timer" id="timer-nba4"></div>
 </div>
 
-<div class="channel" tabindex="0" onclick="openChannel('nba5')">
+<div class="channel" tabindex="0" onclick="openChannel('nba16')">
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Indiana Pacers vs. Cleveland Cavaliers</span>
+  <span>Portland Trail Blazers vs. Denver Nuggets</span>
   <div class="countdown-timer" id="timer-nba5"></div>
 </div>
 
-<div class="channel" tabindex="0" onclick="openChannel('nba6')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Charlotte Hornets vs. Minnesota Timberwolves</span>
-  <div class="countdown-timer" id="timer-nba6"></div>
-</div>
-
-<div class="channel" tabindex="0" onclick="openChannel('nba7')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Orlando Magic vs. New Orleans Pelicans</span>
-  <div class="countdown-timer" id="timer-nba7"></div>
-</div>
-
-<div class="channel" tabindex="0" onclick="openChannel('nba8')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Utah Jazz vs. Oklahoma City Thunder</span>
-  <div class="countdown-timer" id="timer-nba8"></div>
-</div>
-
-<div class="channel" tabindex="0" onclick="openChannel('nba9')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Los Angeles Lakers vs. Dallas Mavericks</span>
-  <div class="countdown-timer" id="timer-nba9"></div>
-</div>
-
-<div class="channel" tabindex="0" onclick="openChannel('nba10')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>LA Clippers vs. Sacramento Kings</span>
-  <div class="countdown-timer" id="timer-nba10"></div>
-</div>
-
-<div class="channel" tabindex="0" onclick="openChannel('nba11')">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/NBA_League_Pass_Logo_%282017%29.png">
-  <span>Houston Rockets vs. Golden State Warriors</span>
-  <div class="countdown-timer" id="timer-nba11"></div>
-</div>
+<!-- Countdown Timer Mapping (PHT) -->
+<script>
+const countdownTimers = {
+  "timer-nba1": "2026-04-07T7:00:00+08:00", // 7:00 AM CT → 8:00 PM PHT
+  "timer-nba2": "2026-04-07T7:00:00+08:00", // 7:00 AM CT
+  "timer-nba3": "2026-04-07T8:00:00+08:00", // 8:00 AM CT → 9:00 PM PHT
+  "timer-nba4": "2026-04-07T8:00:00+08:00", // 8:00 AM CT
+  "timer-nba5": "2026-04-07T9:00:00+08:00"  // 9:00 AM CT → 10:00 PM PHT
+};
+</script>
 
 
 </div>
