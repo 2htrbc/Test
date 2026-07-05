@@ -416,9 +416,9 @@ const channels = [
 "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMs-qvMbBce47vo45QG1PlOjKTgyfWeid3uQ&s",
 "page": "go:f1",
 "date": "2026-07-05",
-"endDate": "2026-07-05",
+"endDate": "2026-07-06",
 "startTime": "9:00 PM",
-"endTime": "11:59 PM"
+"endTime": "1:59 AM"
 }  
 ];
 
