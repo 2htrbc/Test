@@ -58,26 +58,26 @@ const channels = [
 "endTime": "7:00 PM"
 },
 {
-"title": "Croatia vs. Ghana",
+  "title": "Argentina vs. Egypt",
 "category": "FIFA World Cup",
-"service": "FIFA",
-"logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/67/FIFA_World_Cup_2026_logo.svg/1200px-FIFA_World_Cup_2026_logo.svg.png",
+"service": "FIFA World Cup",
+"logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
 "page": "go:fifa1",
-"date": "2026-06-28",
-"endDate": "2026-06-28",
-"startTime": "5:00 AM",
-"endTime": "8:00 AM"
+"date": "2026-07-8",
+"endDate": "2026-07-8",
+"startTime": "12:00 AM",
+"endTime": "4:00 AM"
 },
 {
-"title": "Panama vs. England",
+"title": "Switzerland vs. Colombia",
 "category": "FIFA World Cup",
-"service": "FIFA",
-"logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/67/FIFA_World_Cup_2026_logo.svg/1200px-FIFA_World_Cup_2026_logo.svg.png",
+"service": "FIFA World Cup",
+"logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
 "page": "go:fifa1",
-"date": "2026-06-28",
-"endDate": "2026-06-28",
-"startTime": "5:00 AM",
-"endTime": "8:00 AM"
+"date": "2026-07-8",
+"endDate": "2026-07-8",
+"startTime": "4:00 AM",
+"endTime": "8:00 PM"
 },
 {
 "title": "South Africa vs. Canada",
