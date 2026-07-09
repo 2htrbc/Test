@@ -7,7 +7,7 @@ const channels = [
 "category": "FIFA World Cup",
 "service": "FIFA World Cup",
 "logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
-"page": "fifa1.html",
+"page": "go:fifa1",
 "date": "2026-07-10",
 "endDate": "2026-07-10",
 "startTime": "4:00 AM",
