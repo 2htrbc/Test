@@ -3,15 +3,15 @@ CHANNEL LIST
 -------------------------------------------------*/
 const channels = [
 {
-"title": "2026 NBA Draft",
-"category": "Basketball",
-"service": "NBA",
-"logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/NBA_logo.svg/1200px-NBA_logo.svg.png",
-"page": "go:nba1",
-"date": "2026-06-25",
-"endDate": "2026-06-25",
-"startTime": "8:00 AM",
-"endTime": "1:30 PM"
+"title": "France vs. Morocco",
+"category": "FIFA World Cup",
+"service": "FIFA World Cup",
+"logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
+"page": "fifa1.html",
+"date": "2026-07-10",
+"endDate": "2026-07-10",
+"startTime": "4:00 AM",
+"endTime": "8:00 AM"
 },
 {
 "title": "Cleveland Cavaliers vs New York Knicks",
