@@ -124,26 +124,26 @@ const channels = [
 "endTime": "7:00 PM"
 },
 {
-  "title": "Argentina vs. Egypt",
+  "title": "France vs. Spain",
 "category": "FIFA World Cup",
 "service": "FIFA World Cup",
 "logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
 "page": "go:fifa1",
-"date": "2026-07-8",
-"endDate": "2026-07-8",
-"startTime": "12:00 AM",
-"endTime": "4:00 AM"
+"date": "2026-07-15",
+"endDate": "2026-07-15",
+"startTime": "3:00 AM",
+"endTime": "7:00 AM"
 },
 {
-"title": "Switzerland vs. Colombia",
+"title": "England vs. Argentina",
 "category": "FIFA World Cup",
 "service": "FIFA World Cup",
 "logo": "https://statics.foxsports.com/www.foxsports.com/content/uploads/2023/05/IMG_6227.png",
 "page": "go:fifa1",
-"date": "2026-07-8",
-"endDate": "2026-07-8",
-"startTime": "4:00 AM",
-"endTime": "8:00 PM"
+"date": "2026-07-16",
+"endDate": "2026-07-16",
+"startTime": "3:00 AM",
+"endTime": "7:00 AM"
 },
 {
 "title": "South Africa vs. Canada",
