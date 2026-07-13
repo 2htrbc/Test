@@ -13,7 +13,6 @@ body {
   background: #0a0a0a;
   color: white;
   line-height: 1.4;
-  /* Prevent TV browser focus glow */
   outline: none;
 }
 
@@ -37,7 +36,6 @@ body {
   padding: 10px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  /* TV: stop focus from being cut off */
   padding-right: 30px;
 }
 
@@ -61,7 +59,6 @@ body {
   color: #000;
 }
 
-/* ✅ D-PAD FOCUS STYLE FOR BUTTONS */
 .category-buttons button.focused {
   transform: scale(1.08);
   border-color: #00ff6a;
@@ -92,12 +89,10 @@ h2 {
   padding: 15px;
   border-radius: 12px;
   margin: 10px;
-  cursor: pointer;
+  border: 2px solid transparent;
   transition: all 0.2s ease;
   flex-wrap: wrap;
   gap: 15px;
-  border: 2px solid transparent;
-  outline: none;
 }
 
 .channel-card:hover {
@@ -105,7 +100,6 @@ h2 {
   background: linear-gradient(90deg, #1b263b, #293345);
 }
 
-/* ✅ D-PAD FOCUS STYLE FOR CARDS */
 .channel-card.focused {
   transform: scale(1.03);
   border-color: #00ff6a;
@@ -137,6 +131,42 @@ h2 {
   margin-bottom: 4px;
 }
 
+/* ------------------------------
+   SERVER BUTTONS
+-------------------------------*/
+.server-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.server-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.server-btn.server1 {
+  background: #00ff6a;
+  color: #000;
+}
+
+.server-btn.server2 {
+  background: #ffcc00;
+  color: #000;
+}
+
+.server-btn:hover,
+.server-btn:focus {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+
 .countdown {
   font-size: 14px;
   white-space: nowrap;
@@ -147,92 +177,31 @@ h2 {
    MEDIA QUERIES
 -------------------------------*/
 @media screen and (max-width: 600px) {
-  .title {
-    font-size: 26px;
-    padding: 15px 0;
-  }
-
-  .category-buttons button {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-
-  .channel-card {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 12px;
-  }
-
-  .channel-logo {
-    width: 50px;
-    height: 50px;
-  }
-
-  .countdown {
-    font-size: 12px;
-    margin-top: 8px;
-    align-self: flex-end;
-  }
+  .title { font-size: 26px; padding: 15px 0; }
+  .category-buttons button { padding: 8px 16px; font-size: 14px; }
+  .channel-card { flex-direction: column; align-items: flex-start; padding: 12px; }
+  .channel-logo { width: 50px; height: 50px; }
+  .countdown { font-size: 12px; margin-top: 8px; align-self: flex-end; }
 }
 
 @media screen and (min-width: 601px) and (max-width: 1024px) {
-  .title {
-    font-size: 28px;
-  }
-
-  .category-buttons button {
-    padding: 9px 18px;
-    font-size: 15px;
-  }
-
-  .channel-card {
-    padding: 14px;
-  }
-
-  .channel-logo {
-    width: 55px;
-    height: 55px;
-  }
-
-  .countdown {
-    font-size: 13px;
-  }
+  .title { font-size: 28px; }
+  .category-buttons button { padding: 9px 18px; font-size: 15px; }
+  .channel-card { padding: 14px; }
+  .channel-logo { width: 55px; height: 55px; }
+  .countdown { font-size: 13px; }
 }
 
 @media screen and (min-width: 1025px) and (max-width: 1440px) {
-  .title {
-    font-size: 32px;
-  }
-
-  .channel-card {
-    padding: 16px;
-  }
-
-  .channel-logo {
-    width: 60px;
-    height: 60px;
-  }
-
-  .countdown {
-    font-size: 14px;
-  }
+  .title { font-size: 32px; }
+  .channel-card { padding: 16px; }
+  .channel-logo { width: 60px; height: 60px; }
+  .countdown { font-size: 14px; }
 }
 
 @media screen and (min-width: 1441px) {
-  .title {
-    font-size: 36px;
-  }
-
-  .channel-card {
-    padding: 20px;
-  }
-
-  .channel-logo {
-    width: 70px;
-    height: 70px;
-  }
-
-  .countdown {
-    font-size: 16px;
-  }
+  .title { font-size: 36px; }
+  .channel-card { padding: 20px; }
+  .channel-logo { width: 70px; height: 70px; }
+  .countdown { font-size: 16px; }
 }
