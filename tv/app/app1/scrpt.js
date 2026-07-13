@@ -8,7 +8,7 @@ const channels = [
     "service": "NBA Summer League",
     "logo": "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg",
     "page": "go:nba1",
-    "page2": "go:nba1s2", // ✅ Added backup server link
+    "page2": "go:nba1s2", // ✅ Server 2 link
     "date": "2026-07-13",
     "endDate": "2026-07-13",
     "startTime": "03:00 AM",
@@ -213,18 +213,10 @@ function getEventTimestamp(dateStr, timeStr) {
   let [hours, minutes] = time.split(":");
   hours = parseInt(hours, 10);
   minutes = parseInt(minutes, 10);
-
   if (modifier === "PM" && hours !== 12) hours += 12;
   if (modifier === "AM" && hours === 12) hours = 0;
-
   const parts = dateStr.split("-").map(Number);
-  return Date.UTC(
-    parts[0],
-    parts[1] - 1,
-    parts[2],
-    hours - BASE_TIMEZONE_OFFSET,
-    minutes
-  );
+  return Date.UTC(parts[0], parts[1] - 1, parts[2], hours - BASE_TIMEZONE_OFFSET, minutes);
 }
 
 /* ------------------------------------------------
@@ -260,7 +252,7 @@ function renderCategoryButtons() {
 }
 
 /* ------------------------------------------------
-RENDER CHANNELS
+RENDER CHANNELS WITH SERVER BUTTONS
 -------------------------------------------------*/
 function renderChannels() {
   const container = document.getElementById("channels-container");
@@ -274,26 +266,26 @@ function renderChannels() {
   });
 
   for (const category in grouped) {
-    grouped[category].sort((a, b) =>
-      ({ live: 0, upcoming: 1 }[getChannelStatus(a)]) -
-      ({ live: 0, upcoming: 1 }[getChannelStatus(b)])
-    );
+    grouped[category].sort((a, b) => ({ live: 0, upcoming: 1 }[getChannelStatus(a)]) - ({ live: 0, upcoming: 1 }[getChannelStatus(b)]));
     const section = document.createElement("div");
     section.id = `section-${category}`;
     section.innerHTML = `<h2>${category}</h2>`;
+    
     grouped[category].forEach(c => {
       const card = document.createElement("div");
       card.className = "channel-card";
       card.dataset.navigable = "true";
-      card.dataset.page = c.page;
-      card.dataset.page2 = c.page2 || ""; // Store backup link if exists
+
       card.innerHTML = `
         <div class="channel-left">
           <img src="${c.logo}" class="channel-logo" alt="${c.service}" loading="lazy">
           <div>
             <div class="channel-title">${c.title}</div>
             <small>${c.service} • ${c.date} ${c.startTime} – ${c.endDate !== c.date ? c.endDate + " " : ""}${c.endTime}</small>
-            ${c.page2 ? `<br><small style="color:#ffcc00">🔄 Backup available</small>` : ""}
+            <div class="server-buttons">
+              <button class="server-btn server1" data-link="${c.page}">🔗 Server 1</button>
+              ${c.page2 ? `<button class="server-btn server2" data-link="${c.page2}">🔗 Server 2</button>` : ""}
+            </div>
           </div>
         </div>
         <div class="countdown" 
@@ -312,13 +304,13 @@ function renderChannels() {
 }
 
 /* ------------------------------------------------
-📺 D-PAD / REMOTE NAVIGATION SUPPORT
+📺 D-PAD / REMOTE NAVIGATION
 -------------------------------------------------*/
 let currentFocusIndex = 0;
 let navigableItems = [];
 
 function updateNavigableItems() {
-  navigableItems = Array.from(document.querySelectorAll('[data-navigable="true"]'));
+  navigableItems = Array.from(document.querySelectorAll('[data-navigable="true"], .server-btn'));
   if (navigableItems.length > 0) setFocus(0);
 }
 
@@ -330,45 +322,28 @@ function setFocus(index) {
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("server-btn")) {
+    window.location.href = e.target.dataset.link;
+  }
+});
+
 document.addEventListener("keydown", (e) => {
   if (navigableItems.length === 0) return;
-  const active = navigableItems[currentFocusIndex];
+  e.preventDefault();
 
   switch (e.key) {
-    case "ArrowUp":
-      e.preventDefault();
-      setFocus(currentFocusIndex - 1);
-      break;
-    case "ArrowDown":
-      e.preventDefault();
-      setFocus(currentFocusIndex + 1);
-      break;
-    case "ArrowLeft":
-      e.preventDefault();
-      setFocus(Math.max(0, currentFocusIndex - 3));
-      break;
-    case "ArrowRight":
-      e.preventDefault();
-      setFocus(Math.min(navigableItems.length - 1, currentFocusIndex + 3));
-      break;
+    case "ArrowUp": setFocus(currentFocusIndex - 1); break;
+    case "ArrowDown": setFocus(currentFocusIndex + 1); break;
+    case "ArrowLeft": setFocus(Math.max(0, currentFocusIndex - 3)); break;
+    case "ArrowRight": setFocus(Math.min(navigableItems.length - 1, currentFocusIndex + 3)); break;
     case "Enter":
     case "Select":
-      e.preventDefault();
-      // Open primary link first
-      if (active.dataset.page) window.location.href = active.dataset.page;
-      else active.click();
-      break;
-    // Optional: Press Green/Blue button on remote to open backup server
-    case "F8": // Green
-    case "F9": // Blue
-      e.preventDefault();
-      if (active.dataset.page2) window.location.href = active.dataset.page2;
+      const active = navigableItems[currentFocusIndex];
+      if (active.dataset.link) window.location.href = active.dataset.link;
       break;
     case "Backspace":
-    case "Escape":
-      e.preventDefault();
-      history.back();
-      break;
+    case "Escape": history.back(); break;
   }
 });
 
@@ -378,11 +353,9 @@ COUNTDOWN TIMER
 function updateCountdown() {
   const now = Date.now();
   let changed = false;
-
   document.querySelectorAll(".countdown").forEach(el => {
     const start = getEventTimestamp(el.dataset.date, el.dataset.start);
     const end = getEventTimestamp(el.dataset.endDate || el.dataset.date, el.dataset.end);
-
     if (now < start) {
       let diff = start - now;
       const d = Math.floor(diff / 86400000);
@@ -405,7 +378,6 @@ function updateCountdown() {
       changed = true;
     }
   });
-
   if (changed) renderChannels();
 }
 
@@ -416,8 +388,4 @@ renderCategoryButtons();
 renderChannels();
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
-/* ------------------------------------------------
-DEBUG TIMEZONE
--------------------------------------------------*/
 console.log("User Timezone:", Intl.DateTimeFormat().resolvedOptions().timeZone);
