@@ -1,0 +1,214 @@
+/* ------------------------------
+   GLOBAL
+-------------------------------*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0a0a0a;
+  color: white;
+  line-height: 1.4;
+}
+
+/* ------------------------------
+   TITLE
+-------------------------------*/
+.title {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #00ff6a;
+}
+
+/* ------------------------------
+   CATEGORY BUTTONS
+-------------------------------*/
+.category-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background: #1f2937;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: 0.2s;
+}
+
+.category-buttons button:hover,
+.category-buttons button.active {
+  background: #00ff6a;
+  color: #000;
+}
+
+/* ------------------------------
+   CATEGORY TITLE
+-------------------------------*/
+h2 {
+  margin: 25px 0 12px;
+  padding-left: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f0f0f0;
+}
+
+/* ------------------------------
+   CHANNEL CARD
+-------------------------------*/
+.channel-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #0d1b2a, #1b263b);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.channel-card:hover {
+  transform: scale(1.02);
+  background: linear-gradient(90deg, #1b263b, #293345);
+}
+
+.channel-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.channel-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+}
+
+.channel-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.countdown {
+  font-size: 14px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* ------------------------------
+   MEDIA QUERIES
+-------------------------------*/
+@media screen and (max-width: 600px) {
+  .title {
+    font-size: 26px;
+    padding: 15px 0;
+  }
+
+  .category-buttons button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .channel-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .channel-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .countdown {
+    font-size: 12px;
+    margin-top: 8px;
+    align-self: flex-end;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .category-buttons button {
+    padding: 9px 18px;
+    font-size: 15px;
+  }
+
+  .channel-card {
+    padding: 14px;
+  }
+
+  .channel-logo {
+    width: 55px;
+    height: 55px;
+  }
+
+  .countdown {
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+  .title {
+    font-size: 32px;
+  }
+
+  .channel-card {
+    padding: 16px;
+  }
+
+  .channel-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .countdown {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1441px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .channel-card {
+    padding: 20px;
+  }
+
+  .channel-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .countdown {
+    font-size: 16px;
+  }
+}
