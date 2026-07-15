@@ -196,9 +196,9 @@ function openPayPal(event) {
   event.preventDefault();
 
   // Deep link for app
-  const appLink = "paypal://send?recipient=mikeangelo9";
+  const appLink = "paypal-link";
   // Fallback for browser
-  const webLink = "https://www.paypal.me/mikeangelo9";
+  const webLink = "paypal-link";
 
   // Create an invisible iframe for Android browsers
   const iframe = document.createElement("iframe");
