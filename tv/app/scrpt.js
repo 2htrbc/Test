@@ -54,7 +54,7 @@ const channels = [
     "page": "go:nba5",
     "date": "2026-07-15",
     "endDate": "2026-07-15",
-    "startTime": "09:00 AM",
+    "startTime": "09:00 PM",
     "endTime": "12:00 AM"
   },
   {
