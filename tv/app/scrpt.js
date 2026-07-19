@@ -29,7 +29,7 @@ const channels = [
     "category": "NBA",
     "service": "NBA Summer League",
     "logo": "https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg",
-    "page": "go;nba3",
+    "page": "go:nba3",
     "date": "2026-07-20",
     "endDate": "2026-07-20",
     "startTime": "09:00 AM",
