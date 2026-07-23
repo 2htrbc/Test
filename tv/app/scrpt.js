@@ -64,7 +64,7 @@ const channels = [
 "service": "UFC",
 "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UFC_Logo.svg/1280px-UFC_Logo.svg.png",
 "page": "go:ufc1",
-"date": "2026-07-19",
+"date": "2026-07-24",
 "endDate": "2026-07-24",
 "startTime": "5:00 AM",
 "endTime": "3:59 PM"
